@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Record Leetcode contest 200.\n\n\nQ1passed.\nQ2Find the winner of an Array Game.\nGiven an integer array arr of distinct integers and an integer k.\nA game will be played between the first two elements of the array (i.e. arr[0] and arr[1]). In each round of the game, we compare arr[0] with arr[1], the larger integer wins and remains at position 0 and the smaller integer moves to the end of the array. The game ends when an integer wins k consecutive rounds.\nReturn the integer which will win the game.\nIt is guaranteed that there will be a winner of the game.\nExample 1:\n123456789Input: arr = [2,1,3,5,4,6,7], k = 2Output: 5Explanation: Let&#x27;s see the rounds of the game:Round |       arr       | winner | win_count  1   | [2,1,3,5,4,6,7] | 2      | 1  2   | [2,3,5,4,6,7,1] | 3      | 1  3   | [3,5,4,6,7,1,2] | 5      | 1  4   | [5,4,6,7,1,2,3] | 5      | 2So we can see that 4 rounds will be played and 5 is the winner because it wins 2 consecutive games.\n\nExample 2:\n123Input: arr = [3,2,1], k = 10Output: 3Explanation: 3 will win the first 10 rounds consecutively.\n\nExample 3:\n12Input: arr = [1,9,8,2,3,7,6,4,5], k = 7Output: 9\n\nExample 4:\n12Input: arr = [1,11,22,33,44,55,66,77,88,99], k = 1000000000Output: 99\n\nMy Solution看到这题，首先我认为这题清晰明了，用__迭代__去完成全部流程，用k去做结束的标志，是一道从头到尾很明确的题。但是:joy:\n贴上我稚嫩的代码：\n12345678910111213141516171819202122232425262728293031public int getWinner(int[] arr, int k) &#123;    int res = -1;    int zero = k-1;    int solution = 0;    while(k&gt;0)&#123;        int currMax = Math.max(arr[0],arr[1]);        int currMin = Math.min(arr[0], arr[1]);        helper(currMax, currMin, arr);        if(res == -1)&#123;            // initial, no compare            res = currMax;        &#125;else&#123;            if(currMax == res)&#123;                k--;                solution = currMax;            &#125;else&#123;                k = zero;                res = currMax;            &#125;        &#125;    &#125;    return solution;&#125;private void helper(int max, int min, int[] arr)&#123;    arr[0] = max;    for (int i = 1; i &lt; arr.length - 1; i++) &#123;        arr[i] = arr[i + 1];    &#125;    arr[arr.length-1] = min;&#125;\n\n没通过，因为Time Limited，跑得太慢了！\nNiubility Solution123456789101112131415161718192021222324public int getWinner(int[] arr, int k) &#123;    // 数组长度    int n = arr.length;    // 数组长度与k之间取最小的。    k = Math.min(k, n);    int A = arr[0];    // 标志位，记录相同次数    int rep = 0;    // 从第二个开始iterate，无终结条件    for(int i = 1;;i++)&#123;        // “i%n“ 取余数，逻辑变换数组。由于for循环无终结条件，所以i会无限增加超过n。        int B = arr[i%n];        if(A &gt;= B)&#123;            rep++;        &#125;else&#123;            A = B;            rep = 1;        &#125;        // 终结条件在这里，rep等于k时结束。        if(rep == k)&#123;            return A;        &#125;    &#125;&#125;\n\n通过对比可以发现，我耗时的原因在于： \n\n我是真的挪了数组！物理上的挪动，实际上，逻辑移动数组即可！我的程序算例4要6秒，这个只需要0秒。\nMath.min(k, n)，如果题目给的k为10000000,数组长度为8,那么最后也是按8 来算，那么多循环无意义，一遍遍历即可获取最大（这样也行？）\n\n况且，逻辑i上也没有去变换位置，题目的本质还是挨个遍历！\ni.e. arr = [2,1,3,5,4,6,7], k = 2\n","dateCreated":"2020-08-02T12:56:29+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-08-02T12:56:29+08:00","description":"Record Leetcode contest 200.","headline":"contest200","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/08/02/contest200/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/08/02/contest200/","keywords":"algorithm"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"Record Leetcode contest 200.\n\n\nQ1passed.\nQ2Find the winner of an Array Game.\nGiven an integer array arr of distinct integers and an integer k.\nA game will be played between the first two elements of the array (i.e. arr[0] and arr[1]). In each round of the game, we compare arr[0] with arr[1], the larger integer wins and remains at position 0 and the smaller integer moves to the end of the array. The game ends when an integer wins k consecutive rounds.\nReturn the integer which will win the game.\nIt is guaranteed that there will be a winner of the game.\nExample 1:\n123456789Input: arr = [2,1,3,5,4,6,7], k = 2Output: 5Explanation: Let&#x27;s see the rounds of the game:Round |       arr       | winner | win_count  1   | [2,1,3,5,4,6,7] | 2      | 1  2   | [2,3,5,4,6,7,1] | 3      | 1  3   | [3,5,4,6,7,1,2] | 5      | 1  4   | [5,4,6,7,1,2,3] | 5      | 2So we can see that 4 rounds will be played and 5 is the winner because it wins 2 consecutive games.\n\nExample 2:\n123Input: arr = [3,2,1], k = 10Output: 3Explanation: 3 will win the first 10 rounds consecutively.\n\nExample 3:\n12Input: arr = [1,9,8,2,3,7,6,4,5], k = 7Output: 9\n\nExample 4:\n12Input: arr = [1,11,22,33,44,55,66,77,88,99], k = 1000000000Output: 99\n\nMy Solution看到这题，首先我认为这题清晰明了，用__迭代__去完成全部流程，用k去做结束的标志，是一道从头到尾很明确的题。但是:joy:\n贴上我稚嫩的代码：\n12345678910111213141516171819202122232425262728293031public int getWinner(int[] arr, int k) &#123;    int res = -1;    int zero = k-1;    int solution = 0;    while(k&gt;0)&#123;        int currMax = Math.max(arr[0],arr[1]);        int currMin = Math.min(arr[0], arr[1]);        helper(currMax, currMin, arr);        if(res == -1)&#123;            // initial, no compare            res = currMax;        &#125;else&#123;            if(currMax == res)&#123;                k--;                solution = currMax;            &#125;else&#123;                k = zero;                res = currMax;            &#125;        &#125;    &#125;    return solution;&#125;private void helper(int max, int min, int[] arr)&#123;    arr[0] = max;    for (int i = 1; i &lt; arr.length - 1; i++) &#123;        arr[i] = arr[i + 1];    &#125;    arr[arr.length-1] = min;&#125;\n\n没通过，因为Time Limited，跑得太慢了！\nNiubility Solution123456789101112131415161718192021222324public int getWinner(int[] arr, int k) &#123;    // 数组长度    int n = arr.length;    // 数组长度与k之间取最小的。    k = Math.min(k, n);    int A = arr[0];    // 标志位，记录相同次数    int rep = 0;    // 从第二个开始iterate，无终结条件    for(int i = 1;;i++)&#123;        // “i%n“ 取余数，逻辑变换数组。由于for循环无终结条件，所以i会无限增加超过n。        int B = arr[i%n];        if(A &gt;= B)&#123;            rep++;        &#125;else&#123;            A = B;            rep = 1;        &#125;        // 终结条件在这里，rep等于k时结束。        if(rep == k)&#123;            return A;        &#125;    &#125;&#125;\n\n通过对比可以发现，我耗时的原因在于： \n\n我是真的挪了数组！物理上的挪动，实际上，逻辑移动数组即可！我的程序算例4要6秒，这个只需要0秒。\nMath.min(k, n)，如果题目给的k为10000000,数组长度为8,那么最后也是按8 来算，那么多循环无意义，一遍遍历即可获取最大（这样也行？）\n\n况且，逻辑i上也没有去变换位置，题目的本质还是挨个遍历！\ni.e. arr = [2,1,3,5,4,6,7], k = 2\n","dateCreated":"2020-08-02T12:56:29+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-08-02T12:56:29+08:00","description":"Record Leetcode contest 200.","headline":"contest200","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/08/02/contest200/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/08/02/contest200/","keywords":"algorithm"}</script>
     <meta name="description" content="Record Leetcode contest 200.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="contest200">
@@ -28,6 +30,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -52,6 +56,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -73,6 +81,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -80,8 +90,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -145,20 +173,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -178,7 +192,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -194,111 +208,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -661,32 +577,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

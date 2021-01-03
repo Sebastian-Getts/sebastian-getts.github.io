@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Mybatis帮助我们提升与数据库交互的效率，简化了JDBC的样板代码。\n\n\n流程1234567891011start&#x3D;&gt;start: startconfig&#x3D;&gt;operation: mybatis-config.xmlbuild&#x3D;&gt;operation: SqlSessionFactoryBuilderfactory&#x3D;&gt;operation: SqlSessionFactorysession&#x3D;&gt;parallel: SqlSessionmapper&#x3D;&gt;operation: Sql Mapperend&#x3D;&gt;end: endstart-&gt;config-&gt;build-&gt;factory-&gt;sessionsession(path1,)-&gt;endsession(path2,right)-&gt;mapper-&gt;end\n\n对于SqlSessionFactoryBuilder来说，作用是创建SqlSessionFactory，一旦创建完工厂就没用了，所以是作为局部变量；而对于SqlSessionFactory，可以把它看作连接池，应该一直运行，不应重复创建、销毁或另建实例（单例模式登场），否则浪费资源，他可以创建SqlSession 。创建SqlSession后用来链接数据库，每个session被看作是请求数据库，他是线程不安全的，每个线程都应有自己的session，不共享，所以最佳作用域是方法域，即每次与数据库交互都创建一个SqlSession，用完关闭（关闭是为了释放资源给别的线程使用，否则并发大了容易宕机）。\n属性名与数据库表字段名当pojo中的实例变量与数据库字段中不一致时，可以使用resultMap来解决，即结果集映射。\n也常用resultType，但是他是简单地将所有列映射到HashMap中的key上，很单一，不适合处理复杂情况，而map可以更加灵活地处理情况。用来resultMap时可以去掉resultType属性。\n日志工厂mybatis会默认去寻找日志框架，配置后会有sql信息输出，十分有用！\n123&lt;settings&gt;\t&lt;setting name=&quot;logImpl&quot; value=&quot;log4j&quot;/&gt;&lt;/settings&gt;\n\n分页mybatis支持分页，有limit和rowBounts两个方法。区别是前者在sql中实现，后者面向对象。\n1select * from USER limit #&#123;index&#125;,#&#123;size&#125;\n\n缓存默认定义了两级缓存：一级缓存、二级缓存\n一级缓存默认开启，在session的close之前都有效，如果是查询相同的数据，直接在缓存中拿。\n二级缓存需要手动开启和配置，基于namespace级别，有Cache接口来自定义实现。\n","dateCreated":"2020-08-05T22:21:19+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-08-05T22:21:19+08:00","description":"Mybatis帮助我们提升与数据库交互的效率，简化了JDBC的样板代码。","headline":"mybatis","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/08/05/mybatis/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/08/05/mybatis/","keywords":"mybatis"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"Mybatis帮助我们提升与数据库交互的效率，简化了JDBC的样板代码。\n\n\n流程1234567891011start&#x3D;&gt;start: startconfig&#x3D;&gt;operation: mybatis-config.xmlbuild&#x3D;&gt;operation: SqlSessionFactoryBuilderfactory&#x3D;&gt;operation: SqlSessionFactorysession&#x3D;&gt;parallel: SqlSessionmapper&#x3D;&gt;operation: Sql Mapperend&#x3D;&gt;end: endstart-&gt;config-&gt;build-&gt;factory-&gt;sessionsession(path1,)-&gt;endsession(path2,right)-&gt;mapper-&gt;end\n\n对于SqlSessionFactoryBuilder来说，作用是创建SqlSessionFactory，一旦创建完工厂就没用了，所以是作为局部变量；而对于SqlSessionFactory，可以把它看作连接池，应该一直运行，不应重复创建、销毁或另建实例（单例模式登场），否则浪费资源，他可以创建SqlSession 。创建SqlSession后用来链接数据库，每个session被看作是请求数据库，他是线程不安全的，每个线程都应有自己的session，不共享，所以最佳作用域是方法域，即每次与数据库交互都创建一个SqlSession，用完关闭（关闭是为了释放资源给别的线程使用，否则并发大了容易宕机）。\n属性名与数据库表字段名当pojo中的实例变量与数据库字段中不一致时，可以使用resultMap来解决，即结果集映射。\n也常用resultType，但是他是简单地将所有列映射到HashMap中的key上，很单一，不适合处理复杂情况，而map可以更加灵活地处理情况。用来resultMap时可以去掉resultType属性。\n日志工厂mybatis会默认去寻找日志框架，配置后会有sql信息输出，十分有用！\n123&lt;settings&gt;\t&lt;setting name=&quot;logImpl&quot; value=&quot;log4j&quot;/&gt;&lt;/settings&gt;\n\n分页mybatis支持分页，有limit和rowBounts两个方法。区别是前者在sql中实现，后者面向对象。\n1select * from USER limit #&#123;index&#125;,#&#123;size&#125;\n\n缓存默认定义了两级缓存：一级缓存、二级缓存\n一级缓存默认开启，在session的close之前都有效，如果是查询相同的数据，直接在缓存中拿。\n二级缓存需要手动开启和配置，基于namespace级别，有Cache接口来自定义实现。\n","dateCreated":"2020-08-05T22:21:19+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-08-05T22:21:19+08:00","description":"Mybatis帮助我们提升与数据库交互的效率，简化了JDBC的样板代码。","headline":"mybatis","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/08/05/mybatis/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/08/05/mybatis/","keywords":"mybatis"}</script>
     <meta name="description" content="Mybatis帮助我们提升与数据库交互的效率，简化了JDBC的样板代码。">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="mybatis">
@@ -28,6 +30,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -52,6 +56,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -73,6 +81,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -80,8 +90,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -145,20 +173,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -178,7 +192,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -194,111 +208,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -643,32 +559,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

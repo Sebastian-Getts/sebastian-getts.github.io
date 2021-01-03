@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"卡夫卡，消息中间件，注意同类型的异同。\n\n\n序分布式的基于发布、订阅的消息队列（Message Queue)，主要应用于大数据实时处理领域。\n消息队列一个场景，用户注册某网站时填写个人信息，需要短信验证码，这时页面响应，有两种模式：\n\n同步：用户填写信息，提交（信息入库），触发短信发送接口，发送短信，页面反馈给用户\n异步：用户填写信息，提交（信息入库），页面反馈给用户，同时触发接口，发送短信\n\n消息队列的主要特点：解耦、削峰\n消息队列的两种模式\n点对点模式: 消费者主动拉取数据，消息收到后信息清除。消息生产者生产消息发送到Queue中，然后消息消费者从Queue中取出并且消费消息，消息被消费后Queue中不再有存储。。。。。Queue支持存在多个消费者，但是对一个消息而言，只会有一个消费者可以消费。 消息不能复用，比如A生产消息，B消费消息，此时如果C也想消费A的消息，那么只能让A再开一个队列让C接受。只是消息队列，不是消息的存储系统（一对一）\n\n发布订阅模式：消费者消费数据后不会清除消息。相当于消息生产者将消息发布到topic中，同时有多个消息消费者（订阅）消费该消息。发布到topic的消息会被所有订阅者消费。（一对多）\n\n队列主动推送\n消费者主动拉取\n\n\n不想要的消息？？\n\n推送速度如何确定？\n而卡夫卡属于消费者拉取。所以卡夫卡内有个长轮询来不断地问topic内有没有消息。\n\n\n\n\n基础架构生产者、消费者、kafka集群。(集群就是消息暂停的地方)\n\n集群中，分布式，多台服务器。服务器中的broker就是卡夫卡的进程。broker中还有组件：主题。主题将消息分类。partition提高卡夫卡的负载能力和并发度。有leader和follower，后者做数据冗余，提升安全性，且前后者不会出现在同一台服务器。生产者只会寻找leader。主题：分区+主副本。\n消费者，有消费者组，将多个消费者用一个组名。一个分区只能被一个消费者组内的某一个消费者消费。消费者组可以提高消费能力。并发度最好的时候就是消费者个数与分支数相等。\nzookeeper，集群要正常工作就要依赖zookeeper，要想多台装有卡夫卡的机器组成集群，只要他们所用的zookeeper是同一套集群就ok了。除了帮卡夫卡存贮信息外还存储消费到何处的位置信息。（0.9版本之前存才zk，之后存在kafka（存在磁盘，默认7天）。目的都一样：记住消费到的位置）\n\n安装部署","dateCreated":"2019-12-03T22:34:16+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2019-12-03T22:34:16+08:00","description":"","headline":"kafka","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2019/12/03/kafka/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2019/12/03/kafka/","keywords":"kafka"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"卡夫卡，消息中间件，注意同类型的异同。\n\n\n序分布式的基于发布、订阅的消息队列（Message Queue)，主要应用于大数据实时处理领域。\n消息队列一个场景，用户注册某网站时填写个人信息，需要短信验证码，这时页面响应，有两种模式：\n\n同步：用户填写信息，提交（信息入库），触发短信发送接口，发送短信，页面反馈给用户\n异步：用户填写信息，提交（信息入库），页面反馈给用户，同时触发接口，发送短信\n\n消息队列的主要特点：解耦、削峰\n消息队列的两种模式\n点对点模式: 消费者主动拉取数据，消息收到后信息清除。消息生产者生产消息发送到Queue中，然后消息消费者从Queue中取出并且消费消息，消息被消费后Queue中不再有存储。。。。。Queue支持存在多个消费者，但是对一个消息而言，只会有一个消费者可以消费。 消息不能复用，比如A生产消息，B消费消息，此时如果C也想消费A的消息，那么只能让A再开一个队列让C接受。只是消息队列，不是消息的存储系统（一对一）\n\n发布订阅模式：消费者消费数据后不会清除消息。相当于消息生产者将消息发布到topic中，同时有多个消息消费者（订阅）消费该消息。发布到topic的消息会被所有订阅者消费。（一对多）\n\n队列主动推送\n消费者主动拉取\n\n\n不想要的消息？？\n\n推送速度如何确定？\n而卡夫卡属于消费者拉取。所以卡夫卡内有个长轮询来不断地问topic内有没有消息。\n\n\n\n\n基础架构生产者、消费者、kafka集群。(集群就是消息暂停的地方)\n\n集群中，分布式，多台服务器。服务器中的broker就是卡夫卡的进程。broker中还有组件：主题。主题将消息分类。partition提高卡夫卡的负载能力和并发度。有leader和follower，后者做数据冗余，提升安全性，且前后者不会出现在同一台服务器。生产者只会寻找leader。主题：分区+主副本。\n消费者，有消费者组，将多个消费者用一个组名。一个分区只能被一个消费者组内的某一个消费者消费。消费者组可以提高消费能力。并发度最好的时候就是消费者个数与分支数相等。\nzookeeper，集群要正常工作就要依赖zookeeper，要想多台装有卡夫卡的机器组成集群，只要他们所用的zookeeper是同一套集群就ok了。除了帮卡夫卡存贮信息外还存储消费到何处的位置信息。（0.9版本之前存才zk，之后存在kafka（存在磁盘，默认7天）。目的都一样：记住消费到的位置）\n\n安装部署","dateCreated":"2019-12-03T22:34:16+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2019-12-03T22:34:16+08:00","description":"","headline":"kafka","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2019/12/03/kafka/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2019/12/03/kafka/","keywords":"kafka"}</script>
     <meta name="description" content="卡夫卡，消息中间件，注意同类型的异同。   序分布式的基于发布、订阅的消息队列（Message Queue)，主要应用于大数据实时处理领域。 消息队列一个场景，用户注册某网站时填写个人信息，需要短信验证码，这时页面响应，有两种模式：  同步：用户填写信息，提交（信息入库），触发短信发送接口，发送短信，页面反馈给用户 异步：用户填写信息，提交（信息入库），页面反馈给用户，同时触发接口，发送短信  消">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="kafka">
@@ -28,6 +30,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -52,6 +56,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -73,6 +81,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -80,8 +90,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -145,20 +173,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -178,7 +192,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -194,111 +208,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -659,32 +575,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Leetcode周赛201.\n\n\n1544 Make The String GreatGiven a string s of lower and upper case English letters.\nA good string is a string which doesn’t have two adjacent characters s[i] and s[i + 1] where:\n\n0 &lt;= i &lt;= s.length - 2\ns[i] is a lower-case letter and s[i + 1] is the same letter but in upper-case or vice-versa.\n\nTo make the string good, you can choose two adjacent characters that make the string bad and remove them. You can keep doing this until the string becomes good.\nReturn the string after making it good. The answer is guaranteed to be unique under the given constraints.\nNotice that an empty string is also good.\nExample 1:\n123Input: s &#x3D; &quot;leEeetcode&quot;Output: &quot;leetcode&quot;Explanation: In the first step, either you choose i &#x3D; 1 or i &#x3D; 2, both will result &quot;leEeetcode&quot; to be reduced to &quot;leetcode&quot;.\n\nExample 2:\n12345Input: s &#x3D; &quot;abBAcC&quot;Output: &quot;&quot;Explanation: We have many possible scenarios, and all lead to the same answer. For example:&quot;abBAcC&quot; --&gt; &quot;aAcC&quot; --&gt; &quot;cC&quot; --&gt; &quot;&quot;&quot;abBAcC&quot; --&gt; &quot;abBA&quot; --&gt; &quot;aA&quot; --&gt; &quot;&quot;\n\nExample 3:\n12Input: s &#x3D; &quot;s&quot;Output: &quot;s&quot;\n\nSolution\n首先要注意审题，明确界限的判断。尤其是vice-versa，反之亦然的意思，就是相邻两个字母忽略大小写时相同，且一个大写一个小写，需要将这两个字母剔除。\n通过example 2可以看出算法应有循环的动作，剔除后还应该重新审视。\n\nmine12345678910111213141516171819202122public String makeGood(String s) &#123;    Stack&lt;Character&gt; stack = new Stack&lt;&gt;();    for (int i = 0; i &lt; s.length(); i++) &#123;        char c = s.charAt(i);        if (!stack.empty() &amp;&amp; (                (Character.isUpperCase(c) &amp;&amp; Character.isLowerCase(stack.peek()) &amp;&amp; ((stack.peek() - &#x27;a&#x27;) == (c - &#x27;A&#x27;)))                        ||                        (Character.isLowerCase(c) &amp;&amp; Character.isUpperCase(stack.peek()) &amp;&amp; ((stack.peek() - &#x27;A&#x27;) == (c - &#x27;a&#x27;)))        )) &#123;            stack.pop();        &#125; else &#123;            stack.push(c);        &#125;    &#125;    Iterator&lt;Character&gt; iterator = stack.iterator();    StringBuilder sb = new StringBuilder();    while (iterator.hasNext()) &#123;        sb.append(iterator.next());    &#125;\t// 因为是iterator，不用reverse()    return sb.toString();&#125;\nbetter1234567891011121314boolean ch = true;while (ch) &#123;    ch = false;    String t = s;    for (int i = 0; i &lt; s.length() - 1; ++i) &#123;        if (s.charAt(i) + 32 == s.charAt(i + 1) || s.charAt(i + 1) + 32 == s.charAt(i)) &#123;            t = s.substring(0, i) + s.substring(i + 2);            ch = true;            break;        &#125;    &#125;    s = t;&#125;return s;\n\n1545 Find Kth Bit in Nth Binary StringGiven two positive integers n and k, the binary string Sn is formed as follows:\n\nS1 = &quot;0&quot;\nSi = Si-1 + &quot;1&quot; + reverse(invert(Si-1)) for i &gt; 1\n\nWhere + denotes the concatenation operation, reverse(x) returns the reversed string x, and invert(x) inverts all the bits in x (0 changes to 1 and 1 changes to 0).\nFor example, the first 4 strings in the above sequence are:\n\nS1 = “0”\nS2 = “011”\nS3 = “0111001”\nS4 = “011100110110001”\n\nReturn the kth bit in Sn. It is guaranteed that k is valid for the given n.\nExample 1:\n123Input: n &#x3D; 3, k &#x3D; 1Output: &quot;0&quot;Explanation: S3 is &quot;0111001&quot;. The first bit is &quot;0&quot;.\n\nExample 2:\n123Input: n &#x3D; 4, k &#x3D; 11Output: &quot;1&quot;Explanation: S4 is &quot;011100110110001&quot;. The 11th bit is &quot;1&quot;.\n\nExample 3:\n12Input: n &#x3D; 1, k &#x3D; 1Output: &quot;0&quot;\n\nExample 4:\n12Input: n &#x3D; 2, k &#x3D; 3Output: &quot;1&quot;\n\nSolution题目中已经给了计算式，根据式子来计算结果。\n12345678910111213141516171819202122public char findKthBit(int n, int k) &#123;    StringBuilder sb = new StringBuilder(&quot;0&quot;);    while (n &gt; 1) &#123;        int integer = Integer.parseInt(sb.toString());        StringBuilder stringBuilder = new StringBuilder(Integer.toBinaryString(integer));        // 0-1 inverse        for (int i = 0; i &lt; stringBuilder.length(); i++) &#123;            if (stringBuilder.charAt(i) == &#x27;0&#x27;) &#123;                stringBuilder.replace(i, i + 1, &quot;1&quot;);            &#125; else &#123;                stringBuilder.replace(i, i + 1, &quot;0&quot;);            &#125;        &#125;        stringBuilder.reverse();        sb.append(&quot;1&quot;).append(stringBuilder);        n--;        System.out.println(sb.toString());    &#125;    char[] chars = sb.toString().toCharArray();    return chars[k - 1];&#125;\n\n上面的解题过程是错的，我觉得最好的方式应该是用递归，但是不太会，用来迭代，在n=4时的结果就错了。\nbetter做0-1转换时，当时想用位运算，怎奈不熟练、没想起来异或。\n\n异或 ^ ：相同为0，0异或任何数为任何数。在二进制的情况下，与1异或等同于0-1翻转。\n\nmethod 1一目了然，迭代\n123456789101112131415161718192021public char findKthBit(int n, int k) &#123;    String s = &quot;0&quot;;    while (n&gt;1) &#123;        --n;        s = s+&quot;1&quot;+sinv(s);    &#125;    // 从0开始，k-1    return s.charAt(k-1);&#125;public String sinv(String s) &#123;    StringBuilder a = new StringBuilder();    // 从后遍历，reverse()    for (int i = s.length()-1; i&gt;=0; --i) &#123;        char c = s.charAt(i);        // 0-1翻转        c^=1;        a.append(c);    &#125;    return a.toString();&#125;\n\nmethod 2别具一格\n1234567891011121314public char findKthBit(int n, int k)&#123;    char findKthBit(int n, int k)     s[1]=&quot;0&quot;;    t[1]=&quot;1&quot;;    for(int i=2;i&lt;=n;i++)&#123;        s[i]=s[i-1];        s[i]+=&#x27;1&#x27;;        s[i]+=t[i-1];        t[i]=s[i-1];        t[i]+=&#x27;0&#x27;;        t[i]+=t[i-1];    &#125;    return s[n][k-1];&#125;\n\nmethod 3清清楚楚，深度优先\n12345678910111213141516171819char dfs(int n, int k) &#123;    if (n == 1) &#123;        return &#x27;0&#x27;;    &#125; else &#123;        int len = (1 &lt;&lt; n) - 1;        int base = (1 &lt;&lt; (n - 1)) - 1;        if (k == base + 1) &#123;            return &#x27;1&#x27;;        &#125; else if (k &lt;= base) &#123;            return dfs(n - 1, k);        &#125; else &#123;            return dfs(n - 1, len - k + 1) ^ 1;        &#125;    &#125;&#125;char findKthBit(int n, int k) &#123;    return dfs(n, k);&#125;\n\n","dateCreated":"2020-08-09T12:22:53+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-08-09T12:22:53+08:00","description":"Leetcode周赛201.","headline":"contest201","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/08/09/contest201/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/08/09/contest201/","keywords":"algorithm"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"Leetcode周赛201.\n\n\n1544 Make The String GreatGiven a string s of lower and upper case English letters.\nA good string is a string which doesn’t have two adjacent characters s[i] and s[i + 1] where:\n\n0 &lt;= i &lt;= s.length - 2\ns[i] is a lower-case letter and s[i + 1] is the same letter but in upper-case or vice-versa.\n\nTo make the string good, you can choose two adjacent characters that make the string bad and remove them. You can keep doing this until the string becomes good.\nReturn the string after making it good. The answer is guaranteed to be unique under the given constraints.\nNotice that an empty string is also good.\nExample 1:\n123Input: s &#x3D; &quot;leEeetcode&quot;Output: &quot;leetcode&quot;Explanation: In the first step, either you choose i &#x3D; 1 or i &#x3D; 2, both will result &quot;leEeetcode&quot; to be reduced to &quot;leetcode&quot;.\n\nExample 2:\n12345Input: s &#x3D; &quot;abBAcC&quot;Output: &quot;&quot;Explanation: We have many possible scenarios, and all lead to the same answer. For example:&quot;abBAcC&quot; --&gt; &quot;aAcC&quot; --&gt; &quot;cC&quot; --&gt; &quot;&quot;&quot;abBAcC&quot; --&gt; &quot;abBA&quot; --&gt; &quot;aA&quot; --&gt; &quot;&quot;\n\nExample 3:\n12Input: s &#x3D; &quot;s&quot;Output: &quot;s&quot;\n\nSolution\n首先要注意审题，明确界限的判断。尤其是vice-versa，反之亦然的意思，就是相邻两个字母忽略大小写时相同，且一个大写一个小写，需要将这两个字母剔除。\n通过example 2可以看出算法应有循环的动作，剔除后还应该重新审视。\n\nmine12345678910111213141516171819202122public String makeGood(String s) &#123;    Stack&lt;Character&gt; stack = new Stack&lt;&gt;();    for (int i = 0; i &lt; s.length(); i++) &#123;        char c = s.charAt(i);        if (!stack.empty() &amp;&amp; (                (Character.isUpperCase(c) &amp;&amp; Character.isLowerCase(stack.peek()) &amp;&amp; ((stack.peek() - &#x27;a&#x27;) == (c - &#x27;A&#x27;)))                        ||                        (Character.isLowerCase(c) &amp;&amp; Character.isUpperCase(stack.peek()) &amp;&amp; ((stack.peek() - &#x27;A&#x27;) == (c - &#x27;a&#x27;)))        )) &#123;            stack.pop();        &#125; else &#123;            stack.push(c);        &#125;    &#125;    Iterator&lt;Character&gt; iterator = stack.iterator();    StringBuilder sb = new StringBuilder();    while (iterator.hasNext()) &#123;        sb.append(iterator.next());    &#125;\t// 因为是iterator，不用reverse()    return sb.toString();&#125;\nbetter1234567891011121314boolean ch = true;while (ch) &#123;    ch = false;    String t = s;    for (int i = 0; i &lt; s.length() - 1; ++i) &#123;        if (s.charAt(i) + 32 == s.charAt(i + 1) || s.charAt(i + 1) + 32 == s.charAt(i)) &#123;            t = s.substring(0, i) + s.substring(i + 2);            ch = true;            break;        &#125;    &#125;    s = t;&#125;return s;\n\n1545 Find Kth Bit in Nth Binary StringGiven two positive integers n and k, the binary string Sn is formed as follows:\n\nS1 = &quot;0&quot;\nSi = Si-1 + &quot;1&quot; + reverse(invert(Si-1)) for i &gt; 1\n\nWhere + denotes the concatenation operation, reverse(x) returns the reversed string x, and invert(x) inverts all the bits in x (0 changes to 1 and 1 changes to 0).\nFor example, the first 4 strings in the above sequence are:\n\nS1 = “0”\nS2 = “011”\nS3 = “0111001”\nS4 = “011100110110001”\n\nReturn the kth bit in Sn. It is guaranteed that k is valid for the given n.\nExample 1:\n123Input: n &#x3D; 3, k &#x3D; 1Output: &quot;0&quot;Explanation: S3 is &quot;0111001&quot;. The first bit is &quot;0&quot;.\n\nExample 2:\n123Input: n &#x3D; 4, k &#x3D; 11Output: &quot;1&quot;Explanation: S4 is &quot;011100110110001&quot;. The 11th bit is &quot;1&quot;.\n\nExample 3:\n12Input: n &#x3D; 1, k &#x3D; 1Output: &quot;0&quot;\n\nExample 4:\n12Input: n &#x3D; 2, k &#x3D; 3Output: &quot;1&quot;\n\nSolution题目中已经给了计算式，根据式子来计算结果。\n12345678910111213141516171819202122public char findKthBit(int n, int k) &#123;    StringBuilder sb = new StringBuilder(&quot;0&quot;);    while (n &gt; 1) &#123;        int integer = Integer.parseInt(sb.toString());        StringBuilder stringBuilder = new StringBuilder(Integer.toBinaryString(integer));        // 0-1 inverse        for (int i = 0; i &lt; stringBuilder.length(); i++) &#123;            if (stringBuilder.charAt(i) == &#x27;0&#x27;) &#123;                stringBuilder.replace(i, i + 1, &quot;1&quot;);            &#125; else &#123;                stringBuilder.replace(i, i + 1, &quot;0&quot;);            &#125;        &#125;        stringBuilder.reverse();        sb.append(&quot;1&quot;).append(stringBuilder);        n--;        System.out.println(sb.toString());    &#125;    char[] chars = sb.toString().toCharArray();    return chars[k - 1];&#125;\n\n上面的解题过程是错的，我觉得最好的方式应该是用递归，但是不太会，用来迭代，在n=4时的结果就错了。\nbetter做0-1转换时，当时想用位运算，怎奈不熟练、没想起来异或。\n\n异或 ^ ：相同为0，0异或任何数为任何数。在二进制的情况下，与1异或等同于0-1翻转。\n\nmethod 1一目了然，迭代\n123456789101112131415161718192021public char findKthBit(int n, int k) &#123;    String s = &quot;0&quot;;    while (n&gt;1) &#123;        --n;        s = s+&quot;1&quot;+sinv(s);    &#125;    // 从0开始，k-1    return s.charAt(k-1);&#125;public String sinv(String s) &#123;    StringBuilder a = new StringBuilder();    // 从后遍历，reverse()    for (int i = s.length()-1; i&gt;=0; --i) &#123;        char c = s.charAt(i);        // 0-1翻转        c^=1;        a.append(c);    &#125;    return a.toString();&#125;\n\nmethod 2别具一格\n1234567891011121314public char findKthBit(int n, int k)&#123;    char findKthBit(int n, int k)     s[1]=&quot;0&quot;;    t[1]=&quot;1&quot;;    for(int i=2;i&lt;=n;i++)&#123;        s[i]=s[i-1];        s[i]+=&#x27;1&#x27;;        s[i]+=t[i-1];        t[i]=s[i-1];        t[i]+=&#x27;0&#x27;;        t[i]+=t[i-1];    &#125;    return s[n][k-1];&#125;\n\nmethod 3清清楚楚，深度优先\n12345678910111213141516171819char dfs(int n, int k) &#123;    if (n == 1) &#123;        return &#x27;0&#x27;;    &#125; else &#123;        int len = (1 &lt;&lt; n) - 1;        int base = (1 &lt;&lt; (n - 1)) - 1;        if (k == base + 1) &#123;            return &#x27;1&#x27;;        &#125; else if (k &lt;= base) &#123;            return dfs(n - 1, k);        &#125; else &#123;            return dfs(n - 1, len - k + 1) ^ 1;        &#125;    &#125;&#125;char findKthBit(int n, int k) &#123;    return dfs(n, k);&#125;\n\n","dateCreated":"2020-08-09T12:22:53+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-08-09T12:22:53+08:00","description":"Leetcode周赛201.","headline":"contest201","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/08/09/contest201/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/08/09/contest201/","keywords":"algorithm"}</script>
     <meta name="description" content="Leetcode周赛201.">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="contest201">
@@ -28,6 +30,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -52,6 +56,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -73,6 +81,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -80,8 +90,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -145,20 +173,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -178,7 +192,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -194,111 +208,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -697,32 +613,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

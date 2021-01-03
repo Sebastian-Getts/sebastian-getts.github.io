@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"这个关键字用于将Java变量标记为being stored in main memory，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。\n\n\nVisibility problems主要是多线程中的问题。线程在操作非volatile的变量时，出于性能原因，都会将变量从主存复制到CPU缓存中，如果计算机上有多个CPU，那么每个线程可能在不同的CPU上运行，每个线程可以将变量复制到不同的CPU缓存中。\n那么问题来了，对于非volatile的变量，无法保证Java虚拟机何时将数据从主存储器读取到CPU缓存中，或者何时将数据从CPU缓存写入到主存储器中，设想一种情况：多个线程访问一个共享对象，该对象包含一个计数器\n123public class ShareObject&#123;    public int counter = 0;&#125;\n\n假设只有线程1会将计数器递增，同时线程1和线程2都会不时地访问它。\n如果counter不声明为volatile，就无法保证计数器的值从CPU缓存重写回主存，这就意味着主存的counter与CPU缓存的值可能不同！（JVM内存模型有没有）。这种因为没有被另一个线程回写到主存导致无法同步值的问题就叫做“Visibility problem”，一个线程的更新对其他线程是不可见的。\nVisibility Guarantee关键字volatile的设定就是解决上面提到的可见性问题。通过声明counter变量为volatile的，所有对该变量更改都将立即回写到主存，同时所有对该变量的读操作也都会从主存中读取。下面是加了关键字volatile的例子：\n1234public class ShareObject&#123;    // 由于声明为volatile，因此更改变量对于其他线程的是可见的    public volatile int counter = 0 ;&#125;\n\n但是，目前仅是线程1更改，对线程2可见，要想线程1、2都更改，那么仅仅声明为volatile是不够的。\nFull Visibility Guarantee实际上，关键字volatile的可见保证性超越了volatile变量本身。有点绕吧，可见保证性如下：\n\n如果线程A更改了volatile变量，并且线程B随后读取了它，则在写入volatile变量之前线程A可见的所有变量在线程B读取volatile变量后也将可见。\n\n如果线程A读取了一个volatile变量，则在读取那个变量时线程A可见的所有变量也将从主存中重新读取。\n\n\n看个代码例子：\n123456789101112public class MyClass&#123;    private int years;    private int months;    private volatile int days;        // 更改了三个变量，只有days是volatile的    public void update(int years, int months, int days)&#123;        this.years = year;        this.months = months;        this.days = days;        &#125;&#125;\n\n”Full Visibility Guarantee“意味着，当一个值被写入days，那么线程所有的可见的变量都会被写入主存，对于上面的例子来说，months和years也会被写入主存。读取他们的值时，可以这样：\n123456789101112131415161718public class MyClass&#123;    private int years;    private int months;    private volatile int days;    public int totalDays()&#123;        int total = this.days;        total += months * 30;        total += years * 365;        return total;       &#125;    public void update(int years, int months, int days)&#123;        this.years = years;        this.months = months;        this.days = days;    &#125;&#125;\n\n着重观察totalDays()，他一开始会将days的值赋给变量total ,由于days的类型是volatile，所以，读取days的同时，其他变量（months、years）也都会从主存中读取，因此，这就是为什么可见保证性超过了volatile他本身，所以，对于本例甚至其他用到这个关键字的，都可以按照上面的顺序来保证读取到最新值（只给一个变量声明为volatile，读取时必须最后**读取带有volatile属性的值）。\nInstruction Reordering指令重排！！！出于性能原因，JVM和CPU是允许对程序中的指令进行重新排序，只要指令的语义含义保持不变即可。例如：\n1234int a = 1;int b = 2;a++;b++;\n\n这些指令可以重新排序为下列的顺序，且不会丢失原有程序的语义：\n1234int a  = 1;a++;int b = 2;b++\n\n然而，当变量属于volatile时，指令排序就需要小心了，看看下面的例子：\n1234567891011public class MyClass&#123;    private int years;    private int months;    private volatile int days;        public void update(int years, int months, int days)&#123;        this.years = years;        this.months = months;        this.days = days;    &#125;&#125;\n\n如果JVM重排指令，像下面这样：\n123456public void update(int years, int months, int days)&#123;    // 这里将days赋值动作放到了第一位    this.days = days;    this.years = years;    this.months = months;&#125;\n\n当days的顺序变了，months和years的值就无法正确地展现给其他线程。接下来是如何解决这个问题。\nVolatile Happens-Before Guaranteevolatile关键字提供了一些“保证”，即不会去做的一些操作，以免出现意外。\n\n如果读/写其他变量出现在写volatile变量之前，那么就不能重排为出现在它之后。当然返回过是允许的。\n如果读/写其他变量出现在读volatile变量之后，那么就不能重排为出现在它之前。\n\nVolatile is Not Always Enough很明显，在一开始counter的例子中存在这种情况，读取counter并赋值期间，存在多个线程的竞争状态，都赋值的话会覆盖彼此（往主存中），这时就得采用能保证原子性的操作了，如syncronized或者比并发包下的lock了。\n","dateCreated":"2020-07-20T21:23:51+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-07-20T21:23:51+08:00","description":"这个关键字用于将Java变量标记为being stored in main memory，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。","headline":"volatile","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/07/20/volatile/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/07/20/volatile/","keywords":"lock"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"这个关键字用于将Java变量标记为being stored in main memory，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。\n\n\nVisibility problems主要是多线程中的问题。线程在操作非volatile的变量时，出于性能原因，都会将变量从主存复制到CPU缓存中，如果计算机上有多个CPU，那么每个线程可能在不同的CPU上运行，每个线程可以将变量复制到不同的CPU缓存中。\n那么问题来了，对于非volatile的变量，无法保证Java虚拟机何时将数据从主存储器读取到CPU缓存中，或者何时将数据从CPU缓存写入到主存储器中，设想一种情况：多个线程访问一个共享对象，该对象包含一个计数器\n123public class ShareObject&#123;    public int counter = 0;&#125;\n\n假设只有线程1会将计数器递增，同时线程1和线程2都会不时地访问它。\n如果counter不声明为volatile，就无法保证计数器的值从CPU缓存重写回主存，这就意味着主存的counter与CPU缓存的值可能不同！（JVM内存模型有没有）。这种因为没有被另一个线程回写到主存导致无法同步值的问题就叫做“Visibility problem”，一个线程的更新对其他线程是不可见的。\nVisibility Guarantee关键字volatile的设定就是解决上面提到的可见性问题。通过声明counter变量为volatile的，所有对该变量更改都将立即回写到主存，同时所有对该变量的读操作也都会从主存中读取。下面是加了关键字volatile的例子：\n1234public class ShareObject&#123;    // 由于声明为volatile，因此更改变量对于其他线程的是可见的    public volatile int counter = 0 ;&#125;\n\n但是，目前仅是线程1更改，对线程2可见，要想线程1、2都更改，那么仅仅声明为volatile是不够的。\nFull Visibility Guarantee实际上，关键字volatile的可见保证性超越了volatile变量本身。有点绕吧，可见保证性如下：\n\n如果线程A更改了volatile变量，并且线程B随后读取了它，则在写入volatile变量之前线程A可见的所有变量在线程B读取volatile变量后也将可见。\n\n如果线程A读取了一个volatile变量，则在读取那个变量时线程A可见的所有变量也将从主存中重新读取。\n\n\n看个代码例子：\n123456789101112public class MyClass&#123;    private int years;    private int months;    private volatile int days;        // 更改了三个变量，只有days是volatile的    public void update(int years, int months, int days)&#123;        this.years = year;        this.months = months;        this.days = days;        &#125;&#125;\n\n”Full Visibility Guarantee“意味着，当一个值被写入days，那么线程所有的可见的变量都会被写入主存，对于上面的例子来说，months和years也会被写入主存。读取他们的值时，可以这样：\n123456789101112131415161718public class MyClass&#123;    private int years;    private int months;    private volatile int days;    public int totalDays()&#123;        int total = this.days;        total += months * 30;        total += years * 365;        return total;       &#125;    public void update(int years, int months, int days)&#123;        this.years = years;        this.months = months;        this.days = days;    &#125;&#125;\n\n着重观察totalDays()，他一开始会将days的值赋给变量total ,由于days的类型是volatile，所以，读取days的同时，其他变量（months、years）也都会从主存中读取，因此，这就是为什么可见保证性超过了volatile他本身，所以，对于本例甚至其他用到这个关键字的，都可以按照上面的顺序来保证读取到最新值（只给一个变量声明为volatile，读取时必须最后**读取带有volatile属性的值）。\nInstruction Reordering指令重排！！！出于性能原因，JVM和CPU是允许对程序中的指令进行重新排序，只要指令的语义含义保持不变即可。例如：\n1234int a = 1;int b = 2;a++;b++;\n\n这些指令可以重新排序为下列的顺序，且不会丢失原有程序的语义：\n1234int a  = 1;a++;int b = 2;b++\n\n然而，当变量属于volatile时，指令排序就需要小心了，看看下面的例子：\n1234567891011public class MyClass&#123;    private int years;    private int months;    private volatile int days;        public void update(int years, int months, int days)&#123;        this.years = years;        this.months = months;        this.days = days;    &#125;&#125;\n\n如果JVM重排指令，像下面这样：\n123456public void update(int years, int months, int days)&#123;    // 这里将days赋值动作放到了第一位    this.days = days;    this.years = years;    this.months = months;&#125;\n\n当days的顺序变了，months和years的值就无法正确地展现给其他线程。接下来是如何解决这个问题。\nVolatile Happens-Before Guaranteevolatile关键字提供了一些“保证”，即不会去做的一些操作，以免出现意外。\n\n如果读/写其他变量出现在写volatile变量之前，那么就不能重排为出现在它之后。当然返回过是允许的。\n如果读/写其他变量出现在读volatile变量之后，那么就不能重排为出现在它之前。\n\nVolatile is Not Always Enough很明显，在一开始counter的例子中存在这种情况，读取counter并赋值期间，存在多个线程的竞争状态，都赋值的话会覆盖彼此（往主存中），这时就得采用能保证原子性的操作了，如syncronized或者比并发包下的lock了。\n","dateCreated":"2020-07-20T21:23:51+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-07-20T21:23:51+08:00","description":"这个关键字用于将Java变量标记为being stored in main memory，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。","headline":"volatile","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/07/20/volatile/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/07/20/volatile/","keywords":"lock"}</script>
     <meta name="description" content="这个关键字用于将Java变量标记为being stored in main memory，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="volatile">
@@ -28,6 +30,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -52,6 +56,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -73,6 +81,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -80,8 +90,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -145,20 +173,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -178,7 +192,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -194,111 +208,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -672,32 +588,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

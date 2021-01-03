@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"NIGNXNginx (engine x) 是一个高性能的HTTP和反向代理web服务器，同时也提供了IMAP/POP3/SMTP服务。Nginx是由伊戈尔·赛索耶夫为俄罗斯访问量第二的Rambler.ru站点（俄文：Рамблер）开发的，第一个公开版本0.1.0发布于2004年10月4日。\n它是一款轻量级的Web服务器反向代理服务器及电子邮件（IMAP/POP3）代理服务器，在BSD-like 协议下发行。其特点是占有内存少，并发能力强，事实上nginx的并发能力确实在同类型的网页服务器中表现较好。\n特点：\n\n反向代理\n负载均衡\n动静分离\n高可用\n\n反向代理客户端对代理是无感知的，因为客户端不需要任何配置就可以访问，只需要将请求发送到反向代理服务器，由反向代理服务器去选择目标服务器获取数据后，再返回给客户端。此时反向代理服务器的目标服务器对外就是一个服务器，暴露的是代理服务器地址，隐藏了真实服务器IP地址。\n正向代理如果把局域网外的Internet比作资源库，则局域网中的客户端要访问Internet，则需要通过代理服务器来访问，这种代理服务就称作正向代理。（nginx还可以用作正向代理来进行上网功能。）\n正向访问需要在浏览器配置代理服务器。\n负载均衡单个服务器解决不了问题，我们增加服务器的数量，然后将请求分发到各个服务上，将原先请求集中到单个服务器上的情况改为将请求分发到多个服务器上，将负载分发到不同的服务器，即负载均衡。\n动静分离为了加快网站的解析速度，可以把动态页面和静态页面由不同的服务器来解析，加快解析速度。降低原来单个服务器的压力。静态资源和动态资源分开部署放置两台不同的服务器。\n静态资源：html, css, js\n动态资源：jsp, servlet\n操作常用命令前提条件：进入nginx目录\n/usr/localnginx/sbin\n\n查看nginx版本号\n启动\n关闭\n重新加载nginx\n\nreferenct\n配置\n配置EPEL源\n12sudo yum install -y epel-releasesudo yum -y update\n\n安装nginx\n1sudo yum instll -y nginx\n\n安装成功后：\n默认网站目录：/usr/share/nginx/html\n默认的配置文件为：/etc/nginx/nginx.conf\n自定义配置文件目录为：/etc/nginx/conf.d/\n\n开启端口80和443\n如果关闭了防火墙，直接略过。\n123sudo firewall-cmd --permanent --zone=public --add-service=httpsudo firewall-cmd --permanent --zone=public --add-service=httpssudo firewall-cmd --reload\n\n命令\n\n启动\n1systemctl start nginx\n\n停止\n1systemctl stop nginx\n\n重启\n1systemctl restart nginx\n\n查看状态\n1systemctl status nginx\n\n启用开机启动\n1systemctl enable nginx\n\n测试的时候，直接nginx命令即可，方便调试，调试时使用：\n1nginx -t\n\n1nginx -s reload\n\n\n\n\n\n\n\n\n禁止开机启动\n1systemctl disbale nginx\n\n\n\nhttps\n\n关于https的相关证书，可以从阿里云控制台获取（因为我租用的是阿里云服务器）。\n\n拷贝证书至nginx\ndomain为个人域名。\n123456mkdir -p /etc/nginx/ssl   acme.sh --install-cert -d domain \\   --key-file       /etc/nginx/ssl/domain.key  \\   --fullchain-file /etc/nginx/ssl/domain.cer \\   --reloadcmd     &quot;service nginx force-reload&quot;\n\n\n\n配置nginx\n删除**/etc/nginx/nginx.conf**中的server部分代码\n123server&#123;...&#125;\n\n在**/etc/nginx/conf.d创建自定义配置文件夹default.conf**\n123456789101112131415161718server &#123;    listen 80;    listen 443 ssl;    server_name  domain www.domain;    location / &#123;         root /usr/share/nginx/html;         index  index.html index.htm;     &#125;    ssl_certificate /etc/nginx/ssl/domain.crt;    ssl_certificate_key /etc/nginx/ssl/domain.key;    ssl_session_timeout  5m;    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4:!DH:!DHE;    ssl_prefer_server_ciphers  on;    error_page 497  https://$host$uri?$args;&#125;\n\n\n\n\n\n\n\n","dateCreated":"2019-11-02T22:53:32+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2019-11-02T22:53:32+08:00","description":"","headline":"nginx","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2019/11/02/nginx/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2019/11/02/nginx/","keywords":"network"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"NIGNXNginx (engine x) 是一个高性能的HTTP和反向代理web服务器，同时也提供了IMAP/POP3/SMTP服务。Nginx是由伊戈尔·赛索耶夫为俄罗斯访问量第二的Rambler.ru站点（俄文：Рамблер）开发的，第一个公开版本0.1.0发布于2004年10月4日。\n它是一款轻量级的Web服务器反向代理服务器及电子邮件（IMAP/POP3）代理服务器，在BSD-like 协议下发行。其特点是占有内存少，并发能力强，事实上nginx的并发能力确实在同类型的网页服务器中表现较好。\n特点：\n\n反向代理\n负载均衡\n动静分离\n高可用\n\n反向代理客户端对代理是无感知的，因为客户端不需要任何配置就可以访问，只需要将请求发送到反向代理服务器，由反向代理服务器去选择目标服务器获取数据后，再返回给客户端。此时反向代理服务器的目标服务器对外就是一个服务器，暴露的是代理服务器地址，隐藏了真实服务器IP地址。\n正向代理如果把局域网外的Internet比作资源库，则局域网中的客户端要访问Internet，则需要通过代理服务器来访问，这种代理服务就称作正向代理。（nginx还可以用作正向代理来进行上网功能。）\n正向访问需要在浏览器配置代理服务器。\n负载均衡单个服务器解决不了问题，我们增加服务器的数量，然后将请求分发到各个服务上，将原先请求集中到单个服务器上的情况改为将请求分发到多个服务器上，将负载分发到不同的服务器，即负载均衡。\n动静分离为了加快网站的解析速度，可以把动态页面和静态页面由不同的服务器来解析，加快解析速度。降低原来单个服务器的压力。静态资源和动态资源分开部署放置两台不同的服务器。\n静态资源：html, css, js\n动态资源：jsp, servlet\n操作常用命令前提条件：进入nginx目录\n/usr/localnginx/sbin\n\n查看nginx版本号\n启动\n关闭\n重新加载nginx\n\nreferenct\n配置\n配置EPEL源\n12sudo yum install -y epel-releasesudo yum -y update\n\n安装nginx\n1sudo yum instll -y nginx\n\n安装成功后：\n默认网站目录：/usr/share/nginx/html\n默认的配置文件为：/etc/nginx/nginx.conf\n自定义配置文件目录为：/etc/nginx/conf.d/\n\n开启端口80和443\n如果关闭了防火墙，直接略过。\n123sudo firewall-cmd --permanent --zone=public --add-service=httpsudo firewall-cmd --permanent --zone=public --add-service=httpssudo firewall-cmd --reload\n\n命令\n\n启动\n1systemctl start nginx\n\n停止\n1systemctl stop nginx\n\n重启\n1systemctl restart nginx\n\n查看状态\n1systemctl status nginx\n\n启用开机启动\n1systemctl enable nginx\n\n测试的时候，直接nginx命令即可，方便调试，调试时使用：\n1nginx -t\n\n1nginx -s reload\n\n\n\n\n\n\n\n\n禁止开机启动\n1systemctl disbale nginx\n\n\n\nhttps\n\n关于https的相关证书，可以从阿里云控制台获取（因为我租用的是阿里云服务器）。\n\n拷贝证书至nginx\ndomain为个人域名。\n123456mkdir -p /etc/nginx/ssl   acme.sh --install-cert -d domain \\   --key-file       /etc/nginx/ssl/domain.key  \\   --fullchain-file /etc/nginx/ssl/domain.cer \\   --reloadcmd     &quot;service nginx force-reload&quot;\n\n\n\n配置nginx\n删除**/etc/nginx/nginx.conf**中的server部分代码\n123server&#123;...&#125;\n\n在**/etc/nginx/conf.d创建自定义配置文件夹default.conf**\n123456789101112131415161718server &#123;    listen 80;    listen 443 ssl;    server_name  domain www.domain;    location / &#123;         root /usr/share/nginx/html;         index  index.html index.htm;     &#125;    ssl_certificate /etc/nginx/ssl/domain.crt;    ssl_certificate_key /etc/nginx/ssl/domain.key;    ssl_session_timeout  5m;    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4:!DH:!DHE;    ssl_prefer_server_ciphers  on;    error_page 497  https://$host$uri?$args;&#125;\n\n\n\n\n\n\n\n","dateCreated":"2019-11-02T22:53:32+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2019-11-02T22:53:32+08:00","description":"","headline":"nginx","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2019/11/02/nginx/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2019/11/02/nginx/","keywords":"network"}</script>
     <meta name="description" content="NIGNXNginx (engine x) 是一个高性能的HTTP和反向代理web服务器，同时也提供了IMAP&#x2F;POP3&#x2F;SMTP服务。Nginx是由伊戈尔·赛索耶夫为俄罗斯访问量第二的Rambler.ru站点（俄文：Рамблер）开发的，第一个公开版本0.1.0发布于2004年10月4日。 它是一款轻量级的Web服务器反向代理服务器及电子邮件（IMAP&#x2F;POP3）代理服务器，在BSD-like">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="nginx">
@@ -28,6 +30,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -52,6 +56,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -73,6 +81,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -80,8 +90,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -145,20 +173,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -178,7 +192,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -194,111 +208,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -718,32 +634,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

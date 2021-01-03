@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"常用redis，深入了解redis的性能和瓶颈。reference\n\n\n介绍redis: 内存中的数据结构存储系统，可以用作数据库、缓存和消息中间件，nosql的一种。\nnosql关系型数据库不够用，出来了nosql。。。\n\n一开始单体应用，小用户量能承受。但是当体量变大时：\n数据量大\n数据的索引大\n访问量大\n\n\n读写分离思想（垂直拆分），写一个库，其他库从这个库做同步，但是数据库大部分其实都是读，把刚查到的进行缓存，这样下一个要查且数据没变的话就用缓存中的数据。 添加一层memcache缓存\n集群（水平拆分）：上面的读写分离copy多份。\n\nmysql早些年使用的是MyISAM引擎，特性是表锁（查询某个数据会将整个表锁起来，高并发下性能下滑），现在使用的是Innodb，改为了行锁。\n不能用mysql做实时存储和访问、个人信息、地理位置（如微信热门10万+的文章记录等）。\n特点\n易于扩展，数据间没有关系（key value键值对），好比java面向接口，便于解偶。\n大数据量也高性能（写8万次/秒，读11万次/秒）\n多样型，不需要事先设计数据库\n没有固定的查询语言；最终一致性\n键值对存储，列存储，文档存储，图形存储库（社交）\n高性能、高可用、高可扩\nCAP、BASE，异地多活\n多样、实时、并发（Volume, Variety, Veiocity）\n\n与关系型一起使用。\n商品的描述、评论（文字比较多的）：文档型数据库（MongoDB）\n商品的基本信息（价格、商家、名称）：MySQL\n图片：FastDFS, GFS, HDFS, OSS…\n商品热门的波段信息：内存数据库（Redis，Tair，Memcache……）\n==没有什么不是加以层解决不了的==： 统一服务层。\n文档型数据库MongoDB，介于关系型和非关系型数据库中的中间产品，非关系型数据库中功能最丰富的。\nKV键值对Redis，Tair\n列存储数据库HBase（大数据）\n分布式文件系统\n图类似知识图谱，不是存储图形。主要用于存储社交网络。\nNeo4j，InfoGrid。\nRedisRemote Dictionary Server. C语言编写的。免费，开源，提供多种语言的api。\n\n内存存储、持久化，但是内存是断电即失，所以持久化很重要（rdb、aof）\n计时器、计数器（浏览量）\n\n测试安装后自带的测试工具\n1redis-benchmark -h localhost -p 6379 -100 -n 100000\n\n基础默认16个数据库且使用的是第0个。 \nGEOSPATIAL地理位置，不仅仅是GET、SET！根据经纬度获取距离。\nspringboot集成版本&lt;2.0 底层使用的jedis，BIO，直连数据库，多线程下不安全，优化方式是jedis pool连接池。\n版本&gt;2.0 底层使用的lettuce，NIO，采用netty，实例可以在多个线程中进行共享，不存在线程不安全的情况。\nrdb为什么会有这个rdb？\nredis的高速查询来源于它的内存存储，由于内存断电即失，可以把rdb作为备份来弥补这个不足。所以rdb即redis databse。但是也不是每次操作都保存，否则性能急速降低，这也带来另一个问题，即最后一个/批操作不会被保存。\n123456789start&#x3D;&gt;start: startend&#x3D;&gt;end: endcondition&#x3D;&gt;condition: 触发rdbrdbfile&#x3D;&gt;inputoutput: dump.rdboperation&#x3D;&gt;operation: go on dealing withstart-&gt;conditioncondition(yes)-&gt;rdbfile-&gt;endcondition(no)-&gt;operation-&gt;end\n\n触发机制\nsave的规则\n执行flushall\n退出redis\n\n产生备份，会自动生成一个dump.rdb\n用rdb恢复1config get dir\n\n优点：\n适合大数据\n对数据完整性要求不高（比如90srdb一次，60s的时候宕机，就会造成数据丢失）\n\n缺点：\n需要一定的时间间隔进程操作\nfork进程的时候会占用一定的内容空间\n\nAOFAppend Only File， 将我们的所有命令都记录下来，相当于history，恢复的时候再追加。这是另一种恢复的方法。\n\n大数据的情况下效率会比较低。\n默认是不开启的。\n\n开启后会记录操作记录，关闭redis的时候会产生aof文件，如果恶意篡改，redis无法正常启动。\n修复aof文件 redis-check-aof --fix\n优点：\n每次修改都同步，文件的完整性更好，默认每秒同步一次，可能会丢失一秒的数据\n从不同步效率最高\n\n缺点：\n相对于数据文件，aof远大于rdb，修复的速度比rdb慢\n默认是rdb，效率自然高于aof。\n\n与rdb混合使用\n主从复制将一台redis服务器的数据复制到其他的redis服务器，前者称为主节点，后者称为从结点。\n作用：数据冗余、故障恢复、负载均衡（读写分离）、高可用（集群）基石\nreids的容量有限，机器的内存不可能全部用来给redis做存储内存，最大不应该超过20G。\n默认情况下每台redis都是主节点；一个主节点可以有多个从结点，但是一个从结点只能有一个主节点。\n环境配置1info replication # 查看当前库的信息\n\n一般情况下只用配置从机即可。\n1SLAVEOF ip:port # ip:port为主机\n\n上面的是命令配置，只是暂时的。实际生产应该修改配置文件，在文件中写主机的地址和密码，主机负责写，从机负责读，主机的所有数据会自动被从机保存。\n如果主机宕机了呢？默认情况下，主机挂了以后，用info replication查看剩余机器，从机运行正常，但是没有写操作了。主机恢复后，仍旧正常主从复制。考虑到主机要人工手动恢复、排查故障，仍旧会影响业务。\n更好的情况是，默认从剩余的从机中选择一个作为主机，继续完成写操作。\n\n全量复制 master将整个数据传送到slaver\n增量复制\n\n只要重新链接master，一次全量复制将被自动执行\n哨兵模式Sentinel（Redis2.8起）后台监控主机是否故障，如果故障了根据投票数自动将从库转为主库。\n哨兵是一个独立的进程。通过发送命令，等待Redis服务器响应，从而监控运行的多个redis实例。为了防止哨兵挂了，还要配置哨兵集群。（如果一主二从，正常应该启动六个进程，加上哨兵的话）\n优点\n集群\n主从切换\n\n缺点\n不方便在线扩容，一旦到达上线。\n配置麻烦（配置文件的内容很多）。简单的话可以只启动一个哨兵监控主机，会自动检测到从机。\n\nredis异常处理缓存穿透（一直查询不到）1234567start&#x3D;&gt;start: requestend&#x3D;&gt;end: responsecondition&#x3D;&gt;condition: redis缓存中是否存在op1&#x3D;&gt;operation: select in mysqlstart-&gt;conditioncondition(yes)-&gt;endcondition(no)-&gt;op1-&gt;end\n\n如果请求量非常大，redis相当于空白，都去请求到dao层，redis的作用就没了。\n布隆过滤器它是一种数据结构，对所有可能查询的参数以hash形式存储，在控制层先进行校验，不符合则丢弃，避免了对底层存储系统的查询压力\n缓存空对象缓存击穿（量太大，缓存过期）活力集中在一个点（一个热评的点，如微博）。\n加互斥锁设置热点数据永不过期缓存雪崩在某一个时间段，缓存集中过期失效，可能瞬间把数据库压跨。\nredis高可用限流降级数据预热正式部署前先把可能的数据访问一遍（加入缓存），设置不同的过期时间，让缓存失效的时间尽可能平均。\n","dateCreated":"2020-06-09T21:54:01+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-06-09T21:54:01+08:00","description":"常用redis，深入了解redis的性能和瓶颈。reference","headline":"redis","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/06/09/redis/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/06/09/redis/","keywords":"redis, nosql"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"常用redis，深入了解redis的性能和瓶颈。reference\n\n\n介绍redis: 内存中的数据结构存储系统，可以用作数据库、缓存和消息中间件，nosql的一种。\nnosql关系型数据库不够用，出来了nosql。。。\n\n一开始单体应用，小用户量能承受。但是当体量变大时：\n数据量大\n数据的索引大\n访问量大\n\n\n读写分离思想（垂直拆分），写一个库，其他库从这个库做同步，但是数据库大部分其实都是读，把刚查到的进行缓存，这样下一个要查且数据没变的话就用缓存中的数据。 添加一层memcache缓存\n集群（水平拆分）：上面的读写分离copy多份。\n\nmysql早些年使用的是MyISAM引擎，特性是表锁（查询某个数据会将整个表锁起来，高并发下性能下滑），现在使用的是Innodb，改为了行锁。\n不能用mysql做实时存储和访问、个人信息、地理位置（如微信热门10万+的文章记录等）。\n特点\n易于扩展，数据间没有关系（key value键值对），好比java面向接口，便于解偶。\n大数据量也高性能（写8万次/秒，读11万次/秒）\n多样型，不需要事先设计数据库\n没有固定的查询语言；最终一致性\n键值对存储，列存储，文档存储，图形存储库（社交）\n高性能、高可用、高可扩\nCAP、BASE，异地多活\n多样、实时、并发（Volume, Variety, Veiocity）\n\n与关系型一起使用。\n商品的描述、评论（文字比较多的）：文档型数据库（MongoDB）\n商品的基本信息（价格、商家、名称）：MySQL\n图片：FastDFS, GFS, HDFS, OSS…\n商品热门的波段信息：内存数据库（Redis，Tair，Memcache……）\n==没有什么不是加以层解决不了的==： 统一服务层。\n文档型数据库MongoDB，介于关系型和非关系型数据库中的中间产品，非关系型数据库中功能最丰富的。\nKV键值对Redis，Tair\n列存储数据库HBase（大数据）\n分布式文件系统\n图类似知识图谱，不是存储图形。主要用于存储社交网络。\nNeo4j，InfoGrid。\nRedisRemote Dictionary Server. C语言编写的。免费，开源，提供多种语言的api。\n\n内存存储、持久化，但是内存是断电即失，所以持久化很重要（rdb、aof）\n计时器、计数器（浏览量）\n\n测试安装后自带的测试工具\n1redis-benchmark -h localhost -p 6379 -100 -n 100000\n\n基础默认16个数据库且使用的是第0个。 \nGEOSPATIAL地理位置，不仅仅是GET、SET！根据经纬度获取距离。\nspringboot集成版本&lt;2.0 底层使用的jedis，BIO，直连数据库，多线程下不安全，优化方式是jedis pool连接池。\n版本&gt;2.0 底层使用的lettuce，NIO，采用netty，实例可以在多个线程中进行共享，不存在线程不安全的情况。\nrdb为什么会有这个rdb？\nredis的高速查询来源于它的内存存储，由于内存断电即失，可以把rdb作为备份来弥补这个不足。所以rdb即redis databse。但是也不是每次操作都保存，否则性能急速降低，这也带来另一个问题，即最后一个/批操作不会被保存。\n123456789start&#x3D;&gt;start: startend&#x3D;&gt;end: endcondition&#x3D;&gt;condition: 触发rdbrdbfile&#x3D;&gt;inputoutput: dump.rdboperation&#x3D;&gt;operation: go on dealing withstart-&gt;conditioncondition(yes)-&gt;rdbfile-&gt;endcondition(no)-&gt;operation-&gt;end\n\n触发机制\nsave的规则\n执行flushall\n退出redis\n\n产生备份，会自动生成一个dump.rdb\n用rdb恢复1config get dir\n\n优点：\n适合大数据\n对数据完整性要求不高（比如90srdb一次，60s的时候宕机，就会造成数据丢失）\n\n缺点：\n需要一定的时间间隔进程操作\nfork进程的时候会占用一定的内容空间\n\nAOFAppend Only File， 将我们的所有命令都记录下来，相当于history，恢复的时候再追加。这是另一种恢复的方法。\n\n大数据的情况下效率会比较低。\n默认是不开启的。\n\n开启后会记录操作记录，关闭redis的时候会产生aof文件，如果恶意篡改，redis无法正常启动。\n修复aof文件 redis-check-aof --fix\n优点：\n每次修改都同步，文件的完整性更好，默认每秒同步一次，可能会丢失一秒的数据\n从不同步效率最高\n\n缺点：\n相对于数据文件，aof远大于rdb，修复的速度比rdb慢\n默认是rdb，效率自然高于aof。\n\n与rdb混合使用\n主从复制将一台redis服务器的数据复制到其他的redis服务器，前者称为主节点，后者称为从结点。\n作用：数据冗余、故障恢复、负载均衡（读写分离）、高可用（集群）基石\nreids的容量有限，机器的内存不可能全部用来给redis做存储内存，最大不应该超过20G。\n默认情况下每台redis都是主节点；一个主节点可以有多个从结点，但是一个从结点只能有一个主节点。\n环境配置1info replication # 查看当前库的信息\n\n一般情况下只用配置从机即可。\n1SLAVEOF ip:port # ip:port为主机\n\n上面的是命令配置，只是暂时的。实际生产应该修改配置文件，在文件中写主机的地址和密码，主机负责写，从机负责读，主机的所有数据会自动被从机保存。\n如果主机宕机了呢？默认情况下，主机挂了以后，用info replication查看剩余机器，从机运行正常，但是没有写操作了。主机恢复后，仍旧正常主从复制。考虑到主机要人工手动恢复、排查故障，仍旧会影响业务。\n更好的情况是，默认从剩余的从机中选择一个作为主机，继续完成写操作。\n\n全量复制 master将整个数据传送到slaver\n增量复制\n\n只要重新链接master，一次全量复制将被自动执行\n哨兵模式Sentinel（Redis2.8起）后台监控主机是否故障，如果故障了根据投票数自动将从库转为主库。\n哨兵是一个独立的进程。通过发送命令，等待Redis服务器响应，从而监控运行的多个redis实例。为了防止哨兵挂了，还要配置哨兵集群。（如果一主二从，正常应该启动六个进程，加上哨兵的话）\n优点\n集群\n主从切换\n\n缺点\n不方便在线扩容，一旦到达上线。\n配置麻烦（配置文件的内容很多）。简单的话可以只启动一个哨兵监控主机，会自动检测到从机。\n\nredis异常处理缓存穿透（一直查询不到）1234567start&#x3D;&gt;start: requestend&#x3D;&gt;end: responsecondition&#x3D;&gt;condition: redis缓存中是否存在op1&#x3D;&gt;operation: select in mysqlstart-&gt;conditioncondition(yes)-&gt;endcondition(no)-&gt;op1-&gt;end\n\n如果请求量非常大，redis相当于空白，都去请求到dao层，redis的作用就没了。\n布隆过滤器它是一种数据结构，对所有可能查询的参数以hash形式存储，在控制层先进行校验，不符合则丢弃，避免了对底层存储系统的查询压力\n缓存空对象缓存击穿（量太大，缓存过期）活力集中在一个点（一个热评的点，如微博）。\n加互斥锁设置热点数据永不过期缓存雪崩在某一个时间段，缓存集中过期失效，可能瞬间把数据库压跨。\nredis高可用限流降级数据预热正式部署前先把可能的数据访问一遍（加入缓存），设置不同的过期时间，让缓存失效的时间尽可能平均。\n","dateCreated":"2020-06-09T21:54:01+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-06-09T21:54:01+08:00","description":"常用redis，深入了解redis的性能和瓶颈。reference","headline":"redis","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/06/09/redis/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/06/09/redis/","keywords":"redis, nosql"}</script>
     <meta name="description" content="常用redis，深入了解redis的性能和瓶颈。reference">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="redis">
@@ -29,6 +31,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -53,6 +57,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -74,6 +82,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -81,8 +91,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -146,20 +174,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -179,7 +193,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -195,111 +209,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -748,32 +664,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

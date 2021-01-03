@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"这里的堆是数据结构中的堆，不是JVM中的堆。\n关键词：堆，二叉树，优先级队列，排序，topN\n\n\n结构堆的结构是完全二叉树，而且是有序的，分大顶堆和小顶堆。    \n完全二叉树\n路径长度是指路径上的边数\n结点深度是指从根结点到该结点的路径的长度\n每一层都是满的或者最后一层不满但最后一层的叶子都是靠左放置\n\n二叉堆\n完全二叉树\n每个结点大于或等于它的任意一个孩子\n\n存储可以将二叉堆用数组来存储。\n例如如下一个二叉堆：\n\n在数组中保存：{62,42,59,32,39,44,13,22,29,14,33,30,17,9}\n可以看到相当是以广度优先遍历了这个二叉树，并将遍历的结点按顺序存入数组。可以从中发现一些存储的规律，对于任意一个位置_i_，他的左子结点在_2i+1_处，右子结点在_2i+2_处，父结点在_(i-1)/2_处。例如：39在数组中的下标是4，那么他的左子结点就在（2×4+1）=9处。\n应用优先级队列优先级队列的底层就是用堆来实现的。同时一道比较经典的算法题用优先级队列可以轻松实现：top n 问题\nTOP N给一组数据，求其中最大/小的几个数。\n1234567891011121314151617181920212223242526// 求最小的n个数public static int[] topN(int[] array, int n) &#123;    if (n == 0) &#123;        return new int[0];    &#125;    // default big heap, lambda make it small heap    Queue&lt;Integer&gt; heap = new PriorityQueue&lt;&gt;(n, ((o1, o2) -&gt; Integer.compare(o2, o1)));    for (int e : array) &#123;        // put the integer in when it smaller than the top of integer        if (heap.isEmpty() || heap.size() &lt; n || e &lt; heap.peek()) &#123;            heap.offer(e);        &#125;        if (heap.size() &gt; n) &#123;            // delete the top of heap integer            heap.poll();        &#125;    &#125;    int[] res = new int[heap.size()];    int j = 0;    for (int e : heap) &#123;        res[j++] = e;    &#125;    return res;&#125;\n\n上面用到了小顶堆，for循环中的两个判断，符合条件的放进堆中，第二个判断中，当堆中的元素个数大于要求的个数时，删除堆中的顶部元素（优先级队列的本质还是队列，进出满读FIFO）。\n稍作修改，可以让上面的代码输出最大的n个数，显而易见的是，我们只需修改入队列的条件以及优先级队列的堆排序方式：\n123456789101112// 默认大顶堆Queue&lt;Integer&gt; heap = new PriorityQueue&lt;&gt;(n);for(int e: array)&#123;    // 大于堆顶的放入优先级队列    if(heap.isEmpty() || heap.size() &lt; n || e &gt; heap.peak())&#123;        heap.offer(e);    &#125;    // 超过要求的个数，清除堆顶元素    if(heap.size() &gt; n)&#123;        heap.pool();    &#125;&#125;\n\n\n\n\n\n","dateCreated":"2020-06-06T22:54:27+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-06-06T22:54:27+08:00","description":"这里的堆是数据结构中的堆，不是JVM中的堆。\n关键词：堆，二叉树，优先级队列，排序，topN","headline":"heap","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/06/06/heap/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/06/06/heap/","keywords":"datastructure"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"这里的堆是数据结构中的堆，不是JVM中的堆。\n关键词：堆，二叉树，优先级队列，排序，topN\n\n\n结构堆的结构是完全二叉树，而且是有序的，分大顶堆和小顶堆。    \n完全二叉树\n路径长度是指路径上的边数\n结点深度是指从根结点到该结点的路径的长度\n每一层都是满的或者最后一层不满但最后一层的叶子都是靠左放置\n\n二叉堆\n完全二叉树\n每个结点大于或等于它的任意一个孩子\n\n存储可以将二叉堆用数组来存储。\n例如如下一个二叉堆：\n\n在数组中保存：{62,42,59,32,39,44,13,22,29,14,33,30,17,9}\n可以看到相当是以广度优先遍历了这个二叉树，并将遍历的结点按顺序存入数组。可以从中发现一些存储的规律，对于任意一个位置_i_，他的左子结点在_2i+1_处，右子结点在_2i+2_处，父结点在_(i-1)/2_处。例如：39在数组中的下标是4，那么他的左子结点就在（2×4+1）=9处。\n应用优先级队列优先级队列的底层就是用堆来实现的。同时一道比较经典的算法题用优先级队列可以轻松实现：top n 问题\nTOP N给一组数据，求其中最大/小的几个数。\n1234567891011121314151617181920212223242526// 求最小的n个数public static int[] topN(int[] array, int n) &#123;    if (n == 0) &#123;        return new int[0];    &#125;    // default big heap, lambda make it small heap    Queue&lt;Integer&gt; heap = new PriorityQueue&lt;&gt;(n, ((o1, o2) -&gt; Integer.compare(o2, o1)));    for (int e : array) &#123;        // put the integer in when it smaller than the top of integer        if (heap.isEmpty() || heap.size() &lt; n || e &lt; heap.peek()) &#123;            heap.offer(e);        &#125;        if (heap.size() &gt; n) &#123;            // delete the top of heap integer            heap.poll();        &#125;    &#125;    int[] res = new int[heap.size()];    int j = 0;    for (int e : heap) &#123;        res[j++] = e;    &#125;    return res;&#125;\n\n上面用到了小顶堆，for循环中的两个判断，符合条件的放进堆中，第二个判断中，当堆中的元素个数大于要求的个数时，删除堆中的顶部元素（优先级队列的本质还是队列，进出满读FIFO）。\n稍作修改，可以让上面的代码输出最大的n个数，显而易见的是，我们只需修改入队列的条件以及优先级队列的堆排序方式：\n123456789101112// 默认大顶堆Queue&lt;Integer&gt; heap = new PriorityQueue&lt;&gt;(n);for(int e: array)&#123;    // 大于堆顶的放入优先级队列    if(heap.isEmpty() || heap.size() &lt; n || e &gt; heap.peak())&#123;        heap.offer(e);    &#125;    // 超过要求的个数，清除堆顶元素    if(heap.size() &gt; n)&#123;        heap.pool();    &#125;&#125;\n\n\n\n\n\n","dateCreated":"2020-06-06T22:54:27+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-06-06T22:54:27+08:00","description":"这里的堆是数据结构中的堆，不是JVM中的堆。\n关键词：堆，二叉树，优先级队列，排序，topN","headline":"heap","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/06/06/heap/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/06/06/heap/","keywords":"datastructure"}</script>
     <meta name="description" content="这里的堆是数据结构中的堆，不是JVM中的堆。 关键词：堆，二叉树，优先级队列，排序，topN">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="heap">
@@ -30,6 +32,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -54,6 +58,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -75,6 +83,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -82,8 +92,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -147,20 +175,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -180,7 +194,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -196,111 +210,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -659,32 +575,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

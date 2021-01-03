@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"锁跟多线程紧密相关，有复杂与简单之分。\n\n\n分类\n乐观锁|悲观锁所谓乐观锁、悲观锁可以类比地看作JVM里的方法区，他们只是规范、概念，具体落地的话有不同的实现，所以不仅仅是java中，数据库中也有类似的概念。那么，什么是乐观锁、悲观锁呢？\n\n悲观锁：对于同一个数据的并发操作，悲观锁认为自己在使用数据的时候一定有别的线程来修改，因此在获取数据的时候会先加锁，确保数据不会被别的线程修改。在Java中，synchronized关键字和Lock的实现类都是悲观锁。\n乐观锁：认为自己在使用数据时不会有别的线程修改数据，所以不会加锁，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据。如果这个数据没有被更新，当前线程将自己修改的数据写入；如果数据已经被其他线程更新，则做进一步的操作（报错、重试或其他等等）。在Java中，通过无锁编程实现的乐观锁，最常用的就是CAS算法，Java原子类中的递增操作就是通过CAS自旋实现的。\n\n根据他们的概念，可以发现悲观锁适合写操作多的场景，乐观锁适合读操作多的场景，这样利于性能的优化提升。\n12345678910111213141516171819// synchronizedpublic synchronized void testMehthod()&#123;    // do something...&#125;// ReentrantLockprivate ReentrantLock lock = new ReentrantLock();public void modifyPublicResources())&#123;    try&#123;        lock.lock();        // do something...    &#125;finally&#123;        lock.unlock();    &#125;&#125;// 乐观锁private AtomicInteger ai = new AtomicInteger();atomicInteger.incrementAndGet(); // 执行自增1\n\n\n\nCompare And SwapCAS，比较与交换，是一种无锁算法，在不使用锁的情况下实现多线程之间的变量同步，java并发包中的原子类就是通过这种算法实现了乐观锁。算法涉及到三个操作数：\n\n需要读写的内存值V （已存在的值）\n进行比较的值A\n要写入的新值B\n\n当V=A时，CAS通过原子方式用新值B来更新V的值（其中“比较”与“更新”两个操作是一个原子），否则不执行任何操作。一般情况下，“更新”是一个不断重试的操作。\nAtomicInteger1234567891011121314151617public class AtomicInteger extends Number implements java.io.Serializable &#123;    private static final long serialVersionUID = 6214790243416807050L;    // setup to use Unsafe.compareAndSwapInt for updates    // 获取并操作内存的数据    private static final Unsafe unsafe = Unsafe.getUnsafe();    // 存储value在AtomicInteger中的偏移量    private static final long valueOffset;    static &#123;        try &#123;            valueOffset = unsafe.objectFieldOffset                (AtomicInteger.class.getDeclaredField(&quot;value&quot;));        &#125; catch (Exception ex) &#123; throw new Error(ex); &#125;    &#125;\t// 存储AtomicInteger的int值    private volatile int value;\n\n123public final int getAndIncrement() &#123;    return unsafe.getAndAddInt(this, valueOffset, 1);&#125;\n\n12345678public final int getAndAddInt(Object var1, long var2, int var4) &#123;    int var5;    do &#123;        var5 = this.getIntVolatile(var1, var2);    &#125; while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));    return var5;&#125;\n\n1public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5);\n\n一目了然了吧，最终的compareAndSwapInt是native，所以整个”比较+更新“操作属于原子操作，在JDK通过CPU的cmpxchg指令去比较寄存器中的A和内存中的V。CAS虽然避开了锁，但是也有自身的瑕疵：\n\n看到do-while了吧，循环时间长会造成较大的CPU开销。\n\nnote: ABA问题，即原本是A，后来改成了B，然后又改成了A，这时用CAS去比较的话结果是什么呢？当然是false啦，每次更新时会加上版本号做标记，类似”1A-2B-3A”\n自旋锁|适应性自旋锁涉及到线程的两个状态转换：阻塞、唤醒。这个操作需要操作系统来完成，且状态转换要耗费一定的处理器时间，如果同步代码块中的内容过于简单，状态转换消耗的时间有可能比用户代码执行的时间还要长。\n在许多场景中，同步资源的锁定时间很短，为了这一小段时间去切换线程，线程挂起和恢复现场的花费可能会让系统得不偿失。如果物理机器有多个处理器，能够让两个或以上的线程同时并行执行，我们就可以让后面那个请求锁的线程不放弃CPU的执行时间，看看持有锁的线程是否很快就会释放锁。\n而为了让当前线程“稍等一下”，我们需让当前线程进行自旋，如果在自旋完成后前面锁定同步资源的线程已经释放了锁，那么当前线程就可以不必阻塞而是直接获取同步资源，从而避免切换线程的开销。这就是自旋锁。reference here\n公平锁|非公平锁简而言之，公平锁是好好排队的，非公平锁是插队来的。\n在类ReentrantLock中，有一个内部类Sync，他是继承AbstractQueuedSnchronizer的，对锁的添加、释放等操作大部分都是在Sync实现的，他又有FairSync和NonfairSync两个子类。ReentrantLock默认使用非公平锁。\n独享锁|共享锁别被名字搞晕了！独享=排他=互斥锁，同《操作系统》中的相关概念。如果数据身上有了一把排他锁，那么其他线程就不能再对他施加任何锁，例如JDK中的synchronized和并发包中的Lock。\n共享锁是指数据身上有了共享锁，其他线程也可以在他身上加锁，只能加共享锁。获得共享锁的线程只能读数据，不能修改数据。\n独享锁和共享锁也是通过AQS来实现的。具体参考类ReentrantReadWriteLock。类中有ReadLock和WriteLock两把锁，\n","dateCreated":"2020-07-20T21:46:41+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-07-20T21:46:41+08:00","description":"锁跟多线程紧密相关，有复杂与简单之分。","headline":"lock","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/07/20/lock/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/07/20/lock/","keywords":"lock"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"锁跟多线程紧密相关，有复杂与简单之分。\n\n\n分类\n乐观锁|悲观锁所谓乐观锁、悲观锁可以类比地看作JVM里的方法区，他们只是规范、概念，具体落地的话有不同的实现，所以不仅仅是java中，数据库中也有类似的概念。那么，什么是乐观锁、悲观锁呢？\n\n悲观锁：对于同一个数据的并发操作，悲观锁认为自己在使用数据的时候一定有别的线程来修改，因此在获取数据的时候会先加锁，确保数据不会被别的线程修改。在Java中，synchronized关键字和Lock的实现类都是悲观锁。\n乐观锁：认为自己在使用数据时不会有别的线程修改数据，所以不会加锁，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据。如果这个数据没有被更新，当前线程将自己修改的数据写入；如果数据已经被其他线程更新，则做进一步的操作（报错、重试或其他等等）。在Java中，通过无锁编程实现的乐观锁，最常用的就是CAS算法，Java原子类中的递增操作就是通过CAS自旋实现的。\n\n根据他们的概念，可以发现悲观锁适合写操作多的场景，乐观锁适合读操作多的场景，这样利于性能的优化提升。\n12345678910111213141516171819// synchronizedpublic synchronized void testMehthod()&#123;    // do something...&#125;// ReentrantLockprivate ReentrantLock lock = new ReentrantLock();public void modifyPublicResources())&#123;    try&#123;        lock.lock();        // do something...    &#125;finally&#123;        lock.unlock();    &#125;&#125;// 乐观锁private AtomicInteger ai = new AtomicInteger();atomicInteger.incrementAndGet(); // 执行自增1\n\n\n\nCompare And SwapCAS，比较与交换，是一种无锁算法，在不使用锁的情况下实现多线程之间的变量同步，java并发包中的原子类就是通过这种算法实现了乐观锁。算法涉及到三个操作数：\n\n需要读写的内存值V （已存在的值）\n进行比较的值A\n要写入的新值B\n\n当V=A时，CAS通过原子方式用新值B来更新V的值（其中“比较”与“更新”两个操作是一个原子），否则不执行任何操作。一般情况下，“更新”是一个不断重试的操作。\nAtomicInteger1234567891011121314151617public class AtomicInteger extends Number implements java.io.Serializable &#123;    private static final long serialVersionUID = 6214790243416807050L;    // setup to use Unsafe.compareAndSwapInt for updates    // 获取并操作内存的数据    private static final Unsafe unsafe = Unsafe.getUnsafe();    // 存储value在AtomicInteger中的偏移量    private static final long valueOffset;    static &#123;        try &#123;            valueOffset = unsafe.objectFieldOffset                (AtomicInteger.class.getDeclaredField(&quot;value&quot;));        &#125; catch (Exception ex) &#123; throw new Error(ex); &#125;    &#125;\t// 存储AtomicInteger的int值    private volatile int value;\n\n123public final int getAndIncrement() &#123;    return unsafe.getAndAddInt(this, valueOffset, 1);&#125;\n\n12345678public final int getAndAddInt(Object var1, long var2, int var4) &#123;    int var5;    do &#123;        var5 = this.getIntVolatile(var1, var2);    &#125; while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));    return var5;&#125;\n\n1public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5);\n\n一目了然了吧，最终的compareAndSwapInt是native，所以整个”比较+更新“操作属于原子操作，在JDK通过CPU的cmpxchg指令去比较寄存器中的A和内存中的V。CAS虽然避开了锁，但是也有自身的瑕疵：\n\n看到do-while了吧，循环时间长会造成较大的CPU开销。\n\nnote: ABA问题，即原本是A，后来改成了B，然后又改成了A，这时用CAS去比较的话结果是什么呢？当然是false啦，每次更新时会加上版本号做标记，类似”1A-2B-3A”\n自旋锁|适应性自旋锁涉及到线程的两个状态转换：阻塞、唤醒。这个操作需要操作系统来完成，且状态转换要耗费一定的处理器时间，如果同步代码块中的内容过于简单，状态转换消耗的时间有可能比用户代码执行的时间还要长。\n在许多场景中，同步资源的锁定时间很短，为了这一小段时间去切换线程，线程挂起和恢复现场的花费可能会让系统得不偿失。如果物理机器有多个处理器，能够让两个或以上的线程同时并行执行，我们就可以让后面那个请求锁的线程不放弃CPU的执行时间，看看持有锁的线程是否很快就会释放锁。\n而为了让当前线程“稍等一下”，我们需让当前线程进行自旋，如果在自旋完成后前面锁定同步资源的线程已经释放了锁，那么当前线程就可以不必阻塞而是直接获取同步资源，从而避免切换线程的开销。这就是自旋锁。reference here\n公平锁|非公平锁简而言之，公平锁是好好排队的，非公平锁是插队来的。\n在类ReentrantLock中，有一个内部类Sync，他是继承AbstractQueuedSnchronizer的，对锁的添加、释放等操作大部分都是在Sync实现的，他又有FairSync和NonfairSync两个子类。ReentrantLock默认使用非公平锁。\n独享锁|共享锁别被名字搞晕了！独享=排他=互斥锁，同《操作系统》中的相关概念。如果数据身上有了一把排他锁，那么其他线程就不能再对他施加任何锁，例如JDK中的synchronized和并发包中的Lock。\n共享锁是指数据身上有了共享锁，其他线程也可以在他身上加锁，只能加共享锁。获得共享锁的线程只能读数据，不能修改数据。\n独享锁和共享锁也是通过AQS来实现的。具体参考类ReentrantReadWriteLock。类中有ReadLock和WriteLock两把锁，\n","dateCreated":"2020-07-20T21:46:41+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-07-20T21:46:41+08:00","description":"锁跟多线程紧密相关，有复杂与简单之分。","headline":"lock","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/07/20/lock/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/07/20/lock/","keywords":"lock"}</script>
     <meta name="description" content="锁跟多线程紧密相关，有复杂与简单之分。">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="lock">
@@ -30,6 +32,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -54,6 +58,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -75,6 +83,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -82,8 +92,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -147,20 +175,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -180,7 +194,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -196,111 +210,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -670,32 +586,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

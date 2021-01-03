@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"观察者模式，融入一个场景的话就是观察者能够及时的知晓被观察者的动态。换句话说，改变常规的获取信息的方式，就是被观察者的每次动态推送到观察者。有咩有MQ的味道？\n\n\n一个好的设计模式能拯救一堆代码。\n场景设计一个应用：气象站检测到数据，显示装置应及时显示数据，气象站提供了一组API。\n1234567891011public class WeatherData()&#123;    getTemperature()&#123;&#125;;    getHumidity()&#123;&#125;;        /**    * 一旦气象更新，此方法会被调用。    */    measuremetnsChanged()&#123;        // our codes go here    &#125;;&#125;\n\n如果直接在measuremetnsChanged这个方法里写参数的更新，那么毫无疑问，违反了基本的编码常识：面向接口编程与松耦合。在后续更改显示装置代码的话，还得修改程序。\n12345public void measuremetnsChanged()&#123;    currentConditionsDisplay.update(getTemperature(), getHumiditiy(), getPressure());    forecastDisplay.update(getTemperature(), getHumiditiy(), getPressure());    ......&#125;\n\n观察者模式先看看我们平时是怎么浏览微信订阅号消息：\n首先整个流程应该有两个参与者\n\n订阅号运营者\n订阅者\n\n订阅号运营者需要关心的是如何高质量完成推文，订阅者关心的是能否收到推文（前提是订阅了）。在微信上，我们只需要订阅感兴趣的订阅号，微信方就会实现推送订阅号的推文，运营者和订阅者只需专注于自己的事情就好。\n那么观察者模式也类似：\n\n订阅号运营者+订阅者=观察者模式\n\n不一样的是名称，订阅号运营者改为“subject”（主题），订阅者改为”observer”（观察者）。\n由于一个主题可以被多个观察者订阅，所以，它实现了对象之间一对多；同时，这种对象设计也让主题和观察者之间松耦合.\n对于主题，只知道观察者实现了某个接口（observer），不需要知道观察者的具体类型、做了什么，而且，任何时候都可以添加/删除观察者，因为主题唯一依赖的是一个实现observer接口的对象列表。\n实现\n我们为subject定义一个接口，这样，无论有多少个主题，实现subject就可以了。对于观察者，除了要实现Observer接口外，有参构造函数必须要传入一个特定的主题，这样观察者才有意义。\n1234public CurrentConditionsDisplay(Subject weatherData) &#123;    this.weatherData = weatherData;    weatherData.registerObserver(this);&#125;\n\n以上是手动实现了观察者模式所需的api，事实上，java的util包中内置了观察者模式。只不过不是接口，而是类，使用时需要继承它，如果想同时实现它和另外一个父类就无法做到了，一定程度上限制了它的复用。所以还是根据业务手动创建观察者模式，并不难。\n完整代码参考：项目传送门\n原理虽然类似订阅，但是主观对象是不同的！！！比如微信订阅号，是否接收通知（是否订阅）是由订阅者来决定的，而在观察者模式当中，主观对象是主题，这就好比订阅的后半段。观察者模式的主动权不在观察者，而在于“想让谁观察”的主题：在一个具体的类实现了主题接口后，他能决定在自己有变化时通知谁，所以实现主题与观察者之间的耦合是在观察者接口中的注册方法。可以在主题中实现一个数组，用于保存观察者，在主题有变化时遍历数组中的观察者，实现通知。\n应用观察者模式在JavaBeans、Swing和RMI中都实现了观察者模式。\n","dateCreated":"2020-06-12T17:12:38+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-06-12T17:12:38+08:00","description":"观察者模式，融入一个场景的话就是观察者能够及时的知晓被观察者的动态。换句话说，改变常规的获取信息的方式，就是被观察者的每次动态推送到观察者。有咩有MQ的味道？","headline":"observer","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/06/12/observer/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/06/12/observer/","keywords":"design_patterns"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"观察者模式，融入一个场景的话就是观察者能够及时的知晓被观察者的动态。换句话说，改变常规的获取信息的方式，就是被观察者的每次动态推送到观察者。有咩有MQ的味道？\n\n\n一个好的设计模式能拯救一堆代码。\n场景设计一个应用：气象站检测到数据，显示装置应及时显示数据，气象站提供了一组API。\n1234567891011public class WeatherData()&#123;    getTemperature()&#123;&#125;;    getHumidity()&#123;&#125;;        /**    * 一旦气象更新，此方法会被调用。    */    measuremetnsChanged()&#123;        // our codes go here    &#125;;&#125;\n\n如果直接在measuremetnsChanged这个方法里写参数的更新，那么毫无疑问，违反了基本的编码常识：面向接口编程与松耦合。在后续更改显示装置代码的话，还得修改程序。\n12345public void measuremetnsChanged()&#123;    currentConditionsDisplay.update(getTemperature(), getHumiditiy(), getPressure());    forecastDisplay.update(getTemperature(), getHumiditiy(), getPressure());    ......&#125;\n\n观察者模式先看看我们平时是怎么浏览微信订阅号消息：\n首先整个流程应该有两个参与者\n\n订阅号运营者\n订阅者\n\n订阅号运营者需要关心的是如何高质量完成推文，订阅者关心的是能否收到推文（前提是订阅了）。在微信上，我们只需要订阅感兴趣的订阅号，微信方就会实现推送订阅号的推文，运营者和订阅者只需专注于自己的事情就好。\n那么观察者模式也类似：\n\n订阅号运营者+订阅者=观察者模式\n\n不一样的是名称，订阅号运营者改为“subject”（主题），订阅者改为”observer”（观察者）。\n由于一个主题可以被多个观察者订阅，所以，它实现了对象之间一对多；同时，这种对象设计也让主题和观察者之间松耦合.\n对于主题，只知道观察者实现了某个接口（observer），不需要知道观察者的具体类型、做了什么，而且，任何时候都可以添加/删除观察者，因为主题唯一依赖的是一个实现observer接口的对象列表。\n实现\n我们为subject定义一个接口，这样，无论有多少个主题，实现subject就可以了。对于观察者，除了要实现Observer接口外，有参构造函数必须要传入一个特定的主题，这样观察者才有意义。\n1234public CurrentConditionsDisplay(Subject weatherData) &#123;    this.weatherData = weatherData;    weatherData.registerObserver(this);&#125;\n\n以上是手动实现了观察者模式所需的api，事实上，java的util包中内置了观察者模式。只不过不是接口，而是类，使用时需要继承它，如果想同时实现它和另外一个父类就无法做到了，一定程度上限制了它的复用。所以还是根据业务手动创建观察者模式，并不难。\n完整代码参考：项目传送门\n原理虽然类似订阅，但是主观对象是不同的！！！比如微信订阅号，是否接收通知（是否订阅）是由订阅者来决定的，而在观察者模式当中，主观对象是主题，这就好比订阅的后半段。观察者模式的主动权不在观察者，而在于“想让谁观察”的主题：在一个具体的类实现了主题接口后，他能决定在自己有变化时通知谁，所以实现主题与观察者之间的耦合是在观察者接口中的注册方法。可以在主题中实现一个数组，用于保存观察者，在主题有变化时遍历数组中的观察者，实现通知。\n应用观察者模式在JavaBeans、Swing和RMI中都实现了观察者模式。\n","dateCreated":"2020-06-12T17:12:38+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-06-12T17:12:38+08:00","description":"观察者模式，融入一个场景的话就是观察者能够及时的知晓被观察者的动态。换句话说，改变常规的获取信息的方式，就是被观察者的每次动态推送到观察者。有咩有MQ的味道？","headline":"observer","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/06/12/observer/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/06/12/observer/","keywords":"design_patterns"}</script>
     <meta name="description" content="观察者模式，融入一个场景的话就是观察者能够及时的知晓被观察者的动态。换句话说，改变常规的获取信息的方式，就是被观察者的每次动态推送到观察者。有咩有MQ的味道？">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="observer">
@@ -30,6 +32,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -54,6 +58,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -75,6 +83,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -82,8 +92,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -147,20 +175,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -180,7 +194,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -196,111 +210,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -660,32 +576,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

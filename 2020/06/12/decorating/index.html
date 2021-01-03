@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"继承滥用：一个父类下有成百上千个子类，还无法高效解决问题，怎么优化？装饰者模式。\n\n\n场景一家咖啡厅售卖咖啡，在这里讨论的当然是网上售卖。父类是Beverage抽象类，包含一个抽象方法_cost()_，根据不同口味实现不同的价格，诸如HouseBlend, DarkRoast Decaf, Espresso… 购买咖啡时，也可以加入各种调料，如豆浆、摩卡等等，这些也是要收费的，最终下单时会将这些所有整合。\n如何高效设计呢？如果某个调料价格上涨该从何处修改？新增原料怎么办？\n\n类应该堆扩展开放，对修改关闭。\n\n装饰者模式以上个场景为例，以父类为主体，在运行时以调味料来“装饰”父类，最终得到顾客想要的口味。\n\nDarkRoast对象\n用摩卡装饰\n用奶泡装饰\n调用cost方法，依赖delegate添加价钱\n\n实现\n其中Condiment是调料类，重写了Beverage的getDescription方法。以Whip为例：\n1234567891011121314151617public class Whip extends Condiment &#123;    Beverage beverage;    public Whip(Beverage beverage) &#123;        this.beverage = beverage;    &#125;    @Override    public String getDescription() &#123;        return beverage.getDescription() + &quot;, Whip&quot;;    &#125;    @Override    public double cost() &#123;        return .30 + beverage.cost();    &#125;&#125;\n\n它的_cost_方法入获取description的方法如出一辙，这样的好处在于：\n12345Beverage beverage1 = new DarRoast();beverage1 = new Mocha(beverage1);beverage1 = new Mocha(beverage1);beverage1 = new Whip(beverage1);System.out.println(beverage1.getDescription() + &quot; $&quot; + beverage1.cost());\n\n1Brazil Dark Roast Coffee, Mocha, Mocha, Whip $2.75\n\n制作一杯咖啡时，添加不同的调料只需要创建调料的实例，里面装上饮料父类，最后打印出描述和价格的时候，会自动加上父类的。这样的方式不妨称之为委托.\n应用Java I/O大量的Decorator Pattern在java的io包中运用。输入输出在计算机中的底层实现都是0101……来实现的，所以，例如，最底层的实现类是_FileInputStream_（好比是_Beverage_），往上”装饰“一层可以是字节_BufferedInputStream_（好比是_Espresso_），接着往上是_LineNumberInutStream_（好比是加调料_Mocha_）。\n1234567891011para1&#x3D;&gt;parallel: FileInputStreampara2&#x3D;&gt;parallel: BufferedInputStreampara3&#x3D;&gt;parallel: LineNumberInputStreamop1&#x3D;&gt;operation: Beferageop2&#x3D;&gt;operation: Espressoop3&#x3D;&gt;operation: Mochapara1(path1, bottom)-&gt;para2para2(path1,bottom)-&gt;para3para1(path2, right)-&gt;op1para2(path2, right)-&gt;op2para3(path2, right)-&gt;op3\n\n","dateCreated":"2020-06-12T18:30:28+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-06-12T18:30:28+08:00","description":"继承滥用：一个父类下有成百上千个子类，还无法高效解决问题，怎么优化？装饰者模式。","headline":"decorating","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/06/12/decorating/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/06/12/decorating/","keywords":"design_patterns"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"继承滥用：一个父类下有成百上千个子类，还无法高效解决问题，怎么优化？装饰者模式。\n\n\n场景一家咖啡厅售卖咖啡，在这里讨论的当然是网上售卖。父类是Beverage抽象类，包含一个抽象方法_cost()_，根据不同口味实现不同的价格，诸如HouseBlend, DarkRoast Decaf, Espresso… 购买咖啡时，也可以加入各种调料，如豆浆、摩卡等等，这些也是要收费的，最终下单时会将这些所有整合。\n如何高效设计呢？如果某个调料价格上涨该从何处修改？新增原料怎么办？\n\n类应该堆扩展开放，对修改关闭。\n\n装饰者模式以上个场景为例，以父类为主体，在运行时以调味料来“装饰”父类，最终得到顾客想要的口味。\n\nDarkRoast对象\n用摩卡装饰\n用奶泡装饰\n调用cost方法，依赖delegate添加价钱\n\n实现\n其中Condiment是调料类，重写了Beverage的getDescription方法。以Whip为例：\n1234567891011121314151617public class Whip extends Condiment &#123;    Beverage beverage;    public Whip(Beverage beverage) &#123;        this.beverage = beverage;    &#125;    @Override    public String getDescription() &#123;        return beverage.getDescription() + &quot;, Whip&quot;;    &#125;    @Override    public double cost() &#123;        return .30 + beverage.cost();    &#125;&#125;\n\n它的_cost_方法入获取description的方法如出一辙，这样的好处在于：\n12345Beverage beverage1 = new DarRoast();beverage1 = new Mocha(beverage1);beverage1 = new Mocha(beverage1);beverage1 = new Whip(beverage1);System.out.println(beverage1.getDescription() + &quot; $&quot; + beverage1.cost());\n\n1Brazil Dark Roast Coffee, Mocha, Mocha, Whip $2.75\n\n制作一杯咖啡时，添加不同的调料只需要创建调料的实例，里面装上饮料父类，最后打印出描述和价格的时候，会自动加上父类的。这样的方式不妨称之为委托.\n应用Java I/O大量的Decorator Pattern在java的io包中运用。输入输出在计算机中的底层实现都是0101……来实现的，所以，例如，最底层的实现类是_FileInputStream_（好比是_Beverage_），往上”装饰“一层可以是字节_BufferedInputStream_（好比是_Espresso_），接着往上是_LineNumberInutStream_（好比是加调料_Mocha_）。\n1234567891011para1&#x3D;&gt;parallel: FileInputStreampara2&#x3D;&gt;parallel: BufferedInputStreampara3&#x3D;&gt;parallel: LineNumberInputStreamop1&#x3D;&gt;operation: Beferageop2&#x3D;&gt;operation: Espressoop3&#x3D;&gt;operation: Mochapara1(path1, bottom)-&gt;para2para2(path1,bottom)-&gt;para3para1(path2, right)-&gt;op1para2(path2, right)-&gt;op2para3(path2, right)-&gt;op3\n\n","dateCreated":"2020-06-12T18:30:28+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-06-12T18:30:28+08:00","description":"继承滥用：一个父类下有成百上千个子类，还无法高效解决问题，怎么优化？装饰者模式。","headline":"decorating","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/06/12/decorating/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/06/12/decorating/","keywords":"design_patterns"}</script>
     <meta name="description" content="继承滥用：一个父类下有成百上千个子类，还无法高效解决问题，怎么优化？装饰者模式。">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="decorating">
@@ -30,6 +32,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -54,6 +58,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -75,6 +83,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -82,8 +92,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -147,20 +175,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -180,7 +194,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -196,111 +210,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -656,32 +572,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Leetcode周赛203\n\n\n1560. Most Visited Sector in a Circular TrackGiven an integer n and an integer array rounds. We have a circular track which consists of n sectors labeled from 1 to n. A marathon will be held on this track, the marathon consists of m rounds. The ith round starts at sector rounds[i - 1] and ends at sector rounds[i]. For example, round 1 starts at sector rounds[0] and ends at sector rounds[1]\nReturn an array of the most visited sectors sorted in ascending order.\nNotice that you circulate the track in ascending order of sector numbers in the counter-clockwise direction (See the first example).\nExample 1:\n\n12345Input: n &#x3D; 4, rounds &#x3D; [1,3,1,2]Output: [1,2]Explanation: The marathon starts at sector 1. The order of the visited sectors is as follows:1 --&gt; 2 --&gt; 3 (end of round 1) --&gt; 4 --&gt; 1 (end of round 2) --&gt; 2 (end of round 3 and the marathon)We can see that both sectors 1 and 2 are visited twice and they are the most visited sectors. Sectors 3 and 4 are visited only once.\n\nExample 2:\n12Input: n &#x3D; 2, rounds &#x3D; [2,1,2,1,2,1,2,1,2]Output: [2]\n\nExample 3:\n12Input: n &#x3D; 7, rounds &#x3D; [1,3,5,7]Output: [1,2,3,4,5,6,7]\n\nsolution这道题虽然看起来长，但是难度是easy的，所以一定不会复杂，仔细看来只是求重复次数最多的sectors，我觉得难点是在头一个数比后一个数大的情况下（相当与跑步比赛中的套圈），如何去从头开始循环。\n12345678910111213public List&lt;Integer&gt; mostVisited(int n, int[] rounds) &#123;    // 取数组第一个和最后一个数字    int f = rounds[0], t = rounds[rounds.length-1];    List&lt;Integer&gt; ret = new ArrayList&lt;&gt;();    for(int i = f;;)&#123;        ret.add(i);        if(i == t)break;        i++;        if(i == n+1)i = 1;    &#125;    Collections.sort(ret);    return ret;&#125;\n\nemmmm上面这个有些取巧，不明白的先看看下面这个：\n123456789101112public List&lt;Integer&gt; mostVisited(int n, int[] A) &#123;    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();    for (int i = A[0]; i &lt;= A[A.length - 1]; ++i)        res.add(i);    if (res.size() &gt; 0) return res;    // 下面计算的是start&gt;end的情况，[1, end] + [start, n]    for (int i = 1; i &lt;= A[A.length - 1]; ++i)        res.add(i);    for (int i = A[0]; i &lt;= n; ++i)        res.add(i);    return res;&#125;\n\n实际上，我们只需要关注首节点和末节点就行了，因为要求的是重复次数最多的sector，那么，必然会涉及到首尾，完全不必考虑中间节点。\n\n如果start&lt;=end，返回[start, end]\n如果start&gt;end，返回[start, n]+[1, end]\n\n另外一个版本，更好理解：\n123456789101112131415public List&lt;Integer&gt; mostVisited(int n, int[] rounds) &#123;    int len = rounds.length, fr = rounds[0], to = rounds[len - 1];    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();    if (to &gt;= fr) &#123;     // no circle, such as [1,3,1,2]        for (int i = fr; i &lt;= to; i++) res.add(i);    &#125; else &#123;            // cross a circle, such as [2,3,2,1]        // 这里遍历每个sector        for (int i = 1; i &lt;= n; i++) &#123;            // 如果到最后一个sector的下一个，就从数组中第一个开始，相当于从“后端”开始了，省去了中间部分。            if (i == to + 1) i = fr;            res.add(i);        &#125;    &#125;    return res;&#125;\n\n涉及环的问题，要找到问题本质。这里说的首尾，一是指给定n个sector中的首尾，二是指给定round中的首尾。\n1561. Maximum Number of Coins You Can GetThere are 3n piles of coins of varying size, you and your friends will take piles of coins as follows:\n\nIn each step, you will choose any 3 piles of coins (not necessarily consecutive).\nOf your choice, Alice will pick the pile with the maximum number of coins.\nYou will pick the next pile with maximum number of coins.\nYour friend Bob will pick the last pile.\nRepeat until there are no more piles of coins.\n\nGiven an array of integers piles where piles[i] is the number of coins in the ith pile.\nReturn the maximum number of coins which you can have.\nExample 1:\n123456Input: piles &#x3D; [2,4,1,2,7,8]Output: 9Explanation: Choose the triplet (2, 7, 8), Alice Pick the pile with 8 coins, you the pile with 7 coins and Bob the last one.Choose the triplet (1, 2, 4), Alice Pick the pile with 4 coins, you the pile with 2 coins and Bob the last one.The maximum number of coins which you can have are: 7 + 2 &#x3D; 9.On the other hand if we choose this arrangement (1, 2, 8), (2, 4, 7) you only get 2 + 4 &#x3D; 6 coins which is not optimal.\n\nExample 2:\n12Input: piles &#x3D; [2,4,5]Output: 4\n\nExample 3:\n12Input: piles &#x3D; [9,8,7,6,5,1,2,3,4]Output: 18\n\n\n\nsolution我觉得这道题本质是个排序的题，但是要按一定的规则排序，最初设想的是每三个数排序，取中间那个。\n然而好的算法都是讲究技巧的，不是靠蛮力。完全可以放心地对数组进行排序，可以理解为逆向思维，例如example1中的数组排好序后：*[1,2,2,4,7,8]*，无论我们怎么分，最优解必然是Bob拿到前两个数，剩下的四个是我们与Alice分，由于是我拿第二大的，所以先分我，在分给Alice，依照这样的一个思路，问题就解决了。\n1234567public int maxCoins(int[] A) &#123;    Arrays.sort(A);    int res = 0, n = A.length;    for (int i = n / 3; i &lt; n; i += 2)        res += A[i];    return res;&#125;\n\n","dateCreated":"2020-08-23T12:22:22+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-08-23T12:22:22+08:00","description":"Leetcode周赛203","headline":"contest203","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/08/23/contest203/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/08/23/contest203/","keywords":"LeetCode"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"Leetcode周赛203\n\n\n1560. Most Visited Sector in a Circular TrackGiven an integer n and an integer array rounds. We have a circular track which consists of n sectors labeled from 1 to n. A marathon will be held on this track, the marathon consists of m rounds. The ith round starts at sector rounds[i - 1] and ends at sector rounds[i]. For example, round 1 starts at sector rounds[0] and ends at sector rounds[1]\nReturn an array of the most visited sectors sorted in ascending order.\nNotice that you circulate the track in ascending order of sector numbers in the counter-clockwise direction (See the first example).\nExample 1:\n\n12345Input: n &#x3D; 4, rounds &#x3D; [1,3,1,2]Output: [1,2]Explanation: The marathon starts at sector 1. The order of the visited sectors is as follows:1 --&gt; 2 --&gt; 3 (end of round 1) --&gt; 4 --&gt; 1 (end of round 2) --&gt; 2 (end of round 3 and the marathon)We can see that both sectors 1 and 2 are visited twice and they are the most visited sectors. Sectors 3 and 4 are visited only once.\n\nExample 2:\n12Input: n &#x3D; 2, rounds &#x3D; [2,1,2,1,2,1,2,1,2]Output: [2]\n\nExample 3:\n12Input: n &#x3D; 7, rounds &#x3D; [1,3,5,7]Output: [1,2,3,4,5,6,7]\n\nsolution这道题虽然看起来长，但是难度是easy的，所以一定不会复杂，仔细看来只是求重复次数最多的sectors，我觉得难点是在头一个数比后一个数大的情况下（相当与跑步比赛中的套圈），如何去从头开始循环。\n12345678910111213public List&lt;Integer&gt; mostVisited(int n, int[] rounds) &#123;    // 取数组第一个和最后一个数字    int f = rounds[0], t = rounds[rounds.length-1];    List&lt;Integer&gt; ret = new ArrayList&lt;&gt;();    for(int i = f;;)&#123;        ret.add(i);        if(i == t)break;        i++;        if(i == n+1)i = 1;    &#125;    Collections.sort(ret);    return ret;&#125;\n\nemmmm上面这个有些取巧，不明白的先看看下面这个：\n123456789101112public List&lt;Integer&gt; mostVisited(int n, int[] A) &#123;    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();    for (int i = A[0]; i &lt;= A[A.length - 1]; ++i)        res.add(i);    if (res.size() &gt; 0) return res;    // 下面计算的是start&gt;end的情况，[1, end] + [start, n]    for (int i = 1; i &lt;= A[A.length - 1]; ++i)        res.add(i);    for (int i = A[0]; i &lt;= n; ++i)        res.add(i);    return res;&#125;\n\n实际上，我们只需要关注首节点和末节点就行了，因为要求的是重复次数最多的sector，那么，必然会涉及到首尾，完全不必考虑中间节点。\n\n如果start&lt;=end，返回[start, end]\n如果start&gt;end，返回[start, n]+[1, end]\n\n另外一个版本，更好理解：\n123456789101112131415public List&lt;Integer&gt; mostVisited(int n, int[] rounds) &#123;    int len = rounds.length, fr = rounds[0], to = rounds[len - 1];    List&lt;Integer&gt; res = new ArrayList&lt;&gt;();    if (to &gt;= fr) &#123;     // no circle, such as [1,3,1,2]        for (int i = fr; i &lt;= to; i++) res.add(i);    &#125; else &#123;            // cross a circle, such as [2,3,2,1]        // 这里遍历每个sector        for (int i = 1; i &lt;= n; i++) &#123;            // 如果到最后一个sector的下一个，就从数组中第一个开始，相当于从“后端”开始了，省去了中间部分。            if (i == to + 1) i = fr;            res.add(i);        &#125;    &#125;    return res;&#125;\n\n涉及环的问题，要找到问题本质。这里说的首尾，一是指给定n个sector中的首尾，二是指给定round中的首尾。\n1561. Maximum Number of Coins You Can GetThere are 3n piles of coins of varying size, you and your friends will take piles of coins as follows:\n\nIn each step, you will choose any 3 piles of coins (not necessarily consecutive).\nOf your choice, Alice will pick the pile with the maximum number of coins.\nYou will pick the next pile with maximum number of coins.\nYour friend Bob will pick the last pile.\nRepeat until there are no more piles of coins.\n\nGiven an array of integers piles where piles[i] is the number of coins in the ith pile.\nReturn the maximum number of coins which you can have.\nExample 1:\n123456Input: piles &#x3D; [2,4,1,2,7,8]Output: 9Explanation: Choose the triplet (2, 7, 8), Alice Pick the pile with 8 coins, you the pile with 7 coins and Bob the last one.Choose the triplet (1, 2, 4), Alice Pick the pile with 4 coins, you the pile with 2 coins and Bob the last one.The maximum number of coins which you can have are: 7 + 2 &#x3D; 9.On the other hand if we choose this arrangement (1, 2, 8), (2, 4, 7) you only get 2 + 4 &#x3D; 6 coins which is not optimal.\n\nExample 2:\n12Input: piles &#x3D; [2,4,5]Output: 4\n\nExample 3:\n12Input: piles &#x3D; [9,8,7,6,5,1,2,3,4]Output: 18\n\n\n\nsolution我觉得这道题本质是个排序的题，但是要按一定的规则排序，最初设想的是每三个数排序，取中间那个。\n然而好的算法都是讲究技巧的，不是靠蛮力。完全可以放心地对数组进行排序，可以理解为逆向思维，例如example1中的数组排好序后：*[1,2,2,4,7,8]*，无论我们怎么分，最优解必然是Bob拿到前两个数，剩下的四个是我们与Alice分，由于是我拿第二大的，所以先分我，在分给Alice，依照这样的一个思路，问题就解决了。\n1234567public int maxCoins(int[] A) &#123;    Arrays.sort(A);    int res = 0, n = A.length;    for (int i = n / 3; i &lt; n; i += 2)        res += A[i];    return res;&#125;\n\n","dateCreated":"2020-08-23T12:22:22+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-08-23T12:22:22+08:00","description":"Leetcode周赛203","headline":"contest203","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/08/23/contest203/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/08/23/contest203/","keywords":"LeetCode"}</script>
     <meta name="description" content="Leetcode周赛203">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="contest203">
@@ -30,6 +32,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -54,6 +58,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -75,6 +83,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -82,8 +92,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -147,20 +175,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -180,7 +194,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -196,111 +210,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -678,32 +594,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>

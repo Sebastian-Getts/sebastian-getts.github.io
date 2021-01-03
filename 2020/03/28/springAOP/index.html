@@ -10,8 +10,10 @@
     <meta name="author" content="Sebastian Getts">
     
     
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"AOP, 切面。聊聊几个通知。\n\n\n用途如果是吃个蛋糕，会怎么吃？有的人会一层一层吃，当然最上面是奶油或者水果，最下方是面包，但是大部分人都不会这么吃，会用刀将蛋糕切开，将糅合了多层的可口蛋糕一起送入口中，而非第一种吃法那样有先后顺序。Spring框架中的AOP的用途就好比那把刀，将容器中的bean有个安排。\n通知AOP中的刀不像是切蛋糕那样最终把蛋糕送入口中，它的实际工序会更多。比如送入口中可能是最后一步，在这之前也许会统一撒点肉松、统一加热之类的。虽然有点奇怪。\nSpring的命名是让人通俗易懂的，也可以理解为你的英语水平够用。诸如*@Before*, @After…之类的一眼扫过去就能知道它的作用。目前用到的有5个：l@Before, @After, @AfterReturning, @AfterThrowing和@Around。他们都不是直接标注就可以使用，而是需要指要作用的方法。\n由于作用的目标方法大多相同，因此还可以提取公共的路径。\n与之相关的要先介绍JointPoint，根据词意不难理解：切点。切面中的切点可以说是很细节的了，能用他来获取切面相关的信息，可以理解为“帮手”。\n@PointCut公用切入点。括号后加入作用路径。\n123@Pointcut(&quot;execution(public int org.example.aop.MathCalculate.*(..)) &quot;)public void pointCut() &#123;&#125;\n\nMathCalculate为类名，MathCalculate.*表示作用于类下的所有方法。(..)表示任意参数。\n@Before这个是前置通知。表示在方法执行前执行标识了这个注解的方法。\n1234@Before(&quot;pointCut()&quot;)public void logStart(JoinPoint joinPoint) &#123;    System.out.println(joinPoint.getSignature().getName() + &quot;，logStart()..方法名：&quot; + &quot;....参数：&quot; + Arrays.asList(joinPoint.getArgs()));&#125;\n\n\n\n@After后置通知。方法结束后会被调用，无论方法成功还是失败，类似于finally。\n1234@After(&quot;pointCut()&quot;)public void logEnd(JoinPoint joinPoint) &#123;    System.out.println(joinPoint.getSignature().getName() + &quot;，@After.方法名：&quot; + &quot;. 一定会返回的。.参数：&quot; + Arrays.asList(joinPoint.getArgs()));&#125;\n\n\n\n@AfterReturning返回通知。在方法正常结束时用。因为是正常结束，一般都需要知道返回的结果，所以入参相比之前的就多了一个。\n1234@AfterReturning(value = &quot;pointCut()&quot;, returning = &quot;object&quot;)public void logReturn(JoinPoint joinPoint, Object object) &#123;    System.out.println(joinPoint.getSignature().getName() + &quot;，@AfterReturning..正常返回。.运行结果：&quot; + object);&#125;\n\n\n\n@AfterThrowing异常通知。抛出异常的时候用。抛出的异常也是对象，需要告诉Spring，所以这也算一个入参。\n1234@AfterThrowing(value = &quot;pointCut()&quot;, throwing = &quot;exception&quot;)public void logException(JoinPoint joinPoint, Exception exception) &#123;    System.out.println(&quot; 方法名：&quot; + joinPoint.getSignature().getName() + &quot;.....异常信息：&quot; + exception);&#125;\n\n\n\n@Around环绕通知。听这个名字有没有觉得很仙气，很厉害的样子。的确厉害，一个顶四个。。\n他的“帮手”也不再是JointPoint了，而是升级版的：ProceedingJoinPoint。\n123456789101112131415@Around(value = &quot;pointCut()&quot;)public Object logAround(ProceedingJoinPoint proceedingJoinPoint) &#123;    Object result;    try &#123;        result = proceedingJoinPoint.proceed();        System.out.println(proceedingJoinPoint.getSignature().getName() + &quot;，Around ..方法名：&quot; + &quot;....参数：&quot; + Arrays.asList(proceedingJoinPoint.getArgs()));        System.out.println(proceedingJoinPoint.getSignature().getName() + &quot;，Around..正常返回。.运行结果：&quot; + result);    &#125; catch (Throwable throwable) &#123;        System.out.println(&quot; 方法名：&quot; + proceedingJoinPoint.getSignature().getName() + &quot;....Around  .异常信息：&quot; + throwable);        throw new RuntimeException(throwable);    &#125;    System.out.println(proceedingJoinPoint.getSignature().getName() + &quot;，Around.方法名：&quot; + &quot;. 一定会返回的。.参数：&quot; + Arrays.asList(proceedingJoinPoint.getArgs()));    return result;&#125;\n\n注意事项如果认为标注注解就能生效就  too young to navie 了。\n\n将业务逻辑代码以及切面类（例如日志打印服务）都加入到容器中，并且告诉Spring哪个是切面类（在类上加**@Aspect**）\n在切面类上的要用的通知方法上加入相应注解（如@Before）。\n在配置类上开启注解的aop模式（ @EnableAspectJAutoProxy）。\n\n源码@EnableAspectJAutoProxy","dateCreated":"2020-03-28T14:43:58+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-03-28T14:43:58+08:00","description":"AOP, 切面。聊聊几个通知。","headline":"springAOP","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/03/28/springAOP/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/03/28/springAOP/","keywords":"aop"}</script>
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"AOP, 切面。聊聊几个通知。\n\n\n用途如果是吃个蛋糕，会怎么吃？有的人会一层一层吃，当然最上面是奶油或者水果，最下方是面包，但是大部分人都不会这么吃，会用刀将蛋糕切开，将糅合了多层的可口蛋糕一起送入口中，而非第一种吃法那样有先后顺序。Spring框架中的AOP的用途就好比那把刀，将容器中的bean有个安排。\n通知AOP中的刀不像是切蛋糕那样最终把蛋糕送入口中，它的实际工序会更多。比如送入口中可能是最后一步，在这之前也许会统一撒点肉松、统一加热之类的。虽然有点奇怪。\nSpring的命名是让人通俗易懂的，也可以理解为你的英语水平够用。诸如*@Before*, @After…之类的一眼扫过去就能知道它的作用。目前用到的有5个：l@Before, @After, @AfterReturning, @AfterThrowing和@Around。他们都不是直接标注就可以使用，而是需要指要作用的方法。\n由于作用的目标方法大多相同，因此还可以提取公共的路径。\n与之相关的要先介绍JointPoint，根据词意不难理解：切点。切面中的切点可以说是很细节的了，能用他来获取切面相关的信息，可以理解为“帮手”。\n@PointCut公用切入点。括号后加入作用路径。\n123@Pointcut(&quot;execution(public int org.example.aop.MathCalculate.*(..)) &quot;)public void pointCut() &#123;&#125;\n\nMathCalculate为类名，MathCalculate.*表示作用于类下的所有方法。(..)表示任意参数。\n@Before这个是前置通知。表示在方法执行前执行标识了这个注解的方法。\n1234@Before(&quot;pointCut()&quot;)public void logStart(JoinPoint joinPoint) &#123;    System.out.println(joinPoint.getSignature().getName() + &quot;，logStart()..方法名：&quot; + &quot;....参数：&quot; + Arrays.asList(joinPoint.getArgs()));&#125;\n\n\n\n@After后置通知。方法结束后会被调用，无论方法成功还是失败，类似于finally。\n1234@After(&quot;pointCut()&quot;)public void logEnd(JoinPoint joinPoint) &#123;    System.out.println(joinPoint.getSignature().getName() + &quot;，@After.方法名：&quot; + &quot;. 一定会返回的。.参数：&quot; + Arrays.asList(joinPoint.getArgs()));&#125;\n\n\n\n@AfterReturning返回通知。在方法正常结束时用。因为是正常结束，一般都需要知道返回的结果，所以入参相比之前的就多了一个。\n1234@AfterReturning(value = &quot;pointCut()&quot;, returning = &quot;object&quot;)public void logReturn(JoinPoint joinPoint, Object object) &#123;    System.out.println(joinPoint.getSignature().getName() + &quot;，@AfterReturning..正常返回。.运行结果：&quot; + object);&#125;\n\n\n\n@AfterThrowing异常通知。抛出异常的时候用。抛出的异常也是对象，需要告诉Spring，所以这也算一个入参。\n1234@AfterThrowing(value = &quot;pointCut()&quot;, throwing = &quot;exception&quot;)public void logException(JoinPoint joinPoint, Exception exception) &#123;    System.out.println(&quot; 方法名：&quot; + joinPoint.getSignature().getName() + &quot;.....异常信息：&quot; + exception);&#125;\n\n\n\n@Around环绕通知。听这个名字有没有觉得很仙气，很厉害的样子。的确厉害，一个顶四个。。\n他的“帮手”也不再是JointPoint了，而是升级版的：ProceedingJoinPoint。\n123456789101112131415@Around(value = &quot;pointCut()&quot;)public Object logAround(ProceedingJoinPoint proceedingJoinPoint) &#123;    Object result;    try &#123;        result = proceedingJoinPoint.proceed();        System.out.println(proceedingJoinPoint.getSignature().getName() + &quot;，Around ..方法名：&quot; + &quot;....参数：&quot; + Arrays.asList(proceedingJoinPoint.getArgs()));        System.out.println(proceedingJoinPoint.getSignature().getName() + &quot;，Around..正常返回。.运行结果：&quot; + result);    &#125; catch (Throwable throwable) &#123;        System.out.println(&quot; 方法名：&quot; + proceedingJoinPoint.getSignature().getName() + &quot;....Around  .异常信息：&quot; + throwable);        throw new RuntimeException(throwable);    &#125;    System.out.println(proceedingJoinPoint.getSignature().getName() + &quot;，Around.方法名：&quot; + &quot;. 一定会返回的。.参数：&quot; + Arrays.asList(proceedingJoinPoint.getArgs()));    return result;&#125;\n\n注意事项如果认为标注注解就能生效就  too young to navie 了。\n\n将业务逻辑代码以及切面类（例如日志打印服务）都加入到容器中，并且告诉Spring哪个是切面类（在类上加**@Aspect**）\n在切面类上的要用的通知方法上加入相应注解（如@Before）。\n在配置类上开启注解的aop模式（ @EnableAspectJAutoProxy）。\n\n源码@EnableAspectJAutoProxy","dateCreated":"2020-03-28T14:43:58+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-03-28T14:43:58+08:00","description":"AOP, 切面。聊聊几个通知。","headline":"springAOP","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/03/28/springAOP/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2020/03/28/springAOP/","keywords":"aop"}</script>
     <meta name="description" content="AOP, 切面。聊聊几个通知。">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="springAOP">
@@ -28,6 +30,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
     
     
     
@@ -52,6 +56,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -73,6 +81,8 @@
             >
         
         
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -80,8 +90,26 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -145,20 +173,6 @@
                 <li class="sidebar-button">
                     
                         <a
-                            class="sidebar-button-link open-algolia-search"
-                            href="#search"
-                            
-                            rel="noopener"
-                            title="Search"
-                        >
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
                             class="sidebar-button-link "
                             href="#about"
                             
@@ -178,7 +192,7 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="https://github.com/"
+                            href="https://github.com/Sebastian-Getts"
                             
                                 target="_blank"
                             
@@ -194,111 +208,13 @@
                     
                         <a
                             class="sidebar-button-link "
-                            href="http://stackoverflow.com/users"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Stack Overflow"
-                        >
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://twitter.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Twitter"
-                        >
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://facebook.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Facebook"
-                        >
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://plus.google.com/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="Google +"
-                        >
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="https://www.linkedin.com/profile/"
-                            
-                                target="_blank"
-                            
-                            rel="noopener"
-                            title="LinkedIn"
-                        >
-                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/mailto"
+                            href="/zzzqsw@gmail.com"
                             
                             rel="noopener"
                             title="Mail"
                         >
                         <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a
-                            class="sidebar-button-link "
-                            href="/atom.xml"
-                            
-                            rel="noopener"
-                            title="RSS"
-                        >
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -668,32 +584,44 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Sebastian Getts</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Software Engineer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
         
     </div>
 </div>
 
         
         
-<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
         <!--SCRIPTS-->
 
 <script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>
