@@ -1,0 +1,701 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hola">
+    <title>kafka - Hola</title>
+    <meta name="author" content="Sebastian Getts">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"卡夫卡，消息中间件，注意同类型的异同。\n\n\n序分布式的基于发布、订阅的消息队列（Message Queue)，主要应用于大数据实时处理领域。\n消息队列一个场景，用户注册某网站时填写个人信息，需要短信验证码，这时页面响应，有两种模式：\n\n同步：用户填写信息，提交（信息入库），触发短信发送接口，发送短信，页面反馈给用户\n异步：用户填写信息，提交（信息入库），页面反馈给用户，同时触发接口，发送短信\n\n消息队列的主要特点：解耦、削峰\n消息队列的两种模式\n点对点模式: 消费者主动拉取数据，消息收到后信息清除。消息生产者生产消息发送到Queue中，然后消息消费者从Queue中取出并且消费消息，消息被消费后Queue中不再有存储。。。。。Queue支持存在多个消费者，但是对一个消息而言，只会有一个消费者可以消费。 消息不能复用，比如A生产消息，B消费消息，此时如果C也想消费A的消息，那么只能让A再开一个队列让C接受。只是消息队列，不是消息的存储系统（一对一）\n\n发布订阅模式：消费者消费数据后不会清除消息。相当于消息生产者将消息发布到topic中，同时有多个消息消费者（订阅）消费该消息。发布到topic的消息会被所有订阅者消费。（一对多）\n\n队列主动推送\n消费者主动拉取\n\n\n不想要的消息？？\n\n推送速度如何确定？\n而卡夫卡属于消费者拉取。所以卡夫卡内有个长轮询来不断地问topic内有没有消息。\n\n\n\n\n基础架构生产者、消费者、kafka集群。(集群就是消息暂停的地方)\n\n集群中，分布式，多台服务器。服务器中的broker就是卡夫卡的进程。broker中还有组件：主题。主题将消息分类。partition提高卡夫卡的负载能力和并发度。有leader和follower，后者做数据冗余，提升安全性，且前后者不会出现在同一台服务器。生产者只会寻找leader。主题：分区+主副本。\n消费者，有消费者组，将多个消费者用一个组名。一个分区只能被一个消费者组内的某一个消费者消费。消费者组可以提高消费能力。并发度最好的时候就是消费者个数与分支数相等。\nzookeeper，集群要正常工作就要依赖zookeeper，要想多台装有卡夫卡的机器组成集群，只要他们所用的zookeeper是同一套集群就ok了。除了帮卡夫卡存贮信息外还存储消费到何处的位置信息。（0.9版本之前存才zk，之后存在kafka（存在磁盘，默认7天）。目的都一样：记住消费到的位置）\n\n安装部署","dateCreated":"2019-12-03T22:34:16+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2019-12-03T22:34:16+08:00","description":"","headline":"kafka","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2019/12/03/kafka/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2019/12/03/kafka/","keywords":"kafka"}</script>
+    <meta name="description" content="卡夫卡，消息中间件，注意同类型的异同。   序分布式的基于发布、订阅的消息队列（Message Queue)，主要应用于大数据实时处理领域。 消息队列一个场景，用户注册某网站时填写个人信息，需要短信验证码，这时页面响应，有两种模式：  同步：用户填写信息，提交（信息入库），触发短信发送接口，发送短信，页面反馈给用户 异步：用户填写信息，提交（信息入库），页面反馈给用户，同时触发接口，发送短信  消">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="kafka">
+<meta property="og:url" content="http://github.com/sebastian/about/2019/12/03/kafka/index.html">
+<meta property="og:site_name" content="Hola">
+<meta property="og:description" content="卡夫卡，消息中间件，注意同类型的异同。   序分布式的基于发布、订阅的消息队列（Message Queue)，主要应用于大数据实时处理领域。 消息队列一个场景，用户注册某网站时填写个人信息，需要短信验证码，这时页面响应，有两种模式：  同步：用户填写信息，提交（信息入库），触发短信发送接口，发送短信，页面反馈给用户 异步：用户填写信息，提交（信息入库），页面反馈给用户，同时触发接口，发送短信  消">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-12-03T14:34:16.000Z">
+<meta property="article:modified_time" content="2020-11-08T07:20:16.385Z">
+<meta property="article:author" content="Sebastian Getts">
+<meta property="article:tag" content="kafka">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-xsmpikcbczzhpff1zqybzgesjqcgmkdkx9b5ntr0bkmk6wqucpktuaodiuvy.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            Hola
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="Home"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="Categories"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="Tags"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="Archives"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link open-algolia-search"
+                            href="#search"
+                            
+                            rel="noopener"
+                            title="Search"
+                        >
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="About"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://twitter.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Twitter"
+                        >
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://facebook.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Facebook"
+                        >
+                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Facebook</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://plus.google.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Google +"
+                        >
+                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Google +</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.linkedin.com/profile/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="LinkedIn"
+                        >
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/mailto"
+                            
+                            rel="noopener"
+                            title="Mail"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            kafka
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2019-12-03T22:34:16+08:00">
+	
+		    Dec 03, 2019
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/MiddleWare/">MiddleWare</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>卡夫卡，消息中间件，注意同类型的异同。</p>
+<!-- mroe -->
+
+<h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p><code>分布式</code>的基于<code>发布、订阅</code>的<code>消息队列</code>（Message Queue)，主要应用于大数据实时处理领域。</p>
+<h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>一个场景，用户注册某网站时填写个人信息，需要短信验证码，这时页面响应，有两种模式：</p>
+<ol>
+<li>同步：用户填写信息，提交（信息入库），触发短信发送接口，发送短信，页面反馈给用户</li>
+<li>异步：用户填写信息，提交（信息入库），页面反馈给用户，同时触发接口，发送短信</li>
+</ol>
+<p>消息队列的主要特点：解耦、削峰</p>
+<h3 id="消息队列的两种模式"><a href="#消息队列的两种模式" class="headerlink" title="消息队列的两种模式"></a>消息队列的两种模式</h3><ol>
+<li><p>点对点模式: 消费者主动拉取数据，消息收到后信息清除。消息生产者生产消息发送到Queue中，然后消息消费者从Queue中取出并且消费消息，消息被消费后Queue中不再有存储。。。。。Queue支持存在多个消费者，但是对一个消息而言，只会有一个消费者可以消费。<br> 消息不能复用，比如A生产消息，B消费消息，此时如果C也想消费A的消息，那么只能让A再开一个队列让C接受。<code>只是消息队列，不是消息的存储系统</code>（一对一）</p>
+</li>
+<li><p>发布订阅模式：消费者消费数据后不会清除消息。相当于消息生产者将消息发布到topic中，同时有多个消息消费者（订阅）消费该消息。发布到topic的消息会被所有订阅者消费。（一对多）</p>
+<ol>
+<li>队列主动推送</li>
+<li>消费者主动拉取</li>
+</ol>
+<ul>
+<li><p>不想要的消息？？</p>
+</li>
+<li><p>推送速度如何确定？</p>
+<p>而卡夫卡属于消费者拉取。所以卡夫卡内有个<code>长轮询</code>来不断地问topic内有没有消息。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="基础架构"><a href="#基础架构" class="headerlink" title="基础架构"></a>基础架构</h2><p>生产者、消费者、kafka集群。(集群就是消息暂停的地方)</p>
+<ol>
+<li>集群中，分布式，多台服务器。服务器中的broker就是卡夫卡的进程。broker中还有组件：主题。主题将消息分类。partition提高卡夫卡的负载能力和并发度。有leader和follower，后者做数据冗余，提升安全性，且前后者不会出现在同一台服务器。生产者只会寻找leader。主题：分区+主副本。</li>
+<li>消费者，有消费者组，将多个消费者用一个组名。<code>一个分区只能被一个消费者组内的某一个消费者消费</code>。消费者组可以提高消费能力。并发度最好的时候就是消费者个数与分支数相等。</li>
+<li>zookeeper，集群要正常工作就要依赖zookeeper，要想多台装有卡夫卡的机器组成集群，只要他们所用的zookeeper是同一套集群就ok了。除了帮卡夫卡存贮信息外还存储消费到何处的位置信息。（0.9版本之前存才zk，之后存在kafka（存在磁盘，默认7天）。目的都一样：记住消费到的位置）</li>
+</ol>
+<h2 id="安装部署"><a href="#安装部署" class="headerlink" title="安装部署"></a>安装部署</h2>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/kafka/" rel="tag">kafka</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/01/12/uml/"
+                    data-tooltip="uml"
+                    aria-label="PREVIOUS: uml"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2019/11/02/nginx/"
+                    data-tooltip="nginx"
+                    aria-label="NEXT: nginx"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2019/12/03/kafka/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2019/12/03/kafka/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://github.com/sebastian/about/2019/12/03/kafka/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Sebastian Getts. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/01/12/uml/"
+                    data-tooltip="uml"
+                    aria-label="PREVIOUS: uml"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2019/11/02/nginx/"
+                    data-tooltip="nginx"
+                    aria-label="NEXT: nginx"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2019/12/03/kafka/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2019/12/03/kafka/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://github.com/sebastian/about/2019/12/03/kafka/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2019/12/03/kafka/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2019/12/03/kafka/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://github.com/sebastian/about/2019/12/03/kafka/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <h4 id="about-card-name">Sebastian Getts</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

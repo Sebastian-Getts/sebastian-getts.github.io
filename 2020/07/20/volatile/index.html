@@ -1,0 +1,714 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hola">
+    <title>volatile - Hola</title>
+    <meta name="author" content="Sebastian Getts">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"这个关键字用于将Java变量标记为being stored in main memory，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。\n\n\nVisibility problems主要是多线程中的问题。线程在操作非volatile的变量时，出于性能原因，都会将变量从主存复制到CPU缓存中，如果计算机上有多个CPU，那么每个线程可能在不同的CPU上运行，每个线程可以将变量复制到不同的CPU缓存中。\n那么问题来了，对于非volatile的变量，无法保证Java虚拟机何时将数据从主存储器读取到CPU缓存中，或者何时将数据从CPU缓存写入到主存储器中，设想一种情况：多个线程访问一个共享对象，该对象包含一个计数器\n123public class ShareObject&#123;    public int counter = 0;&#125;\n\n假设只有线程1会将计数器递增，同时线程1和线程2都会不时地访问它。\n如果counter不声明为volatile，就无法保证计数器的值从CPU缓存重写回主存，这就意味着主存的counter与CPU缓存的值可能不同！（JVM内存模型有没有）。这种因为没有被另一个线程回写到主存导致无法同步值的问题就叫做“Visibility problem”，一个线程的更新对其他线程是不可见的。\nVisibility Guarantee关键字volatile的设定就是解决上面提到的可见性问题。通过声明counter变量为volatile的，所有对该变量更改都将立即回写到主存，同时所有对该变量的读操作也都会从主存中读取。下面是加了关键字volatile的例子：\n1234public class ShareObject&#123;    // 由于声明为volatile，因此更改变量对于其他线程的是可见的    public volatile int counter = 0 ;&#125;\n\n但是，目前仅是线程1更改，对线程2可见，要想线程1、2都更改，那么仅仅声明为volatile是不够的。\nFull Visibility Guarantee实际上，关键字volatile的可见保证性超越了volatile变量本身。有点绕吧，可见保证性如下：\n\n如果线程A更改了volatile变量，并且线程B随后读取了它，则在写入volatile变量之前线程A可见的所有变量在线程B读取volatile变量后也将可见。\n\n如果线程A读取了一个volatile变量，则在读取那个变量时线程A可见的所有变量也将从主存中重新读取。\n\n\n看个代码例子：\n123456789101112public class MyClass&#123;    private int years;    private int months;    private volatile int days;        // 更改了三个变量，只有days是volatile的    public void update(int years, int months, int days)&#123;        this.years = year;        this.months = months;        this.days = days;        &#125;&#125;\n\n”Full Visibility Guarantee“意味着，当一个值被写入days，那么线程所有的可见的变量都会被写入主存，对于上面的例子来说，months和years也会被写入主存。读取他们的值时，可以这样：\n123456789101112131415161718public class MyClass&#123;    private int years;    private int months;    private volatile int days;    public int totalDays()&#123;        int total = this.days;        total += months * 30;        total += years * 365;        return total;       &#125;    public void update(int years, int months, int days)&#123;        this.years = years;        this.months = months;        this.days = days;    &#125;&#125;\n\n着重观察totalDays()，他一开始会将days的值赋给变量total ,由于days的类型是volatile，所以，读取days的同时，其他变量（months、years）也都会从主存中读取，因此，这就是为什么可见保证性超过了volatile他本身，所以，对于本例甚至其他用到这个关键字的，都可以按照上面的顺序来保证读取到最新值（只给一个变量声明为volatile，读取时必须最后**读取带有volatile属性的值）。\nInstruction Reordering指令重排！！！出于性能原因，JVM和CPU是允许对程序中的指令进行重新排序，只要指令的语义含义保持不变即可。例如：\n1234int a = 1;int b = 2;a++;b++;\n\n这些指令可以重新排序为下列的顺序，且不会丢失原有程序的语义：\n1234int a  = 1;a++;int b = 2;b++\n\n然而，当变量属于volatile时，指令排序就需要小心了，看看下面的例子：\n1234567891011public class MyClass&#123;    private int years;    private int months;    private volatile int days;        public void update(int years, int months, int days)&#123;        this.years = years;        this.months = months;        this.days = days;    &#125;&#125;\n\n如果JVM重排指令，像下面这样：\n123456public void update(int years, int months, int days)&#123;    // 这里将days赋值动作放到了第一位    this.days = days;    this.years = years;    this.months = months;&#125;\n\n当days的顺序变了，months和years的值就无法正确地展现给其他线程。接下来是如何解决这个问题。\nVolatile Happens-Before Guaranteevolatile关键字提供了一些“保证”，即不会去做的一些操作，以免出现意外。\n\n如果读/写其他变量出现在写volatile变量之前，那么就不能重排为出现在它之后。当然返回过是允许的。\n如果读/写其他变量出现在读volatile变量之后，那么就不能重排为出现在它之前。\n\nVolatile is Not Always Enough很明显，在一开始counter的例子中存在这种情况，读取counter并赋值期间，存在多个线程的竞争状态，都赋值的话会覆盖彼此（往主存中），这时就得采用能保证原子性的操作了，如syncronized或者比并发包下的lock了。\n","dateCreated":"2020-07-20T21:23:51+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-07-20T21:23:51+08:00","description":"这个关键字用于将Java变量标记为being stored in main memory，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。","headline":"volatile","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/07/20/volatile/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/07/20/volatile/","keywords":"lock"}</script>
+    <meta name="description" content="这个关键字用于将Java变量标记为being stored in main memory，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="volatile">
+<meta property="og:url" content="http://github.com/sebastian/about/2020/07/20/volatile/index.html">
+<meta property="og:site_name" content="Hola">
+<meta property="og:description" content="这个关键字用于将Java变量标记为being stored in main memory，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-07-20T13:23:51.000Z">
+<meta property="article:modified_time" content="2020-11-08T07:20:16.385Z">
+<meta property="article:author" content="Sebastian Getts">
+<meta property="article:tag" content="lock">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-xsmpikcbczzhpff1zqybzgesjqcgmkdkx9b5ntr0bkmk6wqucpktuaodiuvy.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            Hola
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="Home"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="Categories"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="Tags"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="Archives"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link open-algolia-search"
+                            href="#search"
+                            
+                            rel="noopener"
+                            title="Search"
+                        >
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="About"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://twitter.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Twitter"
+                        >
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://facebook.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Facebook"
+                        >
+                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Facebook</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://plus.google.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Google +"
+                        >
+                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Google +</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.linkedin.com/profile/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="LinkedIn"
+                        >
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/mailto"
+                            
+                            rel="noopener"
+                            title="Mail"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            volatile
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-07-20T21:23:51+08:00">
+	
+		    Jul 20, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Java/">Java</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>这个关键字用于将Java变量标记为<code>being stored in main memory</code>，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。</p>
+<a id="more"></a>
+
+<h1 id="Visibility-problems"><a href="#Visibility-problems" class="headerlink" title="Visibility problems"></a>Visibility problems</h1><p>主要是多线程中的问题。线程在操作<code>非volatile</code>的变量时，出于性能原因，都会将变量从主存复制到CPU缓存中，如果计算机上有多个CPU，那么每个线程可能在不同的CPU上运行，每个线程可以将变量复制到不同的CPU缓存中。</p>
+<p>那么问题来了，对于<code>非volatile</code>的变量，无法保证Java虚拟机何时将数据从主存储器读取到CPU缓存中，或者何时将数据从CPU缓存写入到主存储器中，设想一种情况：多个线程访问一个共享对象，该对象包含一个计数器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShareObject</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> counter = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设只有线程1会将计数器递增，同时线程1和线程2都会不时地访问它。</p>
+<p>如果counter不声明为<code>volatile</code>，就无法保证计数器的值从CPU缓存重写回主存，这就意味着主存的counter与CPU缓存的值可能不同！（JVM内存模型有没有）。这种因为没有被另一个线程回写到主存导致无法同步值的问题就叫做“Visibility problem”，<strong>一个线程的更新对其他线程是不可见的</strong>。</p>
+<h1 id="Visibility-Guarantee"><a href="#Visibility-Guarantee" class="headerlink" title="Visibility Guarantee"></a>Visibility Guarantee</h1><p>关键字<code>volatile</code>的设定就是解决上面提到的可见性问题。通过声明counter变量为<code>volatile</code>的，所有对该变量更改都将立即回写到主存，同时所有对该变量的读操作也都会从主存中读取。下面是加了关键字<code>volatile</code>的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShareObject</span></span>&#123;</span><br><span class="line">    <span class="comment">// 由于声明为volatile，因此更改变量对于其他线程的是可见的</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="keyword">int</span> counter = <span class="number">0</span> ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是，目前仅是线程1更改，对线程2可见，要想线程1、2都更改，那么仅仅声明为<code>volatile</code>是不够的。</p>
+<h2 id="Full-Visibility-Guarantee"><a href="#Full-Visibility-Guarantee" class="headerlink" title="Full Visibility Guarantee"></a>Full Visibility Guarantee</h2><p>实际上，关键字<code>volatile</code>的可见保证性超越了<code>volatile</code>变量本身。有点绕吧，可见保证性如下：</p>
+<ul>
+<li><p>如果线程A更改了<code>volatile</code>变量，并且线程B随后读取了它，则在写入<code>volatile</code>变量之前线程A可见的所有变量在线程B读取<code>volatile</code>变量后也将可见。</p>
+</li>
+<li><p>如果线程A读取了一个<code>volatile</code>变量，则在读取那个变量时线程A可见的所有变量也将从主存中重新读取。</p>
+</li>
+</ul>
+<p>看个代码例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> years;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> months;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> days;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 更改了三个变量，只有days是volatile的</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> years, <span class="keyword">int</span> months, <span class="keyword">int</span> days)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.years = year;</span><br><span class="line">        <span class="keyword">this</span>.months = months;</span><br><span class="line">        <span class="keyword">this</span>.days = days;    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>”Full Visibility Guarantee“意味着，当一个值被写入days，那么线程所有的可见的变量都会被写入主存，对于上面的例子来说，months和years也会被写入主存。读取他们的值时，可以这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> years;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> months;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> days;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">totalDays</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> total = <span class="keyword">this</span>.days;</span><br><span class="line">        total += months * <span class="number">30</span>;</span><br><span class="line">        total += years * <span class="number">365</span>;</span><br><span class="line">        <span class="keyword">return</span> total;   </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> years, <span class="keyword">int</span> months, <span class="keyword">int</span> days)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.years = years;</span><br><span class="line">        <span class="keyword">this</span>.months = months;</span><br><span class="line">        <span class="keyword">this</span>.days = days;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>着重观察<em>totalDays()<em>，他一开始会将<code>days</code>的值赋给变量<code>total</code> ,由于<code>days</code>的类型是<code>volatile</code>，所以，读取<code>days</code>的同时，其他变量（months、years）也都会从主存中读取，因此，这就是为什么可见保证性超过了<code>volatile</code>他本身，所以，对于本例甚至其他用到这个关键字的，都可以按照上面的顺序来保证读取到最新值（只给一个变量声明为<code>volatile</code>，读取时必须</em></em>最后**读取带有<code>volatile</code>属性的值）。</p>
+<h1 id="Instruction-Reordering"><a href="#Instruction-Reordering" class="headerlink" title="Instruction Reordering"></a>Instruction Reordering</h1><p>指令重排！！！出于性能原因，JVM和CPU是允许对程序中的指令进行重新排序，只要指令的语义含义保持不变即可。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">a++;</span><br><span class="line">b++;</span><br></pre></td></tr></table></figure>
+
+<p>这些指令可以重新排序为下列的顺序，且不会丢失原有程序的语义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a  = <span class="number">1</span>;</span><br><span class="line">a++;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">b++</span><br></pre></td></tr></table></figure>
+
+<p>然而，当变量属于<code>volatile</code>时，指令排序就需要小心了，看看下面的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> years;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> months;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> days;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> years, <span class="keyword">int</span> months, <span class="keyword">int</span> days)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.years = years;</span><br><span class="line">        <span class="keyword">this</span>.months = months;</span><br><span class="line">        <span class="keyword">this</span>.days = days;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果JVM重排指令，像下面这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> years, <span class="keyword">int</span> months, <span class="keyword">int</span> days)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 这里将days赋值动作放到了第一位</span></span><br><span class="line">    <span class="keyword">this</span>.days = days;</span><br><span class="line">    <span class="keyword">this</span>.years = years;</span><br><span class="line">    <span class="keyword">this</span>.months = months;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当days的顺序变了，months和years的值就无法正确地展现给其他线程。接下来是如何解决这个问题。</p>
+<h2 id="Volatile-Happens-Before-Guarantee"><a href="#Volatile-Happens-Before-Guarantee" class="headerlink" title="Volatile Happens-Before Guarantee"></a>Volatile Happens-Before Guarantee</h2><p><code>volatile</code>关键字提供了一些“保证”，即不会去做的一些操作，以免出现意外。</p>
+<ul>
+<li>如果读/写其他变量出现在写<code>volatile变量</code>之前，那么就不能重排为出现在它之后。当然返回过是允许的。</li>
+<li>如果读/写其他变量出现在读<code>volatile变量</code>之后，那么就不能重排为出现在它之前。</li>
+</ul>
+<h1 id="Volatile-is-Not-Always-Enough"><a href="#Volatile-is-Not-Always-Enough" class="headerlink" title="Volatile is Not Always Enough"></a>Volatile is Not Always Enough</h1><p>很明显，在一开始counter的例子中存在这种情况，读取counter并赋值期间，存在多个线程的竞争状态，都赋值的话会覆盖彼此（往主存中），这时就得采用能保证<code>原子性</code>的操作了，如<strong>syncronized</strong>或者比并发包下的<code>lock</code>了。</p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/lock/" rel="tag">lock</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/07/20/lock/"
+                    data-tooltip="lock"
+                    aria-label="PREVIOUS: lock"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/07/20/mq/"
+                    data-tooltip="mq"
+                    aria-label="NEXT: mq"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2020/07/20/volatile/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2020/07/20/volatile/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://github.com/sebastian/about/2020/07/20/volatile/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Sebastian Getts. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/07/20/lock/"
+                    data-tooltip="lock"
+                    aria-label="PREVIOUS: lock"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/07/20/mq/"
+                    data-tooltip="mq"
+                    aria-label="NEXT: mq"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2020/07/20/volatile/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2020/07/20/volatile/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://github.com/sebastian/about/2020/07/20/volatile/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2020/07/20/volatile/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2020/07/20/volatile/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://github.com/sebastian/about/2020/07/20/volatile/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <h4 id="about-card-name">Sebastian Getts</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

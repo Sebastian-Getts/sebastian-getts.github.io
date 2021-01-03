@@ -1,0 +1,739 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hola">
+    <title>contest201 - Hola</title>
+    <meta name="author" content="Sebastian Getts">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Leetcode周赛201.\n\n\n1544 Make The String GreatGiven a string s of lower and upper case English letters.\nA good string is a string which doesn’t have two adjacent characters s[i] and s[i + 1] where:\n\n0 &lt;= i &lt;= s.length - 2\ns[i] is a lower-case letter and s[i + 1] is the same letter but in upper-case or vice-versa.\n\nTo make the string good, you can choose two adjacent characters that make the string bad and remove them. You can keep doing this until the string becomes good.\nReturn the string after making it good. The answer is guaranteed to be unique under the given constraints.\nNotice that an empty string is also good.\nExample 1:\n123Input: s &#x3D; &quot;leEeetcode&quot;Output: &quot;leetcode&quot;Explanation: In the first step, either you choose i &#x3D; 1 or i &#x3D; 2, both will result &quot;leEeetcode&quot; to be reduced to &quot;leetcode&quot;.\n\nExample 2:\n12345Input: s &#x3D; &quot;abBAcC&quot;Output: &quot;&quot;Explanation: We have many possible scenarios, and all lead to the same answer. For example:&quot;abBAcC&quot; --&gt; &quot;aAcC&quot; --&gt; &quot;cC&quot; --&gt; &quot;&quot;&quot;abBAcC&quot; --&gt; &quot;abBA&quot; --&gt; &quot;aA&quot; --&gt; &quot;&quot;\n\nExample 3:\n12Input: s &#x3D; &quot;s&quot;Output: &quot;s&quot;\n\nSolution\n首先要注意审题，明确界限的判断。尤其是vice-versa，反之亦然的意思，就是相邻两个字母忽略大小写时相同，且一个大写一个小写，需要将这两个字母剔除。\n通过example 2可以看出算法应有循环的动作，剔除后还应该重新审视。\n\nmine12345678910111213141516171819202122public String makeGood(String s) &#123;    Stack&lt;Character&gt; stack = new Stack&lt;&gt;();    for (int i = 0; i &lt; s.length(); i++) &#123;        char c = s.charAt(i);        if (!stack.empty() &amp;&amp; (                (Character.isUpperCase(c) &amp;&amp; Character.isLowerCase(stack.peek()) &amp;&amp; ((stack.peek() - &#x27;a&#x27;) == (c - &#x27;A&#x27;)))                        ||                        (Character.isLowerCase(c) &amp;&amp; Character.isUpperCase(stack.peek()) &amp;&amp; ((stack.peek() - &#x27;A&#x27;) == (c - &#x27;a&#x27;)))        )) &#123;            stack.pop();        &#125; else &#123;            stack.push(c);        &#125;    &#125;    Iterator&lt;Character&gt; iterator = stack.iterator();    StringBuilder sb = new StringBuilder();    while (iterator.hasNext()) &#123;        sb.append(iterator.next());    &#125;\t// 因为是iterator，不用reverse()    return sb.toString();&#125;\nbetter1234567891011121314boolean ch = true;while (ch) &#123;    ch = false;    String t = s;    for (int i = 0; i &lt; s.length() - 1; ++i) &#123;        if (s.charAt(i) + 32 == s.charAt(i + 1) || s.charAt(i + 1) + 32 == s.charAt(i)) &#123;            t = s.substring(0, i) + s.substring(i + 2);            ch = true;            break;        &#125;    &#125;    s = t;&#125;return s;\n\n1545 Find Kth Bit in Nth Binary StringGiven two positive integers n and k, the binary string Sn is formed as follows:\n\nS1 = &quot;0&quot;\nSi = Si-1 + &quot;1&quot; + reverse(invert(Si-1)) for i &gt; 1\n\nWhere + denotes the concatenation operation, reverse(x) returns the reversed string x, and invert(x) inverts all the bits in x (0 changes to 1 and 1 changes to 0).\nFor example, the first 4 strings in the above sequence are:\n\nS1 = “0”\nS2 = “011”\nS3 = “0111001”\nS4 = “011100110110001”\n\nReturn the kth bit in Sn. It is guaranteed that k is valid for the given n.\nExample 1:\n123Input: n &#x3D; 3, k &#x3D; 1Output: &quot;0&quot;Explanation: S3 is &quot;0111001&quot;. The first bit is &quot;0&quot;.\n\nExample 2:\n123Input: n &#x3D; 4, k &#x3D; 11Output: &quot;1&quot;Explanation: S4 is &quot;011100110110001&quot;. The 11th bit is &quot;1&quot;.\n\nExample 3:\n12Input: n &#x3D; 1, k &#x3D; 1Output: &quot;0&quot;\n\nExample 4:\n12Input: n &#x3D; 2, k &#x3D; 3Output: &quot;1&quot;\n\nSolution题目中已经给了计算式，根据式子来计算结果。\n12345678910111213141516171819202122public char findKthBit(int n, int k) &#123;    StringBuilder sb = new StringBuilder(&quot;0&quot;);    while (n &gt; 1) &#123;        int integer = Integer.parseInt(sb.toString());        StringBuilder stringBuilder = new StringBuilder(Integer.toBinaryString(integer));        // 0-1 inverse        for (int i = 0; i &lt; stringBuilder.length(); i++) &#123;            if (stringBuilder.charAt(i) == &#x27;0&#x27;) &#123;                stringBuilder.replace(i, i + 1, &quot;1&quot;);            &#125; else &#123;                stringBuilder.replace(i, i + 1, &quot;0&quot;);            &#125;        &#125;        stringBuilder.reverse();        sb.append(&quot;1&quot;).append(stringBuilder);        n--;        System.out.println(sb.toString());    &#125;    char[] chars = sb.toString().toCharArray();    return chars[k - 1];&#125;\n\n上面的解题过程是错的，我觉得最好的方式应该是用递归，但是不太会，用来迭代，在n=4时的结果就错了。\nbetter做0-1转换时，当时想用位运算，怎奈不熟练、没想起来异或。\n\n异或 ^ ：相同为0，0异或任何数为任何数。在二进制的情况下，与1异或等同于0-1翻转。\n\nmethod 1一目了然，迭代\n123456789101112131415161718192021public char findKthBit(int n, int k) &#123;    String s = &quot;0&quot;;    while (n&gt;1) &#123;        --n;        s = s+&quot;1&quot;+sinv(s);    &#125;    // 从0开始，k-1    return s.charAt(k-1);&#125;public String sinv(String s) &#123;    StringBuilder a = new StringBuilder();    // 从后遍历，reverse()    for (int i = s.length()-1; i&gt;=0; --i) &#123;        char c = s.charAt(i);        // 0-1翻转        c^=1;        a.append(c);    &#125;    return a.toString();&#125;\n\nmethod 2别具一格\n1234567891011121314public char findKthBit(int n, int k)&#123;    char findKthBit(int n, int k)     s[1]=&quot;0&quot;;    t[1]=&quot;1&quot;;    for(int i=2;i&lt;=n;i++)&#123;        s[i]=s[i-1];        s[i]+=&#x27;1&#x27;;        s[i]+=t[i-1];        t[i]=s[i-1];        t[i]+=&#x27;0&#x27;;        t[i]+=t[i-1];    &#125;    return s[n][k-1];&#125;\n\nmethod 3清清楚楚，深度优先\n12345678910111213141516171819char dfs(int n, int k) &#123;    if (n == 1) &#123;        return &#x27;0&#x27;;    &#125; else &#123;        int len = (1 &lt;&lt; n) - 1;        int base = (1 &lt;&lt; (n - 1)) - 1;        if (k == base + 1) &#123;            return &#x27;1&#x27;;        &#125; else if (k &lt;= base) &#123;            return dfs(n - 1, k);        &#125; else &#123;            return dfs(n - 1, len - k + 1) ^ 1;        &#125;    &#125;&#125;char findKthBit(int n, int k) &#123;    return dfs(n, k);&#125;\n\n","dateCreated":"2020-08-09T12:22:53+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-08-09T12:22:53+08:00","description":"Leetcode周赛201.","headline":"contest201","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/08/09/contest201/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/08/09/contest201/","keywords":"algorithm"}</script>
+    <meta name="description" content="Leetcode周赛201.">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="contest201">
+<meta property="og:url" content="http://github.com/sebastian/about/2020/08/09/contest201/index.html">
+<meta property="og:site_name" content="Hola">
+<meta property="og:description" content="Leetcode周赛201.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-09T04:22:53.000Z">
+<meta property="article:modified_time" content="2020-11-08T07:20:16.385Z">
+<meta property="article:author" content="Sebastian Getts">
+<meta property="article:tag" content="algorithm">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-xsmpikcbczzhpff1zqybzgesjqcgmkdkx9b5ntr0bkmk6wqucpktuaodiuvy.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            Hola
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="Home"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="Categories"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="Tags"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="Archives"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link open-algolia-search"
+                            href="#search"
+                            
+                            rel="noopener"
+                            title="Search"
+                        >
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="About"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://twitter.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Twitter"
+                        >
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://facebook.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Facebook"
+                        >
+                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Facebook</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://plus.google.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Google +"
+                        >
+                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Google +</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.linkedin.com/profile/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="LinkedIn"
+                        >
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/mailto"
+                            
+                            rel="noopener"
+                            title="Mail"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            contest201
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-08-09T12:22:53+08:00">
+	
+		    Aug 09, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Leetcode/">Leetcode</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>Leetcode周赛201.</p>
+<a id="more"></a>
+
+<h1 id="1544-Make-The-String-Great"><a href="#1544-Make-The-String-Great" class="headerlink" title="1544 Make The String Great"></a>1544 Make The String Great</h1><p>Given a string <code>s</code> of lower and upper case English letters.</p>
+<p>A good string is a string which doesn’t have <strong>two adjacent characters</strong> <code>s[i]</code> and <code>s[i + 1]</code> where:</p>
+<ul>
+<li><code>0 &lt;= i &lt;= s.length - 2</code></li>
+<li><code>s[i]</code> is a lower-case letter and <code>s[i + 1]</code> is the same letter but in upper-case or <strong>vice-versa</strong>.</li>
+</ul>
+<p>To make the string good, you can choose <strong>two adjacent</strong> characters that make the string bad and remove them. You can keep doing this until the string becomes good.</p>
+<p>Return <em>the string</em> after making it good. The answer is guaranteed to be unique under the given constraints.</p>
+<p><strong>Notice</strong> that an empty string is also good.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: s &#x3D; &quot;leEeetcode&quot;</span><br><span class="line">Output: &quot;leetcode&quot;</span><br><span class="line">Explanation: In the first step, either you choose i &#x3D; 1 or i &#x3D; 2, both will result &quot;leEeetcode&quot; to be reduced to &quot;leetcode&quot;.</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Input: s &#x3D; &quot;abBAcC&quot;</span><br><span class="line">Output: &quot;&quot;</span><br><span class="line">Explanation: We have many possible scenarios, and all lead to the same answer. For example:</span><br><span class="line">&quot;abBAcC&quot; --&gt; &quot;aAcC&quot; --&gt; &quot;cC&quot; --&gt; &quot;&quot;</span><br><span class="line">&quot;abBAcC&quot; --&gt; &quot;abBA&quot; --&gt; &quot;aA&quot; --&gt; &quot;&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 3:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: s &#x3D; &quot;s&quot;</span><br><span class="line">Output: &quot;s&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><ul>
+<li>首先要注意审题，明确界限的判断。尤其是<code>vice-versa</code>，反之亦然的意思，就是<strong>相邻两个字母忽略大小写时相同，且一个大写一个小写</strong>，需要将这两个字母剔除。</li>
+<li>通过<code>example 2</code>可以看出算法应有<em>循环</em>的动作，剔除后还应该重新审视。</li>
+</ul>
+<h3 id="mine"><a href="#mine" class="headerlink" title="mine"></a>mine</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">makeGood</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    Stack&lt;Character&gt; stack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length(); i++) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = s.charAt(i);</span><br><span class="line">        <span class="keyword">if</span> (!stack.empty() &amp;&amp; (</span><br><span class="line">                (Character.isUpperCase(c) &amp;&amp; Character.isLowerCase(stack.peek()) &amp;&amp; ((stack.peek() - <span class="string">&#x27;a&#x27;</span>) == (c - <span class="string">&#x27;A&#x27;</span>)))</span><br><span class="line">                        ||</span><br><span class="line">                        (Character.isLowerCase(c) &amp;&amp; Character.isUpperCase(stack.peek()) &amp;&amp; ((stack.peek() - <span class="string">&#x27;A&#x27;</span>) == (c - <span class="string">&#x27;a&#x27;</span>)))</span><br><span class="line">        )) &#123;</span><br><span class="line">            stack.pop();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            stack.push(c);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    Iterator&lt;Character&gt; iterator = stack.iterator();</span><br><span class="line">    StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="keyword">while</span> (iterator.hasNext()) &#123;</span><br><span class="line">        sb.append(iterator.next());</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// 因为是iterator，不用reverse()</span></span><br><span class="line">    <span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="better"><a href="#better" class="headerlink" title="better"></a>better</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> ch = <span class="keyword">true</span>;</span><br><span class="line"><span class="keyword">while</span> (ch) &#123;</span><br><span class="line">    ch = <span class="keyword">false</span>;</span><br><span class="line">    String t = s;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; s.length() - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (s.charAt(i) + <span class="number">32</span> == s.charAt(i + <span class="number">1</span>) || s.charAt(i + <span class="number">1</span>) + <span class="number">32</span> == s.charAt(i)) &#123;</span><br><span class="line">            t = s.substring(<span class="number">0</span>, i) + s.substring(i + <span class="number">2</span>);</span><br><span class="line">            ch = <span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    s = t;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> s;</span><br></pre></td></tr></table></figure>
+
+<h1 id="1545-Find-Kth-Bit-in-Nth-Binary-String"><a href="#1545-Find-Kth-Bit-in-Nth-Binary-String" class="headerlink" title="1545 Find Kth Bit in Nth Binary String"></a>1545 Find Kth Bit in Nth Binary String</h1><p>Given two positive integers <code>n</code> and <code>k</code>, the binary string <code>Sn</code> is formed as follows:</p>
+<ul>
+<li><code>S1 = &quot;0&quot;</code></li>
+<li><code>Si = Si-1 + &quot;1&quot; + reverse(invert(Si-1))</code> for <code>i &gt; 1</code></li>
+</ul>
+<p>Where <code>+</code> denotes the concatenation operation, <code>reverse(x)</code> returns the reversed string x, and <code>invert(x)</code> inverts all the bits in x (0 changes to 1 and 1 changes to 0).</p>
+<p>For example, the first 4 strings in the above sequence are:</p>
+<ul>
+<li>S1 = “0”</li>
+<li>S2 = “0<strong>1</strong>1”</li>
+<li>S3 = “011<strong>1</strong>001”</li>
+<li>S4 = “0111001<strong>1</strong>0110001”</li>
+</ul>
+<p>Return <em>the</em> <code>kth</code> <em>bit</em> <em>in</em> <code>Sn</code>. It is guaranteed that <code>k</code> is valid for the given <code>n</code>.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: n &#x3D; 3, k &#x3D; 1</span><br><span class="line">Output: &quot;0&quot;</span><br><span class="line">Explanation: S3 is &quot;0111001&quot;. The first bit is &quot;0&quot;.</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: n &#x3D; 4, k &#x3D; 11</span><br><span class="line">Output: &quot;1&quot;</span><br><span class="line">Explanation: S4 is &quot;011100110110001&quot;. The 11th bit is &quot;1&quot;.</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 3:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: n &#x3D; 1, k &#x3D; 1</span><br><span class="line">Output: &quot;0&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 4:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: n &#x3D; 2, k &#x3D; 3</span><br><span class="line">Output: &quot;1&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution"></a>Solution</h2><p>题目中已经给了计算式，根据式子来计算结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">char</span> <span class="title">findKthBit</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    StringBuilder sb = <span class="keyword">new</span> StringBuilder(<span class="string">&quot;0&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> (n &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">int</span> integer = Integer.parseInt(sb.toString());</span><br><span class="line">        StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder(Integer.toBinaryString(integer));</span><br><span class="line">        <span class="comment">// 0-1 inverse</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; stringBuilder.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (stringBuilder.charAt(i) == <span class="string">&#x27;0&#x27;</span>) &#123;</span><br><span class="line">                stringBuilder.replace(i, i + <span class="number">1</span>, <span class="string">&quot;1&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                stringBuilder.replace(i, i + <span class="number">1</span>, <span class="string">&quot;0&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        stringBuilder.reverse();</span><br><span class="line">        sb.append(<span class="string">&quot;1&quot;</span>).append(stringBuilder);</span><br><span class="line">        n--;</span><br><span class="line">        System.out.println(sb.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span>[] chars = sb.toString().toCharArray();</span><br><span class="line">    <span class="keyword">return</span> chars[k - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的解题过程是错的，我觉得最好的方式应该是用递归，但是不太会，用来迭代，在n=4时的结果就错了。</p>
+<h3 id="better-1"><a href="#better-1" class="headerlink" title="better"></a>better</h3><p>做<code>0-1</code>转换时，当时想用位运算，怎奈不熟练、没想起来<code>异或</code>。</p>
+<ul>
+<li>异或 ^ ：相同为0，0异或任何数为任何数。在二进制的情况下，与<code>1</code>异或等同于<code>0-1</code>翻转。</li>
+</ul>
+<h4 id="method-1"><a href="#method-1" class="headerlink" title="method 1"></a>method 1</h4><p>一目了然，迭代</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">char</span> <span class="title">findKthBit</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    String s = <span class="string">&quot;0&quot;</span>;</span><br><span class="line">    <span class="keyword">while</span> (n&gt;<span class="number">1</span>) &#123;</span><br><span class="line">        --n;</span><br><span class="line">        s = s+<span class="string">&quot;1&quot;</span>+sinv(s);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 从0开始，k-1</span></span><br><span class="line">    <span class="keyword">return</span> s.charAt(k-<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">sinv</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">    StringBuilder a = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    <span class="comment">// 从后遍历，reverse()</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = s.length()-<span class="number">1</span>; i&gt;=<span class="number">0</span>; --i) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = s.charAt(i);</span><br><span class="line">        <span class="comment">// 0-1翻转</span></span><br><span class="line">        c^=<span class="number">1</span>;</span><br><span class="line">        a.append(c);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="method-2"><a href="#method-2" class="headerlink" title="method 2"></a>method 2</h4><p>别具一格</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">char</span> <span class="title">findKthBit</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">char</span> <span class="title">findKthBit</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span></span><br><span class="line"><span class="function">    s[1]</span>=<span class="string">&quot;0&quot;</span>;</span><br><span class="line">    t[<span class="number">1</span>]=<span class="string">&quot;1&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">2</span>;i&lt;=n;i++)&#123;</span><br><span class="line">        s[i]=s[i-<span class="number">1</span>];</span><br><span class="line">        s[i]+=<span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        s[i]+=t[i-<span class="number">1</span>];</span><br><span class="line">        t[i]=s[i-<span class="number">1</span>];</span><br><span class="line">        t[i]+=<span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">        t[i]+=t[i-<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s[n][k-<span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="method-3"><a href="#method-3" class="headerlink" title="method 3"></a>method 3</h4><p>清清楚楚，深度优先</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">int</span> len = (<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> base = (<span class="number">1</span> &lt;&lt; (n - <span class="number">1</span>)) - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (k == base + <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (k &lt;= base) &#123;</span><br><span class="line">            <span class="keyword">return</span> dfs(n - <span class="number">1</span>, k);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> dfs(n - <span class="number">1</span>, len - k + <span class="number">1</span>) ^ <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">findKthBit</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> dfs(n, k);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/algorithm/" rel="tag">algorithm</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/08/16/contest202/"
+                    data-tooltip="contest202"
+                    aria-label="PREVIOUS: contest202"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/08/05/mybatis/"
+                    data-tooltip="mybatis"
+                    aria-label="NEXT: mybatis"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2020/08/09/contest201/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2020/08/09/contest201/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://github.com/sebastian/about/2020/08/09/contest201/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Sebastian Getts. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/08/16/contest202/"
+                    data-tooltip="contest202"
+                    aria-label="PREVIOUS: contest202"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/08/05/mybatis/"
+                    data-tooltip="mybatis"
+                    aria-label="NEXT: mybatis"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2020/08/09/contest201/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2020/08/09/contest201/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://github.com/sebastian/about/2020/08/09/contest201/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2020/08/09/contest201/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2020/08/09/contest201/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://github.com/sebastian/about/2020/08/09/contest201/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <h4 id="about-card-name">Sebastian Getts</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

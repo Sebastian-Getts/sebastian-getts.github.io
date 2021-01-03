@@ -1,0 +1,703 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hola">
+    <title>contest200 - Hola</title>
+    <meta name="author" content="Sebastian Getts">
+    
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"Record Leetcode contest 200.\n\n\nQ1passed.\nQ2Find the winner of an Array Game.\nGiven an integer array arr of distinct integers and an integer k.\nA game will be played between the first two elements of the array (i.e. arr[0] and arr[1]). In each round of the game, we compare arr[0] with arr[1], the larger integer wins and remains at position 0 and the smaller integer moves to the end of the array. The game ends when an integer wins k consecutive rounds.\nReturn the integer which will win the game.\nIt is guaranteed that there will be a winner of the game.\nExample 1:\n123456789Input: arr = [2,1,3,5,4,6,7], k = 2Output: 5Explanation: Let&#x27;s see the rounds of the game:Round |       arr       | winner | win_count  1   | [2,1,3,5,4,6,7] | 2      | 1  2   | [2,3,5,4,6,7,1] | 3      | 1  3   | [3,5,4,6,7,1,2] | 5      | 1  4   | [5,4,6,7,1,2,3] | 5      | 2So we can see that 4 rounds will be played and 5 is the winner because it wins 2 consecutive games.\n\nExample 2:\n123Input: arr = [3,2,1], k = 10Output: 3Explanation: 3 will win the first 10 rounds consecutively.\n\nExample 3:\n12Input: arr = [1,9,8,2,3,7,6,4,5], k = 7Output: 9\n\nExample 4:\n12Input: arr = [1,11,22,33,44,55,66,77,88,99], k = 1000000000Output: 99\n\nMy Solution看到这题，首先我认为这题清晰明了，用__迭代__去完成全部流程，用k去做结束的标志，是一道从头到尾很明确的题。但是:joy:\n贴上我稚嫩的代码：\n12345678910111213141516171819202122232425262728293031public int getWinner(int[] arr, int k) &#123;    int res = -1;    int zero = k-1;    int solution = 0;    while(k&gt;0)&#123;        int currMax = Math.max(arr[0],arr[1]);        int currMin = Math.min(arr[0], arr[1]);        helper(currMax, currMin, arr);        if(res == -1)&#123;            // initial, no compare            res = currMax;        &#125;else&#123;            if(currMax == res)&#123;                k--;                solution = currMax;            &#125;else&#123;                k = zero;                res = currMax;            &#125;        &#125;    &#125;    return solution;&#125;private void helper(int max, int min, int[] arr)&#123;    arr[0] = max;    for (int i = 1; i &lt; arr.length - 1; i++) &#123;        arr[i] = arr[i + 1];    &#125;    arr[arr.length-1] = min;&#125;\n\n没通过，因为Time Limited，跑得太慢了！\nNiubility Solution123456789101112131415161718192021222324public int getWinner(int[] arr, int k) &#123;    // 数组长度    int n = arr.length;    // 数组长度与k之间取最小的。    k = Math.min(k, n);    int A = arr[0];    // 标志位，记录相同次数    int rep = 0;    // 从第二个开始iterate，无终结条件    for(int i = 1;;i++)&#123;        // “i%n“ 取余数，逻辑变换数组。由于for循环无终结条件，所以i会无限增加超过n。        int B = arr[i%n];        if(A &gt;= B)&#123;            rep++;        &#125;else&#123;            A = B;            rep = 1;        &#125;        // 终结条件在这里，rep等于k时结束。        if(rep == k)&#123;            return A;        &#125;    &#125;&#125;\n\n通过对比可以发现，我耗时的原因在于： \n\n我是真的挪了数组！物理上的挪动，实际上，逻辑移动数组即可！我的程序算例4要6秒，这个只需要0秒。\nMath.min(k, n)，如果题目给的k为10000000,数组长度为8,那么最后也是按8 来算，那么多循环无意义，一遍遍历即可获取最大（这样也行？）\n\n况且，逻辑i上也没有去变换位置，题目的本质还是挨个遍历！\ni.e. arr = [2,1,3,5,4,6,7], k = 2\n","dateCreated":"2020-08-02T12:56:29+08:00","dateModified":"2020-11-08T15:20:16+08:00","datePublished":"2020-08-02T12:56:29+08:00","description":"Record Leetcode contest 200.","headline":"contest200","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2020/08/02/contest200/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://github.com/sebastian/about/2020/08/02/contest200/","keywords":"algorithm"}</script>
+    <meta name="description" content="Record Leetcode contest 200.">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="contest200">
+<meta property="og:url" content="http://github.com/sebastian/about/2020/08/02/contest200/index.html">
+<meta property="og:site_name" content="Hola">
+<meta property="og:description" content="Record Leetcode contest 200.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-02T04:56:29.000Z">
+<meta property="article:modified_time" content="2020-11-08T07:20:16.385Z">
+<meta property="article:author" content="Sebastian Getts">
+<meta property="article:tag" content="algorithm">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-xsmpikcbczzhpff1zqybzgesjqcgmkdkx9b5ntr0bkmk6wqucpktuaodiuvy.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            Hola
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="Home"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="Categories"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="Tags"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="Archives"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link open-algolia-search"
+                            href="#search"
+                            
+                            rel="noopener"
+                            title="Search"
+                        >
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="About"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="http://stackoverflow.com/users"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Stack Overflow"
+                        >
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://twitter.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Twitter"
+                        >
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://facebook.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Facebook"
+                        >
+                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Facebook</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://plus.google.com/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="Google +"
+                        >
+                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Google +</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.linkedin.com/profile/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="LinkedIn"
+                        >
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/mailto"
+                            
+                            rel="noopener"
+                            title="Mail"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            contest200
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-08-02T12:56:29+08:00">
+	
+		    Aug 02, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Leetcode/">Leetcode</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>Record Leetcode contest 200.</p>
+<a id="more"></a>
+
+<h1 id="Q1"><a href="#Q1" class="headerlink" title="Q1"></a>Q1</h1><p>passed.</p>
+<h1 id="Q2"><a href="#Q2" class="headerlink" title="Q2"></a>Q2</h1><p>Find the winner of an Array Game.</p>
+<p>Given an integer array <code>arr</code> of <strong>distinct</strong> integers and an integer <code>k</code>.</p>
+<p>A game will be played between the first two elements of the array (i.e. <code>arr[0]</code> and <code>arr[1]</code>). In each round of the game, we compare <code>arr[0]</code> with <code>arr[1]</code>, the larger integer wins and remains at position <code>0</code> and the smaller integer moves to the end of the array. The game ends when an integer wins <code>k</code> consecutive rounds.</p>
+<p>Return <em>the integer which will win the game</em>.</p>
+<p>It is <strong>guaranteed</strong> that there will be a winner of the game.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Input: arr = [2,1,3,5,4,6,7], k = 2</span><br><span class="line">Output: 5</span><br><span class="line">Explanation: Let&#x27;s see the rounds of the game:</span><br><span class="line">Round |       arr       | winner | win<span class="emphasis">_count</span></span><br><span class="line"><span class="emphasis">  1   | [2,1,3,5,4,6,7] | 2      | 1</span></span><br><span class="line"><span class="emphasis">  2   | [2,3,5,4,6,7,1] | 3      | 1</span></span><br><span class="line"><span class="emphasis">  3   | [3,5,4,6,7,1,2] | 5      | 1</span></span><br><span class="line"><span class="emphasis">  4   | [5,4,6,7,1,2,3] | 5      | 2</span></span><br><span class="line"><span class="emphasis">So we can see that 4 rounds will be played and 5 is the winner because it wins 2 consecutive games.</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 2:</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: arr = [3,2,1], k = 10</span><br><span class="line">Output: 3</span><br><span class="line">Explanation: 3 will win the first 10 rounds consecutively.</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 3:</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: arr = [1,9,8,2,3,7,6,4,5], k = 7</span><br><span class="line">Output: 9</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 4:</strong></p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: arr = [1,11,22,33,44,55,66,77,88,99], k = 1000000000</span><br><span class="line">Output: 99</span><br></pre></td></tr></table></figure>
+
+<h2 id="My-Solution"><a href="#My-Solution" class="headerlink" title="My Solution"></a>My Solution</h2><p>看到这题，首先我认为这题清晰明了，用__迭代__去完成全部流程，用<strong>k</strong>去做结束的标志，是一道从头到尾很明确的题。但是:joy:</p>
+<p>贴上我稚嫩的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getWinner</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = -<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> zero = k-<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> solution = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(k&gt;<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="keyword">int</span> currMax = Math.max(arr[<span class="number">0</span>],arr[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">int</span> currMin = Math.min(arr[<span class="number">0</span>], arr[<span class="number">1</span>]);</span><br><span class="line">        helper(currMax, currMin, arr);</span><br><span class="line">        <span class="keyword">if</span>(res == -<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="comment">// initial, no compare</span></span><br><span class="line">            res = currMax;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(currMax == res)&#123;</span><br><span class="line">                k--;</span><br><span class="line">                solution = currMax;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                k = zero;</span><br><span class="line">                res = currMax;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> solution;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span> max, <span class="keyword">int</span> min, <span class="keyword">int</span>[] arr)</span></span>&#123;</span><br><span class="line">    arr[<span class="number">0</span>] = max;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; arr.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        arr[i] = arr[i + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    arr[arr.length-<span class="number">1</span>] = min;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>没通过，因为<code>Time Limited</code>，跑得太慢了！</p>
+<h2 id="Niubility-Solution"><a href="#Niubility-Solution" class="headerlink" title="Niubility Solution"></a>Niubility Solution</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getWinner</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 数组长度</span></span><br><span class="line">    <span class="keyword">int</span> n = arr.length;</span><br><span class="line">    <span class="comment">// 数组长度与k之间取最小的。</span></span><br><span class="line">    k = Math.min(k, n);</span><br><span class="line">    <span class="keyword">int</span> A = arr[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">// 标志位，记录相同次数</span></span><br><span class="line">    <span class="keyword">int</span> rep = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 从第二个开始iterate，无终结条件</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;;i++)&#123;</span><br><span class="line">        <span class="comment">// “i%n“ 取余数，逻辑变换数组。由于for循环无终结条件，所以i会无限增加超过n。</span></span><br><span class="line">        <span class="keyword">int</span> B = arr[i%n];</span><br><span class="line">        <span class="keyword">if</span>(A &gt;= B)&#123;</span><br><span class="line">            rep++;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            A = B;</span><br><span class="line">            rep = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 终结条件在这里，rep等于k时结束。</span></span><br><span class="line">        <span class="keyword">if</span>(rep == k)&#123;</span><br><span class="line">            <span class="keyword">return</span> A;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>通过对比可以发现，我耗时的原因在于：</strong> </p>
+<ol>
+<li>我是真的挪了数组！物理上的挪动，实际上，逻辑移动数组即可！我的程序算例4要6秒，这个只需要0秒。</li>
+<li><code>Math.min(k, n)</code>，如果题目给的k为<code>10000000</code>,数组长度为<code>8</code>,那么最后也是按<code>8</code> 来算，那么多循环无意义，一遍遍历即可获取最大（这样也行？）</li>
+</ol>
+<p>况且，逻辑i上也没有去变换位置，题目的本质还是挨个遍历！</p>
+<p>i.e. arr = [2,1,3,5,4,6,7], k = 2</p>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/algorithm/" rel="tag">algorithm</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/08/05/mybatis/"
+                    data-tooltip="mybatis"
+                    aria-label="PREVIOUS: mybatis"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/07/20/lock/"
+                    data-tooltip="lock"
+                    aria-label="NEXT: lock"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2020/08/02/contest200/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2020/08/02/contest200/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://github.com/sebastian/about/2020/08/02/contest200/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Sebastian Getts. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/08/05/mybatis/"
+                    data-tooltip="mybatis"
+                    aria-label="PREVIOUS: mybatis"
+                >
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2020/07/20/lock/"
+                    data-tooltip="lock"
+                    aria-label="NEXT: lock"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2020/08/02/contest200/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2020/08/02/contest200/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://github.com/sebastian/about/2020/08/02/contest200/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2020/08/02/contest200/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2020/08/02/contest200/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://github.com/sebastian/about/2020/08/02/contest200/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <h4 id="about-card-name">Sebastian Getts</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>author.job</p>
+
+            </div>
+        
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>
