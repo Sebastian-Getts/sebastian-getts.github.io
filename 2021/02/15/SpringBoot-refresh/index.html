@@ -1,0 +1,646 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hola">
+    <title>SpringBoot refresh - Hola</title>
+    <meta name="author" content="Sebastian Getts">
+    
+    
+        <link rel="icon" href="http://github.com/sebastian/about/assets/images/avatar.png">
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png"},"articleBody":"这篇主要分析SpringBoot在run阶段的refresh过程。\n\n\n之前提到，SpringBoot会根据应用的类型去创建对应的容器，在做refresh时也是用对应的容器对执行刷新方法的，但是无论是哪个容器都会调用抽象父类的refresh方法，换句话说，接口定义了容器规范，抽象类实现了部分功能（例如refresh），再由具体的容器类型去继承抽象类实现个性化。先来看看refresh：\n1234567891011121314151617181920212223242526272829303132333435363738synchronized (this.startupShutdownMonitor) &#123;    // Prepare this context for refreshing.    prepareRefresh();    // Tell the subclass to refresh the internal bean factory.    ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();    // Prepare the bean factory for use in this context.    prepareBeanFactory(beanFactory);    try &#123;        // Allows post-processing of the bean factory in context subclasses.        postProcessBeanFactory(beanFactory);        // Invoke factory processors registered as beans in the context.        invokeBeanFactoryPostProcessors(beanFactory);        // Register bean processors that intercept bean creation.        registerBeanPostProcessors(beanFactory);        // Initialize message source for this context.        initMessageSource();        // Initialize event multicaster for this context.        initApplicationEventMulticaster();        // Initialize other special beans in specific context subclasses.        onRefresh();        // Check for listener beans and register them.        registerListeners();        // Instantiate all remaining (non-lazy-init) singletons.        finishBeanFactoryInitialization(beanFactory);        // Last step: publish corresponding event.        finishRefresh();    &#125;\n\n\n\nprepareRefresh刷新前的准备工作，设置一些开关；初始化property。\nprepareBeanFactory准备beanFactory，可以分为以下几个部分：\n\n设置类加载器和bean解析器\n\n添加beanPostProcessor：ApplicationContextAwarePostProcessor，并忽略五个依赖，因为查看前者，会发现他已经实现了要忽略的五个依赖。\n12345678// Configure the bean factory with context callbacks.beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));beanFactory.ignoreDependencyInterface(EnvironmentAware.class);beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);beanFactory.ignoreDependencyInterface(ApplicationEventPublisherAware.class);beanFactory.ignoreDependencyInterface(MessageSourceAware.class);beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);\n\n手动设置注入的bean，相当与初始化。registerResolvableDependency方法是将对应的入参以key-value的形式放入map中。\n1234567// BeanFactory interface not registered as resolvable type in a plain factory.// MessageSource registered (and found for autowiring) as a bean.beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);// this是上下文容器beanFactory.registerResolvableDependency(ResourceLoader.class, this);beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);beanFactory.registerResolvableDependency(ApplicationContext.class, this);\n\n\n\n\n\npostProcessBeanFactory添加postProcessor；在beanFacotry中手动注册web容器相关的bean，如servletContext等。\n123456789protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) &#123;    // add之后紧接着ignore，说明加入的processor实现了后者的功能    beanFactory.addBeanPostProcessor(new ServletContextAwareProcessor(this.servletContext, this.servletConfig));    beanFactory.ignoreDependencyInterface(ServletContextAware.class);    beanFactory.ignoreDependencyInterface(ServletConfigAware.class);    WebApplicationContextUtils.registerWebApplicationScopes(beanFactory, this.servletContext);    WebApplicationContextUtils.registerEnvironmentBeans(beanFactory, this.servletContext, this.servletConfig);&#125;\n\n\n\ninvokeBeanFactoryPostProcessors参照之前的postProcessContext一样，会调用一些postProcessor再去配置BeanFactory。内部会将实现委托给PostProcessorRegistrationDelegate，实现的细节代码较长，这里就不贴了。\n​        首先是排序，它会按照postProcessor的顺序来使用，顺序为：priorityOrdered, ordered, regular。但是有没有想过这些processor是哪里来的呢？之前都是在往context加入后置处理。实际上，在创建对应容器时，相应的context会会初始化，这个时候会往BeanDefinitionRegistry加入postProcessor。\n12345678910111213String[] postProcessorNames =    beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);for (String ppName : postProcessorNames) &#123;    if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;        // configurationClassPostProcessor，用来解析@Config注解        currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));        processedBeans.add(ppName);    &#125;&#125;sortPostProcessors(currentRegistryProcessors, beanFactory);registryProcessors.addAll(currentRegistryProcessors);invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);currentRegistryProcessors.clear();\n\n​        随后主要是解析Configertaion注解，在刚启动时也只有启动类上标注有注解（@SpringApplication中带有），在后置处理类中，更多的工作是负责处理解析与否，详细的解析工作是交给了类ConfigurationClassParser，每个bean都由BeanDefinitionHolder持有，有属性beanDefinition来定义bean，根据这个来做后续判断，在doProcessConfigurationClass方法中，可以看到过程如下：解析@PropertySource，@ComponentScan，@Import，@ImportResource等等。其中跟进import，会发现他还会解析其中的selector并再次递归，如此往复。\n​        以上涉及到了注解的解析，这时回到我们的启动类查看启动类上的注解@SpringApplication，跟进：\n1234567891011@Target(ElementType.TYPE)@Retention(RetentionPolicy.RUNTIME)@Documented@Inherited@SpringBootConfiguration@EnableAutoConfiguration // 启动自动装配@ComponentScan(excludeFilters = &#123; @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),\t\t@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) &#125;)public @interface SpringBootApplication &#123;    // ...&#125;\n\n我们主要查看他自动装配的原理：\n123456789@Target(ElementType.TYPE)@Retention(RetentionPolicy.RUNTIME)@Documented@Inherited@AutoConfigurationPackage@Import(AutoConfigurationImportSelector.class) // 这里的代码会被解析public @interface EnableAutoConfiguration &#123;    // ...&#125;\n\n在AutoConfigurationImportSelector中，selectImport方法会被调用，在里面会有getCandidateConfigurations，顾名思义，根据EnableAutoConfiguration.class这个key从spring.factories中获取对应的values：\n12345org.springframework.boot.autoconfigure.EnableAutoConfiguration=\\org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration,\\org.springframework.boot.autoconfigure.aop.AopAutoConfiguration,\\org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration,\\# ...\n\n共一百多个，这些会被解析后放入beanFactory中。\nregisterBeanPostProcessors这个方法内的步骤与上一个一样。委托给PostProcessorRegistrationDelegate来做事。\nInitMessageSource国际化处理\ninitApplicationEventMulticaster初始化广播器，其实之前是有初始化过的，直接拿来用。如果没有的话会在这里重新初始化一个。\nonRefresh抽象方法中这里空出来了，留给不同的实现类去实现，对于Servlet来说是创建web服务器。\nregisterListeners添加监听器到持有者中。\nfinishBeanFactoryInitialization这一步是实例化所有的bean了。\nfinishRefresh最后一步除了发布相应的时间外还会清楚上下文缓存、初始化它的生命周期。\n总结refresh的内容还是很多的。重点关注这几个方面：\n\n实现了与注解的联动\n完成了自动化配置\n解析bean之间的依赖并实例化\n\n","dateCreated":"2021-02-15T16:19:30+08:00","dateModified":"2021-02-17T15:46:12+08:00","datePublished":"2021-02-15T16:19:30+08:00","description":"这篇主要分析SpringBoot在run阶段的refresh过程。","headline":"SpringBoot refresh","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/"},"publisher":{"@type":"Organization","name":"Sebastian Getts","sameAs":["https://github.com/Sebastian-Getts","zzzqsw@gmail.com"],"image":"avatar.png","logo":{"@type":"ImageObject","url":"avatar.png"}},"url":"http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/","keywords":"source"}</script>
+    <meta name="description" content="这篇主要分析SpringBoot在run阶段的refresh过程。">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="SpringBoot refresh">
+<meta property="og:url" content="http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/index.html">
+<meta property="og:site_name" content="Hola">
+<meta property="og:description" content="这篇主要分析SpringBoot在run阶段的refresh过程。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-02-15T08:19:30.000Z">
+<meta property="article:modified_time" content="2021-02-17T07:46:12.104Z">
+<meta property="article:author" content="Sebastian Getts">
+<meta property="article:tag" content="source">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://github.com/sebastian/about/assets/images/avatar.png"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-xsmpikcbczzhpff1zqybzgesjqcgmkdkx9b5ntr0bkmk6wqucpktuaodiuvy.min.css">
+
+    <!--STYLES END-->
+    
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            Hola
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Sebastian Getts</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>I write code to enrich and ease life of others.</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="Home"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="Categories"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="Tags"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-archives"
+                            
+                            rel="noopener"
+                            title="Archives"
+                        >
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="About"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://github.com/Sebastian-Getts"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="GitHub"
+                        >
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/zzzqsw@gmail.com"
+                            
+                            rel="noopener"
+                            title="Mail"
+                        >
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            SpringBoot refresh
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2021-02-15T16:19:30+08:00">
+	
+		    Feb 15, 2021
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/springboot/">springboot</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>这篇主要分析SpringBoot在run阶段的<em>refresh</em>过程。</p>
+<a id="more"></a>
+
+<p>之前提到，SpringBoot会根据应用的类型去创建对应的容器，在做refresh时也是用对应的容器对执行刷新方法的，但是无论是哪个容器都会调用抽象父类的refresh方法，换句话说，接口定义了容器规范，抽象类实现了部分功能（例如refresh），再由具体的容器类型去继承抽象类实现个性化。先来看看refresh：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">synchronized</span> (<span class="keyword">this</span>.startupShutdownMonitor) &#123;</span><br><span class="line">    <span class="comment">// Prepare this context for refreshing.</span></span><br><span class="line">    prepareRefresh();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Tell the subclass to refresh the internal bean factory.</span></span><br><span class="line">    ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Prepare the bean factory for use in this context.</span></span><br><span class="line">    prepareBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// Allows post-processing of the bean factory in context subclasses.</span></span><br><span class="line">        postProcessBeanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Invoke factory processors registered as beans in the context.</span></span><br><span class="line">        invokeBeanFactoryPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Register bean processors that intercept bean creation.</span></span><br><span class="line">        registerBeanPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Initialize message source for this context.</span></span><br><span class="line">        initMessageSource();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Initialize event multicaster for this context.</span></span><br><span class="line">        initApplicationEventMulticaster();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Initialize other special beans in specific context subclasses.</span></span><br><span class="line">        onRefresh();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Check for listener beans and register them.</span></span><br><span class="line">        registerListeners();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Instantiate all remaining (non-lazy-init) singletons.</span></span><br><span class="line">        finishBeanFactoryInitialization(beanFactory);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Last step: publish corresponding event.</span></span><br><span class="line">        finishRefresh();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="table-of-contents">Table of Contents</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#prepareRefresh"><span class="toc-text">prepareRefresh</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#prepareBeanFactory"><span class="toc-text">prepareBeanFactory</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#postProcessBeanFactory"><span class="toc-text">postProcessBeanFactory</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#invokeBeanFactoryPostProcessors"><span class="toc-text">invokeBeanFactoryPostProcessors</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#registerBeanPostProcessors"><span class="toc-text">registerBeanPostProcessors</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#InitMessageSource"><span class="toc-text">InitMessageSource</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#initApplicationEventMulticaster"><span class="toc-text">initApplicationEventMulticaster</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#onRefresh"><span class="toc-text">onRefresh</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#registerListeners"><span class="toc-text">registerListeners</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#finishBeanFactoryInitialization"><span class="toc-text">finishBeanFactoryInitialization</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#finishRefresh"><span class="toc-text">finishRefresh</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+
+<h1 id="prepareRefresh"><a href="#prepareRefresh" class="headerlink" title="prepareRefresh"></a>prepareRefresh</h1><p>刷新前的准备工作，设置一些开关；初始化property。</p>
+<h1 id="prepareBeanFactory"><a href="#prepareBeanFactory" class="headerlink" title="prepareBeanFactory"></a>prepareBeanFactory</h1><p>准备beanFactory，可以分为以下几个部分：</p>
+<ol>
+<li><p>设置类加载器和bean解析器</p>
+</li>
+<li><p>添加beanPostProcessor：<code>ApplicationContextAwarePostProcessor</code>，并忽略五个依赖，因为查看前者，会发现他已经实现了要忽略的五个依赖。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Configure the bean factory with context callbacks.</span></span><br><span class="line">beanFactory.addBeanPostProcessor(<span class="keyword">new</span> ApplicationContextAwareProcessor(<span class="keyword">this</span>));</span><br><span class="line">beanFactory.ignoreDependencyInterface(EnvironmentAware.class);</span><br><span class="line">beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);</span><br><span class="line">beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);</span><br><span class="line">beanFactory.ignoreDependencyInterface(ApplicationEventPublisherAware.class);</span><br><span class="line">beanFactory.ignoreDependencyInterface(MessageSourceAware.class);</span><br><span class="line">beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>手动设置注入的bean，相当与初始化。<em>registerResolvableDependency</em>方法是将对应的入参以key-value的形式放入map中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BeanFactory interface not registered as resolvable type in a plain factory.</span></span><br><span class="line"><span class="comment">// MessageSource registered (and found for autowiring) as a bean.</span></span><br><span class="line">beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);</span><br><span class="line"><span class="comment">// this是上下文容器</span></span><br><span class="line">beanFactory.registerResolvableDependency(ResourceLoader.class, <span class="keyword">this</span>);</span><br><span class="line">beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, <span class="keyword">this</span>);</span><br><span class="line">beanFactory.registerResolvableDependency(ApplicationContext.class, <span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h1 id="postProcessBeanFactory"><a href="#postProcessBeanFactory" class="headerlink" title="postProcessBeanFactory"></a>postProcessBeanFactory</h1><p>添加postProcessor；在beanFacotry中手动注册web容器相关的bean，如servletContext等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">postProcessBeanFactory</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// add之后紧接着ignore，说明加入的processor实现了后者的功能</span></span><br><span class="line">    beanFactory.addBeanPostProcessor(<span class="keyword">new</span> ServletContextAwareProcessor(<span class="keyword">this</span>.servletContext, <span class="keyword">this</span>.servletConfig));</span><br><span class="line">    beanFactory.ignoreDependencyInterface(ServletContextAware.class);</span><br><span class="line">    beanFactory.ignoreDependencyInterface(ServletConfigAware.class);</span><br><span class="line"></span><br><span class="line">    WebApplicationContextUtils.registerWebApplicationScopes(beanFactory, <span class="keyword">this</span>.servletContext);</span><br><span class="line">    WebApplicationContextUtils.registerEnvironmentBeans(beanFactory, <span class="keyword">this</span>.servletContext, <span class="keyword">this</span>.servletConfig);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="invokeBeanFactoryPostProcessors"><a href="#invokeBeanFactoryPostProcessors" class="headerlink" title="invokeBeanFactoryPostProcessors"></a>invokeBeanFactoryPostProcessors</h1><p>参照之前的postProcessContext一样，会调用一些postProcessor再去配置BeanFactory。内部会将实现委托给<code>PostProcessorRegistrationDelegate</code>，实现的细节代码较长，这里就不贴了。</p>
+<p>​        首先是排序，它会按照postProcessor的顺序来使用，顺序为：priorityOrdered, ordered, regular。但是有没有想过这些processor是哪里来的呢？之前都是在往context加入后置处理。实际上，在创建对应容器时，相应的context会会初始化，这个时候会往<em>BeanDefinitionRegistry</em>加入postProcessor。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">String[] postProcessorNames =</span><br><span class="line">    beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, <span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line"><span class="keyword">for</span> (String ppName : postProcessorNames) &#123;</span><br><span class="line">    <span class="keyword">if</span> (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;</span><br><span class="line">        <span class="comment">// configurationClassPostProcessor，用来解析@Config注解</span></span><br><span class="line">        currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));</span><br><span class="line">        processedBeans.add(ppName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">sortPostProcessors(currentRegistryProcessors, beanFactory);</span><br><span class="line">registryProcessors.addAll(currentRegistryProcessors);</span><br><span class="line">invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);</span><br><span class="line">currentRegistryProcessors.clear();</span><br></pre></td></tr></table></figure>
+
+<p>​        随后主要是解析Configertaion注解，在刚启动时也只有启动类上标注有注解（@SpringApplication中带有），在后置处理类中，更多的工作是负责处理解析与否，详细的解析工作是交给了类<code>ConfigurationClassParser</code>，每个bean都由BeanDefinitionHolder持有，有属性beanDefinition来定义bean，根据这个来做后续判断，在<em>doProcessConfigurationClass</em>方法中，可以看到过程如下：解析@PropertySource，@ComponentScan，@Import，@ImportResource等等。其中跟进import，会发现他还会解析其中的<code>selector</code>并再次递归，如此往复。</p>
+<p>​        以上涉及到了注解的解析，这时回到我们的启动类查看启动类上的注解@SpringApplication，跟进：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.TYPE)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@SpringBootConfiguration</span></span><br><span class="line"><span class="meta">@EnableAutoConfiguration</span> <span class="comment">// 启动自动装配</span></span><br><span class="line"><span class="meta">@ComponentScan(excludeFilters = &#123; @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),</span></span><br><span class="line"><span class="meta">		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) &#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SpringBootApplication &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们主要查看他自动装配的原理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.TYPE)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@AutoConfigurationPackage</span></span><br><span class="line"><span class="meta">@Import(AutoConfigurationImportSelector.class)</span> <span class="comment">// 这里的代码会被解析</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableAutoConfiguration &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在AutoConfigurationImportSelector中，selectImport方法会被调用，在里面会有<code>getCandidateConfigurations</code>，顾名思义，根据<em>EnableAutoConfiguration.class</em>这个key从<em>spring.factories</em>中获取对应的values：</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">org.springframework.boot.autoconfigure.EnableAutoConfiguration</span>=<span class="string">\</span></span><br><span class="line">org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration,\</span><br><span class="line">org.springframework.boot.autoconfigure.aop.AopAutoConfiguration,\</span><br><span class="line">org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration,\</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+
+<p>共一百多个，这些会被解析后放入beanFactory中。</p>
+<h1 id="registerBeanPostProcessors"><a href="#registerBeanPostProcessors" class="headerlink" title="registerBeanPostProcessors"></a>registerBeanPostProcessors</h1><p>这个方法内的步骤与上一个一样。委托给<code>PostProcessorRegistrationDelegate</code>来做事。</p>
+<h1 id="InitMessageSource"><a href="#InitMessageSource" class="headerlink" title="InitMessageSource"></a>InitMessageSource</h1><p>国际化处理</p>
+<h1 id="initApplicationEventMulticaster"><a href="#initApplicationEventMulticaster" class="headerlink" title="initApplicationEventMulticaster"></a>initApplicationEventMulticaster</h1><p>初始化广播器，其实之前是有初始化过的，直接拿来用。如果没有的话会在这里重新初始化一个。</p>
+<h1 id="onRefresh"><a href="#onRefresh" class="headerlink" title="onRefresh"></a>onRefresh</h1><p>抽象方法中这里空出来了，留给不同的实现类去实现，对于Servlet来说是创建web服务器。</p>
+<h1 id="registerListeners"><a href="#registerListeners" class="headerlink" title="registerListeners"></a>registerListeners</h1><p>添加监听器到持有者中。</p>
+<h1 id="finishBeanFactoryInitialization"><a href="#finishBeanFactoryInitialization" class="headerlink" title="finishBeanFactoryInitialization"></a>finishBeanFactoryInitialization</h1><p>这一步是实例化所有的bean了。</p>
+<h1 id="finishRefresh"><a href="#finishRefresh" class="headerlink" title="finishRefresh"></a>finishRefresh</h1><p>最后一步除了发布相应的时间外还会清楚上下文缓存、初始化它的生命周期。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>refresh的内容还是很多的。重点关注这几个方面：</p>
+<ul>
+<li>实现了与注解的联动</li>
+<li>完成了自动化配置</li>
+<li>解析bean之间的依赖并实例化</li>
+</ul>
+
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/source/" rel="tag">source</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/02/15/SpringBoot-environment/"
+                    data-tooltip="SpringBoot environment"
+                    aria-label="NEXT: SpringBoot environment"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Table of Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Sebastian Getts. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a
+                        class="post-action-btn btn btn--disabled"
+                        aria-hidden="true"
+                    >
+                        
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a
+                    class="post-action-btn btn btn--default tooltip--top"
+                    href="/2021/02/15/SpringBoot-environment/"
+                    data-tooltip="SpringBoot environment"
+                    aria-label="NEXT: SpringBoot environment"
+                >
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a
+                class="post-action-btn btn btn--default btn-open-shareoptions"
+                href="#btn-open-shareoptions"
+                aria-label="Share this post"
+            >
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/"
+                    title="Share on Facebook"
+                    aria-label="Share on Facebook"
+                >
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/"
+                    title="Share on Twitter"
+                    aria-label="Share on Twitter"
+                >
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a
+                    class="post-action-btn btn btn--default"
+                    target="new" href="https://plus.google.com/share?url=http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/"
+                    title="Share on Google+"
+                    aria-label="Share on Google+"
+                >
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Table of Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/"
+                        aria-label="Share on Facebook"
+                    >
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://twitter.com/intent/tweet?text=http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/"
+                        aria-label="Share on Twitter"
+                    >
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a
+                        class="share-option-btn"
+                        target="new"
+                        href="https://plus.google.com/share?url=http://github.com/sebastian/about/2021/02/15/SpringBoot-refresh/"
+                        aria-label="Share on Google+"
+                    >
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/avatar.png" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Sebastian Getts</h4>
+        
+            <div id="about-card-bio"><p>I write code to enrich and ease life of others.</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Software Engineer</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br/>
+                Shenzhen China
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover-v1.2.0.jpg');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-jsoeqoqa2ajw9nwj0xf5gmftvb2jhopk3sxu8iodabvev2jdlmr0zsitv3jm.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+
+
+
+
+    </body>
+</html>

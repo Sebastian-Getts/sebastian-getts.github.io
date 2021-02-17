@@ -224,6 +224,147 @@
                 <section class="postShorten-group main-content-wrap">
     
     
+    <article class="postShorten postShorten--thumbnailimg-right">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2020/01/12/uml/"
+                            aria-label=": uml"
+                        >
+                            uml
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2020-01-12T23:14:16+08:00">
+	
+		    Jan 12, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Utils/">Utils</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-excerpt">
+                    <p>The <strong>Unified Modeling Language(UML)</strong> is a general-purpose, developmental, modeling language in the field of software engineering that is intended to provide a standard way to visualize the design of a system.</p>
+                    
+                        <a
+                            href="/2020/01/12/uml/"
+                            class="postShorten-excerpt_link link"
+                            aria-label=": uml"
+                        >
+                            Continue reading
+                        </a>
+                        
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
+    <article class="postShorten postShorten--thumbnailimg-bottom">
+        <div class="postShorten-wrap">
+            
+            <div class="postShorten-header">
+                <h1 class="postShorten-title">
+                    
+                        <a
+                            class="link-unstyled"
+                            href="/2019/12/03/kafka/"
+                            aria-label=": kafka"
+                        >
+                            kafka
+                        </a>
+                    
+                </h1>
+                <div class="postShorten-meta">
+    <time datetime="2019-12-03T22:34:16+08:00">
+	
+		    Dec 03, 2019
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/MiddleWare/">MiddleWare</a>
+
+
+    
+</div>
+
+            </div>
+            
+                <div class="postShorten-content">
+                    <p>卡夫卡，消息中间件，注意同类型的异同。</p>
+<!-- mroe -->
+
+<h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p><code>分布式</code>的基于<code>发布、订阅</code>的<code>消息队列</code>（Message Queue)，主要应用于大数据实时处理领域。</p>
+<h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>一个场景，用户注册某网站时填写个人信息，需要短信验证码，这时页面响应，有两种模式：</p>
+<ol>
+<li>同步：用户填写信息，提交（信息入库），触发短信发送接口，发送短信，页面反馈给用户</li>
+<li>异步：用户填写信息，提交（信息入库），页面反馈给用户，同时触发接口，发送短信</li>
+</ol>
+<p>消息队列的主要特点：解耦、削峰</p>
+<h3 id="消息队列的两种模式"><a href="#消息队列的两种模式" class="headerlink" title="消息队列的两种模式"></a>消息队列的两种模式</h3><ol>
+<li><p>点对点模式: 消费者主动拉取数据，消息收到后信息清除。消息生产者生产消息发送到Queue中，然后消息消费者从Queue中取出并且消费消息，消息被消费后Queue中不再有存储。。。。。Queue支持存在多个消费者，但是对一个消息而言，只会有一个消费者可以消费。<br> 消息不能复用，比如A生产消息，B消费消息，此时如果C也想消费A的消息，那么只能让A再开一个队列让C接受。<code>只是消息队列，不是消息的存储系统</code>（一对一）</p>
+</li>
+<li><p>发布订阅模式：消费者消费数据后不会清除消息。相当于消息生产者将消息发布到topic中，同时有多个消息消费者（订阅）消费该消息。发布到topic的消息会被所有订阅者消费。（一对多）</p>
+<ol>
+<li>队列主动推送</li>
+<li>消费者主动拉取</li>
+</ol>
+<ul>
+<li><p>不想要的消息？？</p>
+</li>
+<li><p>推送速度如何确定？</p>
+<p>而卡夫卡属于消费者拉取。所以卡夫卡内有个<code>长轮询</code>来不断地问topic内有没有消息。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="基础架构"><a href="#基础架构" class="headerlink" title="基础架构"></a>基础架构</h2><p>生产者、消费者、kafka集群。(集群就是消息暂停的地方)</p>
+<ol>
+<li>集群中，分布式，多台服务器。服务器中的broker就是卡夫卡的进程。broker中还有组件：主题。主题将消息分类。partition提高卡夫卡的负载能力和并发度。有leader和follower，后者做数据冗余，提升安全性，且前后者不会出现在同一台服务器。生产者只会寻找leader。主题：分区+主副本。</li>
+<li>消费者，有消费者组，将多个消费者用一个组名。<code>一个分区只能被一个消费者组内的某一个消费者消费</code>。消费者组可以提高消费能力。并发度最好的时候就是消费者个数与分支数相等。</li>
+<li>zookeeper，集群要正常工作就要依赖zookeeper，要想多台装有卡夫卡的机器组成集群，只要他们所用的zookeeper是同一套集群就ok了。除了帮卡夫卡存贮信息外还存储消费到何处的位置信息。（0.9版本之前存才zk，之后存在kafka（存在磁盘，默认7天）。目的都一样：记住消费到的位置）</li>
+</ol>
+<h2 id="安装部署"><a href="#安装部署" class="headerlink" title="安装部署"></a>安装部署</h2>
+                    
+                        
+
+
+                    
+                    
+                        <p>
+                            <a
+                                href="/2019/12/03/kafka/#post-footer"
+                                class="postShorten-excerpt_link link"
+                                aria-label=""
+                            >
+                                Comment and share
+                            </a>
+                        </p>
+                    
+                </div>
+            
+        </div>
+        
+    </article>
+    
+    
     <article class="postShorten postShorten--thumbnailimg-bottom">
         <div class="postShorten-wrap">
             
