@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            mq |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">mq</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2020-07-20 21:04:40
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/middleware/">middleware</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/activemq/">activemq</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>mq的出现是大势所趋，也一定是为了解决某方面的问题，从这里入手，可以综合的了解所有mq的异同。</p>
+<span id="more"></span>
+
+<h1 id="MQ的引入"><a href="#MQ的引入" class="headerlink" title="MQ的引入"></a>MQ的引入</h1><p>模拟几个场景：</p>
+<ol>
+<li><p><code>学生模块</code>和<code>老师模块</code>。功能：学生向老师抛出问题，老师反馈给学生答案。老师一次只能给一个学生解答问题，这样一来学生数量很多的话就会给后续等待的学生到成堵塞、浪费资源。同时，众多的学生与老师之间形成了耦合。</p>
+<p>解决方式：引入<code>班长模块</code>，学生将问题都抛给班长（需要定义格式），班长不做解答，只做问题的记录，这样学生将问题抛出后不用等待。班长收集问题后，将问题给老师模块，老师依次解答。这样解决了学生与老师之间的耦合，也避免了众多学生的等待浪费。</p>
+</li>
+<li><p><code>系统A</code>需要发送数据给其他系统，已经完成了给B、C发送的功能，发送给每个系统的数据可能有差异，因此发送前会对数据进行组装。</p>
+<p>上线后又新增了一个需求，<code>D</code>也要接收<code>A</code>的数据，__此时就需要修改A系统，让他感知到D的存在__，这时就暴露出一个问题：每接入一个下游系统，都需要对<code>A</code>进行改造，开发、联调效率低，耦合严重，增加<code>A</code>的负担。</p>
+</li>
+</ol>
+<h2 id="好处"><a href="#好处" class="headerlink" title="好处"></a>好处</h2><ul>
+<li><p>解决耦合  当新的模块接进来时，可以做到代码改动最小</p>
+</li>
+<li><p>异步模型  “早上下单，下午收货“，提升整体系统的吞吐能力</p>
+</li>
+<li><p>削峰  相当于流量缓冲池，可以让后端系统按照自身吞吐能力进行消费，不被冲跨</p>
+</li>
+</ul>
+<h1 id="订阅模式"><a href="#订阅模式" class="headerlink" title="订阅模式"></a>订阅模式</h1><table>
+<thead>
+<tr>
+<th>比较项目</th>
+<th>Topic模式队列</th>
+<th>Queue模式队列</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工作模式</td>
+<td>”订阅-发布“模式，如果当前没有订阅者，消息将会被丢弃，如果有多个订阅者，都会被分发。</td>
+<td>”负载均衡“模式。如果当前没有消费者，消息也不会被丢弃。如果有多个消费者，那么消息也只会发送给其中一个消费者（轮寻着发）。一对一（端对端）。</td>
+</tr>
+<tr>
+<td>有无状态</td>
+<td>无状态</td>
+<td>Queue数据默认会在mq服务器上以文件形式保存</td>
+</tr>
+<tr>
+<td>传递完整性</td>
+<td>如果没有订阅者，消息会被丢弃。不完整。</td>
+<td>消息不会丢弃</td>
+</tr>
+<tr>
+<td>处理效率</td>
+<td>由于消息要按照订阅者的数量进行复制，所以处理性能会随着订阅者的增加而明显降低，并且还要结合不同消息协议、自身的性能差异</td>
+<td>由于一条信息只发送给一个消费者，所以性能与消费者数量无关。但是不同消息协议的具体性能也是有差异的</td>
+</tr>
+</tbody></table>
+<h1 id="JMS"><a href="#JMS" class="headerlink" title="JMS"></a>JMS</h1><p>Java消息服务，Java Message Service，JavaEE中的一套规范，指的是两个应用程序之间进行异步通信的API，它为标准消息协议i和消息服务提供了一组通用接口，包括创建、发送、读取消息等，用于支持Java应用程序开发。</p>
+<p>实现JMS接口和规范的消息中间件，即我们的MQ服务器。</p>
+<h2 id="MESSAGE"><a href="#MESSAGE" class="headerlink" title="MESSAGE"></a>MESSAGE</h2><p>JMS message的组成：消息头 + 消息体 + 消息属性</p>
+<h3 id="消息头"><a href="#消息头" class="headerlink" title="消息头"></a>消息头</h3><p>记录常用的</p>
+<ul>
+<li><p>JMSDestination 消息发送的目的地，Queue或Topic</p>
+</li>
+<li><p>JMSDeliveryMode 持久或非持久（消息的持久化）。持久话能让数据更可靠，即JMS出现故障的话数据也不会丢失，会在服务器恢复之后再次传递。</p>
+</li>
+<li><p>JMSExpiration 过期时间，过期时间之后消息还没被发出去，就清除</p>
+</li>
+<li><p>JMSPriority 优先级，0-4普通，5-9加急，不严格按照顺序，但加急一定高于普通</p>
+</li>
+<li><p>JMSMessgeID 唯一ID，判断是否重复消费，幂等性</p>
+</li>
+</ul>
+<h3 id="消息体"><a href="#消息体" class="headerlink" title="消息体"></a>消息体</h3><p>封装具体消息数据，5种格式。（使用频率高）</p>
+<ul>
+<li><p>TextMessage 普通字符串消息 （使用频率高）</p>
+</li>
+<li><p>MapMessage map类型消息，key为String类型，值为Java基本数据类型</p>
+</li>
+<li><p>BytesMessage 二进制数组消息</p>
+</li>
+<li><p>StreamMessage 流</p>
+</li>
+<li><p>ObjectMessage 可序列化的Java对象</p>
+</li>
+</ul>
+<p>发送和接受的消息类型必须一致。</p>
+<h3 id="消息属性"><a href="#消息属性" class="headerlink" title="消息属性"></a>消息属性</h3><p>如果需要除消息头字段以外的值，那么可以使用消息属性。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">TextMessage tm = session.createTextMessage(<span class="string">&quot;wa wa&quot;</span>);</span><br><span class="line">tm.setStringProperty(<span class="string">&quot;c01&quot;</span>,<span class="string">&quot;vip&quot;</span>); <span class="comment">// 增加属性</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">TextMessage tms = (TextMessage) messge;</span><br><span class="line">System.out.println(tms.getStringProperty(<span class="string">&quot;c01&quot;</span>)); <span class="comment">// 接收</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h1><p>MQ挂了，消息的持久话和丢失的情况如何？一般有<strong>三个特征</strong>来保障：持久化、事务、签收，其中<strong>事务偏生产者，签收偏消费者</strong>。此外对于对于宕机，还有<strong>多节点集群</strong>。</p>
+<h2 id="持久化-PERSISTENT"><a href="#持久化-PERSISTENT" class="headerlink" title="持久化 PERSISTENT"></a>持久化 PERSISTENT</h2><p>参考redis的持久化（有rdb和aof），消息也有类似的辅助。</p>
+<h3 id="QUEUE"><a href="#QUEUE" class="headerlink" title="QUEUE"></a>QUEUE</h3><h4 id="参数设置"><a href="#参数设置" class="headerlink" title="参数设置"></a>参数设置</h4><ol>
+<li><p>非持久 服务器宕机，消息不存在</p>
+<blockquote>
+<p>messaegeProducer.setDeliveryMode(DeliveryMode.<em>NON_PRESISTENT</em>);</p>
+</blockquote>
+</li>
+<li><p>持久化 服务器宕机后消息依然存在</p>
+<blockquote>
+<p>messageProducer.setDelieveryMode(DeliveryMode.<em>PRESISTENT</em>);</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="模拟场景"><a href="#模拟场景" class="headerlink" title="模拟场景"></a>模拟场景</h4><p>非持久化时，当发布者在队列发布了消息，之后将activeMQ服务器重启，MQ服务器中的消息会丢失。</p>
+<p>持久化时，上述操作后，数据依然存在。</p>
+<p>在队列中，如果<strong>不显示标注持久</strong>，<strong>默认持久化</strong>，因为可靠性是优先考虑的因素。</p>
+<p>持久、事物、签收</p>
+<h3 id="TOPIC"><a href="#TOPIC" class="headerlink" title="TOPIC"></a>TOPIC</h3><p>对于topic，先启动订阅再启动生产，否则没有意义（没人订阅，发送的消息都是废消息）。持久化topic类似于订阅号：</p>
+<ol>
+<li><p>先运行一次消费者，等于向MQ注册</p>
+</li>
+<li><p>然后再运行生产者发送信息</p>
+</li>
+<li><p>消费者一定会收到订阅消息。不在线的话下次连接时会接收。</p>
+</li>
+</ol>
+<h2 id="事务-TRANSACTION"><a href="#事务-TRANSACTION" class="headerlink" title="事务 TRANSACTION"></a>事务 TRANSACTION</h2><p>数据库的事务、ACID、隔离级别</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建session的第一个参数即 事务是否开启</span></span><br><span class="line">Session session = connection.createSession(<span class="keyword">false</span>, Session.AUTO_ACKNOWLEDGE);</span><br></pre></td></tr></table></figure>
+
+<h3 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h3><ul>
+<li><p>false 关闭事务，只要执行<code>send</code>就进入到队列中</p>
+</li>
+<li><p>true 开启事物，先执行<code>send</code>再执行<code>commit</code>，消息才被真正提交到队列中。</p>
+</li>
+</ul>
+<p>对于事物的true，为何多此一举？保证事务的高可用、容错性，可以回滚。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="comment">// ok session.commit;</span></span><br><span class="line">&#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">    <span class="comment">// error</span></span><br><span class="line">    session.rollback();</span><br><span class="line">&#125;<span class="keyword">finally</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">null</span> != session)&#123;</span><br><span class="line">        session.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h3><p>创建session时将事务改为<code>true</code>，同样需要<code>commit</code>，否则事务会被重复消费。</p>
+<h2 id="签收-ACKNOWLEDGE"><a href="#签收-ACKNOWLEDGE" class="headerlink" title="签收 ACKNOWLEDGE"></a>签收 ACKNOWLEDGE</h2><p>分为事务和非事务两种情况</p>
+<h4 id="非事务"><a href="#非事务" class="headerlink" title="非事务"></a>非事务</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建session的第个参数即 签收类型</span></span><br><span class="line">Session session = connection.createSession(<span class="keyword">false</span>, Session.AUTO_ACKNOWLEDGE);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>自动签收（默认）   <strong>AUTO_ACKNOWLEDGE</strong>  （使用频率高）</p>
+</li>
+<li><p>手动签收 <strong>CLIENT_ACKNOWLEDGE</strong> （使用频率高）</p>
+</li>
+<li><p>允许重复消息 <strong>DUPS_OK_ACKNOWLEDGE</strong></p>
+</li>
+</ul>
+<p>手动签收时需要手动标记，否则会造成重复消费：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TextMessage tm = (TextMessage)messageConsumer.receive(<span class="number">4000L</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">null</span> != tm)&#123;</span><br><span class="line">    tm.acknowledge();</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建session的第个参数即 签收类型</span></span><br><span class="line">Session session = connection.createSession(<span class="keyword">true</span>, Session.AUTO_ACKNOWLEDGE);</span><br></pre></td></tr></table></figure>
+
+<p>有事务就需要<code>commit</code>。</p>
+<h2 id="点对点"><a href="#点对点" class="headerlink" title="点对点"></a>点对点</h2><p>基于队列，生产者发消息到队列，消费者从队列接收消息，队列的存在使得消息的<strong>异步传输</strong>成为可能。类比平时的即时通讯工具。</p>
+<ul>
+<li><p>如果在<strong>Session</strong>关闭时有部分消息已被收到但还没有签收（<strong>acknowledge</strong>)，那当消费者下次连接到同样的队列时，消息会被再次接收。（不会丢失）</p>
+</li>
+<li><p>队列可以长久地保存消息直到消费者收到消息。<strong>消费者不需要因为再次担心消息丢失而时刻和队列保持激活的连接状态</strong>，充分体现了异步传输模式的优势。</p>
+</li>
+</ul>
+<h2 id="发布订阅"><a href="#发布订阅" class="headerlink" title="发布订阅"></a>发布订阅</h2><p>JMS Pub/Sub模型。定义了如何向一个内容节点发布和订阅消息，这些节点被称作<strong>topic</strong>，主题可以被认为是消息的传输中介，publisher发布消息到主题，subscribe从主题订阅消息。主题使得publisher和subscribe保持互相独立，不需要接触即可保证消息的传送。</p>
+<h3 id="非持久"><a href="#非持久" class="headerlink" title="非持久"></a>非持久</h3><p>对于非持久订阅，只有当客户端处于激活状态，也就是和MQ保持连接状态才能收到发送到某个主题的消息。如果消费者处于离线状态，生产者发生发送的主题消息将会丢失作废，消费者永远不会收到。所以消费者要先注册才能接受到发布。</p>
+<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><p>客户端先向MQ注册一个自己的身份ID识别号，当这个客户端处于离线时，生产者会为这个ID保存所有发送到主题的消息，当客户再次连接到MQ时，MQ会根据消费者的ID得到所有当自己处于离线时发送到主题的消息（即 可以恢复、派送未签收的消息）。</p>
+<h1 id="BROKER"><a href="#BROKER" class="headerlink" title="BROKER"></a>BROKER</h1><p>集群、配置时会用到。</p>
+<p>相当于一个ActiveMQ服务器<strong>实例</strong>，实现了用代码的形式启动ActiveMQ将MQ嵌入到Java代码中，以便随时用随时启动（用的时候再启动，这样节省资源、保证可靠性）。</p>
+<p>之前会在linux服务器上启动，而在这里，是将MQ装在了代码里，MQ是一个实例。  类比springboot内嵌tomcat.</p>
+<h2 id="消息发送模式"><a href="#消息发送模式" class="headerlink" title="消息发送模式"></a>消息发送模式</h2><p>ActiveMQ支持同步、异步两种发送的模式将消息发送到broker，模式的选择对发送延时有巨大影响，使用异步发送可以显著的提高发送的性能。</p>
+<p><code>ActiveMQ默认使用异步发送的模式</code>，<strong>同步发送有两种情况</strong>：1. 是明确指定使用同步发送。2. 在未使用事务的情况下发送持久化的消息。第二种情况是特别要注意的，每次发送都会阻塞producer直到broker返回一个确认，表示消息已经被安全地持久化到磁盘，确认机制提供了消息安全的保障，同时阻塞客户端带来了很大的延时。</p>
+<p>异步发送可以最大化producer端的发送效率，适合发送消息比较密集的情况下使用，提升producer性能的情况下，也有一定的弊端，就是消耗较多client端内存同时，也会导致broker端性能消耗增加（不停地发消息，能不累么）；此外，它也不能保证消息100%地发送成功，需要容忍消息丢失的可能。很多高性能的应用，<code>允许在失败的情况下有少量的数据丢失</code>。</p>
+<h1 id="ACTIVEMQ的传输协议"><a href="#ACTIVEMQ的传输协议" class="headerlink" title="ACTIVEMQ的传输协议"></a>ACTIVEMQ的传输协议</h1><p>Q: 默认的61616端口如何更改？生产上的链接协议如何配置的，使用tcp么？</p>
+<p>调优：使用NIO传输协议</p>
+<p>支持的通讯协议：TCP, NIO, UDP, SSL, VM……（对于java，主要使用前两个）</p>
+<table>
+<thead>
+<tr>
+<th>协议</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TCP</td>
+<td>默认的协议，性能相对可以</td>
+</tr>
+<tr>
+<td>NIO</td>
+<td>基于TCP协议之上的，进行了扩展和优化</td>
+</tr>
+<tr>
+<td>HTP(s)</td>
+<td>基于HTTP(s)</td>
+</tr>
+</tbody></table>
+<h2 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h2><p>要换为NIO，需要修改<code>activemq.xml</code>配置文件。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">broker</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line">        <span class="tag">&lt;<span class="name">transportConnectors</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">transportConnector</span> <span class="attr">name</span>=<span class="string">&quot;nio&quot;</span> <span class="attr">uri</span>=<span class="string">&quot;nio://192.168.111.136&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">transportConnectors</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="name">broker</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在消费者、生产者修改代码，指定传输协议：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> stati <span class="keyword">final</span> String ACTIVEMQ_URL = <span class="string">&quot;nio://192.168.111.136&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    ActiveMQConnectionFactory af = <span class="keyword">new</span> ActiveMQConnectionFactory(ACTIVEMQ_URL);</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="增强"><a href="#增强" class="headerlink" title="增强"></a>增强</h3><p>Q: uri以”nio“开头，表示这个端口使用以TCP协议为基础的NIO网络IO模型，但是这样的设置方式，只能使这个端口支持<code>openwire（TCP）</code>，如何让这个端口支持NIO，又支持多个协议呢？</p>
+<p>默认是<code>BIO+TCP</code>，目前是<code>NIO+TCP</code>，那么如何做到<code>NIO+TCP/Mqtt/stomp</code>。</p>
+<p>A: 开启多协议支持，用<code>auto</code>关键字，<a class="link"   target="_blank" rel="noopener" href="https://activemq.apache.org/auto" >reference<i class="fas fa-external-link-alt"></i></a>。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">transportConnector</span> <span class="attr">name</span>=<span class="string">&quot;auto&quot;</span> <span class="attr">uri</span>=<span class="string">&quot;auto://localhost:5761&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>note:</strong> 在activeMQ后台配置面板的<code>Network</code>可以查看开启的网络协议。</p>
+<h1 id="ACTIVEMQ的存储和可持久化"><a href="#ACTIVEMQ的存储和可持久化" class="headerlink" title="ACTIVEMQ的存储和可持久化"></a>ACTIVEMQ的存储和可持久化</h1><p>对于上面的提到的节点（事务、持久、签收），他们都是MQ自带的，不能保证自身故障时的持久，这里提到的可持久化的目的是将数据保存在另外一台机器做备份，达到物理隔离，完成高可用。所以为了避免意外宕机后丢失信息，需要做到重启后可以恢复消息队列，消息系统一般都会<code>采用持久化机制</code>（所有MQ都会这样）：在发送者将消息发送出去后，消息中心首先将消息存储到本地数据文件、内存数据库或者远程数据库等，再试图将消息发送给接收者，成功则将消息从存储中删除，失败i则继续尝试发送；如果是重启，消息中心启动后首先检查指定的存储位置，如果有未发送成功的消息，则需要把消息发送出去。</p>
+<p>主要介绍两个DB：<code>KahaDB</code>, <code>LevelDB</code>, <code>JDBC</code></p>
+<p>Q: AMQ持久化机制</p>
+<h2 id="KahaDB"><a href="#KahaDB" class="headerlink" title="KahaDB"></a>KahaDB</h2><p>基于日志文件，从ActiveMQ5.4开始作为默认的持久化插件（相当于Redis的aof），记录做了哪些操作。</p>
+<p>在配置文件中，有：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">persistenceAdapter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">kahaDB</span> <span class="attr">directory</span>=<span class="string">&quot;$&#123;activemq.data&#125;/kahadb&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">persistenceAdpter</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="存储原理"><a href="#存储原理" class="headerlink" title="存储原理"></a>存储原理</h3><p>reference <a class="link"   target="_blank" rel="noopener" href="https://activemq.apache.org/kahadb" >here<i class="fas fa-external-link-alt"></i></a></p>
+<p>可用于任何场合，提高了性能和恢复能力。消息存储使用一个<strong>事务日志</strong>和一个<strong>索引文件</strong>（存储所有地址）。</p>
+<p>Kahadb在消息保存目录中只有4类文件和一个lock：db-1.log, db.data, db.free, db.redo, lock. （4个文件1把锁）</p>
+<h4 id="db-lt-Number-gt-log"><a href="#db-lt-Number-gt-log" class="headerlink" title="db&lt;Number&gt;.log"></a>db&lt;Number&gt;.log</h4><p>存储消息到预定义大小的数据记录文件中，Number初始为1，。当数据文件已满时，一个新的文件会随之创建。当不再有引用到数据文件中的任何消息时，文件会被删除或归档（自我空间清理）。</p>
+<h4 id="db-data"><a href="#db-data" class="headerlink" title="db.data"></a>db.data</h4><p>包含了持久化的<code>BTree索引</code>，索引了消息数据记录中的消息，它是消息的索引文件，本质上是B-Tree，使用B-Tree作为索引指向<code>db-\&lt;Number&gt;.log</code>里面存储的消息。</p>
+<h4 id="db-free"><a href="#db-free" class="headerlink" title="db.free"></a>db.free</h4><p>当前<code>db.data</code>文件里哪些页面是空闲的，文件具体内容是所有空闲页的<strong>ID</strong>. 类比linux的bash命令<code>free</code>。</p>
+<h4 id="db-redo"><a href="#db-redo" class="headerlink" title="db.redo"></a>db.redo</h4><p>用来进行消息恢复，如果KahaDB消息存储在强制退出后启动，用于恢复BTree索引。</p>
+<h4 id="lock"><a href="#lock" class="headerlink" title="lock"></a>lock</h4><p>相当于mysql中的悲观锁。表示当前获得kahadb读写权限的broker。</p>
+<h2 id="JDBC"><a href="#JDBC" class="headerlink" title="JDBC"></a>JDBC</h2><p>主要。将数据放入mysql/oracle中，这是对于长时间持久化存储，推荐用jdbc，特别是带了Journal的。缺点是有点慢。kahaDB是将服务器做本地数据库，JDBC是将他放入另外一个磁盘（类似云盘），相对来说更安全。</p>
+<h2 id="LevelDB"><a href="#LevelDB" class="headerlink" title="LevelDB"></a>LevelDB</h2><h2 id="JDBC-Message-store-with-ActiveMQ-Journal"><a href="#JDBC-Message-store-with-ActiveMQ-Journal" class="headerlink" title="JDBC Message store with ActiveMQ Journal"></a>JDBC Message store with ActiveMQ Journal</h2><p>主要。</p>
+<h1 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h1><ol>
+<li><p>引入消息队列后该如何保证其高可用性</p>
+</li>
+<li><p>异步投递Async Sends</p>
+</li>
+<li><p>延迟投递和定时投递</p>
+</li>
+<li><p>分发策略</p>
+</li>
+<li><p>ActiveMQ消费重试机制</p>
+</li>
+<li><p>死信队列</p>
+</li>
+<li><p>如何保证消息不被重复消费呢？谈谈幂等性问题</p>
+</li>
+</ol>
+<h2 id="高可用"><a href="#高可用" class="headerlink" title="高可用"></a>高可用</h2><p>zookeeper + (replicated-leveldb-store)的主从集群，起码非单机版，是集群的。</p>
+<h2 id="异步投递"><a href="#异步投递" class="headerlink" title="异步投递"></a>异步投递</h2><p>如何确认发送成功？ </p>
+<p>在消息发送完后接收回调。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">ActiveMQConnectionFacotry acf = <span class="keyword">new</span> ActiveMQConnectionFactory(URL);</span><br><span class="line"><span class="comment">// 设置为异步发送消息</span></span><br><span class="line">acf.setUseAsyncSend(<span class="keyword">true</span>);</span><br><span class="line">ActiveMQMessageProducer amp = (ActiveMQMessageProducer)session.createProducer(queue);</span><br><span class="line">...</span><br><span class="line">TextMessage message = session.createTextMessage();</span><br><span class="line"><span class="comment">// 未message设置属性</span></span><br><span class="line">message.setJMSMessageID(UUID.randomUUID().toString());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用带有回调的send方法来发送</span></span><br><span class="line">amp.send(message, <span class="keyword">new</span> AsyncCallback()&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSucces</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        System.out.println(message.getJMSmessageID+<span class="string">&quot; succeed&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onException</span><span class="params">(JMSException exception)</span></span>&#123;</span><br><span class="line">        <span class="comment">// 拿到属性来确认发送失败的消息</span></span><br><span class="line">        System.out.println(message.getJMSmessageID+<span class="string">&quot; fail&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="延迟投递和定时投递"><a href="#延迟投递和定时投递" class="headerlink" title="延迟投递和定时投递"></a>延迟投递和定时投递</h2><p>参考<a class="link"   target="_blank" rel="noopener" href="http://activemq.apache.org/delay-and-schedule-message-delivery.html" >官网说明<i class="fas fa-external-link-alt"></i></a></p>
+<table>
+<thead>
+<tr>
+<th>Property name</th>
+<th>type</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AMQ_SCHEDULED_DELAY</td>
+<td>long</td>
+<td>延迟投递的时间</td>
+</tr>
+<tr>
+<td>AMQ_SCHEDULED_PERIOD</td>
+<td>long</td>
+<td>重复投递的时间间隔</td>
+</tr>
+<tr>
+<td>AMQ_SCHEDULED_REPEAT</td>
+<td>int</td>
+<td>重复投递次数</td>
+</tr>
+<tr>
+<td>AMQ_SCHEDULED_CRON</td>
+<td>String</td>
+<td>Cron表达式</td>
+</tr>
+</tbody></table>
+<p>在<code>activemq.xml</code>中配置<em>schedulerSupport</em>属性为<em>true</em>且Java代码中封装的辅助消息类型为<em>ScheduledMessage</em>即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> delay = <span class="number">3</span> * <span class="number">1000</span>; <span class="comment">//延迟投递的时间，每3秒</span></span><br><span class="line"><span class="keyword">long</span> period = <span class="number">4</span> * <span class="number">1000</span>;</span><br><span class="line"><span class="keyword">int</span> repeat = <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">TextMessage message = session.createTextMessage();</span><br><span class="line">message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, delay);</span><br><span class="line">message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_PERIOD, delay);</span><br><span class="line">message.setIntProperty(ScheduledMessage.AMQ_SCHEDULED_REPEAT, delay);</span><br><span class="line"></span><br><span class="line">messageProducer.send(mesage);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h2 id="ActiveMQ消费重试机制"><a href="#ActiveMQ消费重试机制" class="headerlink" title="ActiveMQ消费重试机制"></a>ActiveMQ消费重试机制</h2><ul>
+<li><p>哪些情况会引起消息重发？</p>
+</li>
+<li><p>消息重发时间间隔和重发次数</p>
+</li>
+<li><p>有毒消息Posion ACK</p>
+</li>
+</ul>
+<p>reference <a href="activemq.apache.org/redelivery-policy">here</a></p>
+<p>重发：在设置事务后没有进行提交（commit），消息就会被重复消费，这时会触发重发机制，默认被重复消费6次后MQ会把这个消息放入DLQ（Dead Letter Queue）死信队列供开发查看，不会再被消费。</p>
+<h2 id="如何保证消息不被重复消费（幂等性）"><a href="#如何保证消息不被重复消费（幂等性）" class="headerlink" title="如何保证消息不被重复消费（幂等性）"></a>如何保证消息不被重复消费（幂等性）</h2><p><strong>note</strong>: 何时会重复消费？网络延迟造成MQ重试，进而重复消费。</p>
+<ul>
+<li><p>如果是做数据库的插入操作，可以给消息做一个唯一主键，重复消费时会导致主键冲突</p>
+</li>
+<li><p>使用第三方服务来做消费记录。以redis为例，给消息分配一个<strong>全局id</strong>，只要消费过该消息，将&lt;id, message&gt;以K-V形式写入redis，消费者消费前先去redis中查询有没有消费记录即可。</p>
+</li>
+</ul>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2020/07/20/volatile/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">volatile</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/06/12/decorating/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">decorating</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

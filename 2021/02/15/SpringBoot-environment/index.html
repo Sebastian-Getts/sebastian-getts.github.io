@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            SpringBoot environment |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">SpringBoot environment</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2021-02-15 16:19:17
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/springboot/">springboot</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/environment/">environment</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>​        SpringBoot配置文件的相关分析。我们都知道目前SpringBoot的配置文件可以配置文件很简单，支持多环境，有yml和properties，那么他的加载机制是怎样的呢？又是如何读取的？</p>
+<span id="more"></span>
+
+<!--toc-->
+
+<p>前面提到，启动SpringBoot项目分为实例化类SpringApplication和run，在run阶段会准备环境。我们先通过代码看看环境是如何被准备的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> ConfigurableEnvironment <span class="title">prepareEnvironment</span><span class="params">(SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 根据应用类型创建对应的环境</span></span><br><span class="line">    ConfigurableEnvironment environment = getOrCreateEnvironment();</span><br><span class="line">    configureEnvironment(environment, applicationArguments.getSourceArgs());</span><br><span class="line">    ConfigurationPropertySources.attach(environment);</span><br><span class="line">    listeners.environmentPrepared(environment);</span><br><span class="line">    bindToSpringApplication(environment);</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.isCustomEnvironment) &#123;</span><br><span class="line">        environment = <span class="keyword">new</span> EnvironmentConverter(getClassLoader()).convertEnvironmentIfNecessary(environment, deduceEnvironmentClass());</span><br><span class="line">    &#125;</span><br><span class="line">    ConfigurationPropertySources.attach(environment);</span><br><span class="line">    <span class="keyword">return</span> environment;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一个从产生的对象，要将它生产出来一般都离不开创建与初始化，所以也可以将上面的分为这两部分。</p>
+<h1 id="创建环境"><a href="#创建环境" class="headerlink" title="创建环境"></a>创建环境</h1><p>首先我们先看创建环境。<code>getOrCreateEnvironment</code>会根据应用类型初始化相应的环境，条件与之前分析的创建应用上下文的相同，分为：<em>默认</em>，<em>Servlet</em>， <em>REACTIVE</em>。这三个环境的都会继承一个接口<code>ConfigurableEnvironment</code>，我们看看接口都做了什么</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setActiveProfiles</span><span class="params">(String... profiles)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addActiveProfile</span><span class="params">(String profile)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setDefaultProfiles</span><span class="params">(String... profiles)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">MutablePropertySources <span class="title">getPropertySources</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Map&lt;String, Object&gt; <span class="title">getSystemProperties</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">Map&lt;String, Object&gt; <span class="title">getSystemEnvironment</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(ConfigurableEnvironment parent)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到他们后续的抽象类及继承类都是围绕着profile和property来工作的，前者分为默认和激活两个状态，后者用map来存储配置文件中的键值对。</p>
+<h1 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h1><p>配置环境的方法是模板方法，详细分为了<code>property</code>和<code>profile</code>。前者是添加默认配置和命令行配置，后者是选择激活的profile。</p>
+<p>接下来是ConfigurationPropertySources的attach。这个方法会检查特殊字段是否为空 ，然后去做对应的处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String ATTACHED_PROPERTY_SOURCE_NAME = <span class="string">&quot;configurationProperties&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>除了这个，我们还需要了解environment中的propertySource的类型：MutablePropertySource。他的属性是一个<em>CopyOnWriteArrayList</em>实现的线性表，仅此而已，返型是PropertySource对象。</p>
+<p>下面是一个非常重要的处理，监听器的执行。之前提到，执行时会创建相应的event，然后再通过广播去找对应的listener，我们来看看listener <code>ConfigFileApplicationListener</code>被触发后的执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">onApplicationEnvironmentPreparedEvent</span><span class="params">(ApplicationEnvironmentPreparedEvent event)</span> </span>&#123;</span><br><span class="line">    List&lt;EnvironmentPostProcessor&gt; postProcessors = loadPostProcessors();</span><br><span class="line">    <span class="comment">// 把自己也加入到了后置处理器中，因为这个listener也继承了EnvironmentPostProcessor</span></span><br><span class="line">    postProcessors.add(<span class="keyword">this</span>);</span><br><span class="line">    AnnotationAwareOrderComparator.sort(postProcessors);</span><br><span class="line">    <span class="keyword">for</span> (EnvironmentPostProcessor postProcessor : postProcessors) &#123;</span><br><span class="line">        postProcessor.postProcessEnvironment(event.getEnvironment(), event.getSpringApplication());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>响应的事件也如之前所说，都很简洁，这里环境准备的响应首先获取到后置处理器，随后将类本身也加入进去，排序后依次执行后置处理器的方法对环境做处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">List&lt;EnvironmentPostProcessor&gt; <span class="title">loadPostProcessors</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取环境后置处理器的方式与之前的监听器初始化器相同</span></span><br><span class="line">    <span class="keyword">return</span> SpringFactoriesLoader.loadFactories(EnvironmentPostProcessor.class, getClass().getClassLoader());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Environment Post Processors</span></span><br><span class="line"><span class="meta">org.springframework.boot.env.EnvironmentPostProcessor</span>=<span class="string">\</span></span><br><span class="line"><span class="string">org.springframework.boot.cloud.CloudFoundryVcapEnvironmentPostProcessor,\</span></span><br><span class="line"><span class="string">org.springframework.boot.env.SpringApplicationJsonEnvironmentPostProcessor,\</span></span><br><span class="line"><span class="string">org.springframework.boot.env.SystemEnvironmentPropertySourceEnvironmentPostProcessor,\</span></span><br><span class="line"><span class="string">org.springframework.boot.reactor.DebugAgentEnvironmentPostProcessor</span></span><br></pre></td></tr></table></figure>
+
+<p>由于listener本身也是processor（单独把它加入到processor里了），所以我们重点关注这里的后置处理。这部分也是加载配置文件的关键。</p>
+<h2 id="Load"><a href="#Load" class="headerlink" title="Load"></a>Load</h2><p>后置处理也是层层委托</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">addPropertySources</span><span class="params">(ConfigurableEnvironment environment, ResourceLoader resourceLoader)</span> </span>&#123;</span><br><span class="line">    RandomValuePropertySource.addToEnvironment(environment);</span><br><span class="line">    <span class="comment">// 创建loader后调用load方法</span></span><br><span class="line">    <span class="keyword">new</span> Loader(environment, resourceLoader).load();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Set&lt;String&gt; LOAD_FILTERED_PROPERTY;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    Set&lt;String&gt; filteredProperties = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    filteredProperties.add(<span class="string">&quot;spring.profiles.active&quot;</span>);</span><br><span class="line">    filteredProperties.add(<span class="string">&quot;spring.profiles.include&quot;</span>);</span><br><span class="line">    LOAD_FILTERED_PROPERTY = Collections.unmodifiableSet(filteredProperties);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">load</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// defaultProperties</span></span><br><span class="line">    FilteredPropertySource.apply(<span class="keyword">this</span>.environment, DEFAULT_PROPERTIES, LOAD_FILTERED_PROPERTY,</span><br><span class="line">                                 (defaultProperties) -&gt; &#123;</span><br><span class="line">                                     <span class="keyword">this</span>.profiles = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">                                     <span class="keyword">this</span>.processedProfiles = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">                                     <span class="keyword">this</span>.activatedProfiles = <span class="keyword">false</span>;</span><br><span class="line">                                     <span class="keyword">this</span>.loaded = <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</span><br><span class="line">                                     initializeProfiles();</span><br><span class="line">                                     <span class="keyword">while</span> (!<span class="keyword">this</span>.profiles.isEmpty()) &#123;</span><br><span class="line">                                         Profile profile = <span class="keyword">this</span>.profiles.poll();</span><br><span class="line">                                         <span class="keyword">if</span> (isDefaultProfile(profile)) &#123;</span><br><span class="line">                                             addProfileToEnvironment(profile.getName());</span><br><span class="line">                                         &#125;</span><br><span class="line">                                         <span class="comment">// 重载load</span></span><br><span class="line">                                         load(profile, <span class="keyword">this</span>::getPositiveProfileFilter,</span><br><span class="line">                                              addToLoaded(MutablePropertySources::addLast, <span class="keyword">false</span>));</span><br><span class="line">                                         <span class="keyword">this</span>.processedProfiles.add(profile);</span><br><span class="line">                                     &#125;</span><br><span class="line">                                     <span class="comment">// 重载load</span></span><br><span class="line">                                     load(<span class="keyword">null</span>, <span class="keyword">this</span>::getNegativeProfileFilter, addToLoaded(MutablePropertySources::addFirst, <span class="keyword">true</span>));</span><br><span class="line">                                     addLoadedPropertySources();</span><br><span class="line">                                     applyActiveProfiles(defaultProperties);</span><br><span class="line">                                 &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>上面的方法看着长，别被lambda吓到了，实际上是调用了apply方法，后面那个只是一个consumer参数。也就是在这个listener里解析了properties以及yml，定义了解析顺序和规则。里面有多个重载的load方法，在load方法内还会遍历地用<em>propertySourceLoaders</em>中的loader去调用load方法，propertySourceLoader是一个接口，有两个实现类：<code>PropertiesPropertySourceLoader</code>和<code>YamlPropertySourceLoader</code>。</p>
+<h2 id="自定义"><a href="#自定义" class="headerlink" title="自定义"></a>自定义</h2><p>我们知道，加载了postprocessor后会触发processor，如果要自定义配置文件或者指定路径呢？利用他的SPI机制，我们可以在在META-INF下创建spring.factories，在里面按照给定的key加上我们实现了<code>EnvironmentPostProcessor</code>的类。可以参考给出的类来写，将配置文件加入列表即可。</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2021/02/15/SpringBoot-refresh/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">SpringBoot refresh</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2021/02/15/SpringBoot-startup/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">SpringBoot startup</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

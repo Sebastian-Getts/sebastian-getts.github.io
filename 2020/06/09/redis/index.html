@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            redis |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">redis</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2020-06-09 21:54:01
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/middleware/">middleware</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/redis/">redis</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/nosql/">nosql</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>常用redis，深入了解redis的性能和瓶颈。<a href="https://github.com/antirez/redis">reference</a></p>
+<span id="more"></span>
+
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>redis: <strong>内存</strong>中的数据结构存储系统，可以用作<strong>数据库</strong>、<strong>缓存</strong>和<strong>消息中间件</strong>，nosql的一种。</p>
+<h2 id="nosql"><a href="#nosql" class="headerlink" title="nosql"></a>nosql</h2><p>关系型数据库不够用，出来了nosql。。。</p>
+<ol>
+<li>一开始单体应用，小用户量能承受。但是当体量变大时：<ul>
+<li>数据量大</li>
+<li>数据的索引大</li>
+<li>访问量大</li>
+</ul>
+</li>
+<li>读写分离思想（垂直拆分），写一个库，其他库从这个库做同步，但是数据库大部分其实都是读，把刚查到的进行缓存，这样下一个要查且数据没变的话就用缓存中的数据。 添加一层<strong>memcache</strong>缓存</li>
+<li>集群（水平拆分）：上面的读写分离copy多份。</li>
+</ol>
+<p>mysql早些年使用的是MyISAM引擎，特性是<strong>表锁</strong>（查询某个数据会将整个表锁起来，高并发下性能下滑），现在使用的是Innodb，改为了<strong>行锁</strong>。</p>
+<p>不能用mysql做实时存储和访问、个人信息、地理位置（如微信热门10万+的文章记录等）。</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ol>
+<li>易于扩展，数据间没有关系（key value键值对），好比java面向接口，便于解偶。</li>
+<li>大数据量也高性能（写8万次/秒，读11万次/秒）</li>
+<li>多样型，不需要事先设计数据库</li>
+<li>没有固定的查询语言；最终一致性</li>
+<li>键值对存储，列存储，文档存储，图形存储库（社交）</li>
+<li>高性能、高可用、高可扩</li>
+<li>CAP、BASE，异地多活</li>
+<li>多样、实时、并发（Volume, Variety, Veiocity）</li>
+</ol>
+<p>与关系型一起使用。</p>
+<p>商品的描述、评论（文字比较多的）：文档型数据库（MongoDB）</p>
+<p>商品的基本信息（价格、商家、名称）：MySQL</p>
+<p>图片：FastDFS, GFS, HDFS, OSS…</p>
+<p>商品热门的波段信息：内存数据库（Redis，Tair，Memcache……）</p>
+<p>==没有什么不是加以层解决不了的==： 统一服务层。</p>
+<h3 id="文档型数据库"><a href="#文档型数据库" class="headerlink" title="文档型数据库"></a>文档型数据库</h3><p>MongoDB，介于关系型和非关系型数据库中的中间产品，非关系型数据库中功能最丰富的。</p>
+<h3 id="KV键值对"><a href="#KV键值对" class="headerlink" title="KV键值对"></a>KV键值对</h3><p>Redis，Tair</p>
+<h3 id="列存储数据库"><a href="#列存储数据库" class="headerlink" title="列存储数据库"></a>列存储数据库</h3><p>HBase（大数据）</p>
+<p>分布式文件系统</p>
+<h3 id="图"><a href="#图" class="headerlink" title="图"></a>图</h3><p>类似知识图谱，不是存储图形。主要用于存储社交网络。</p>
+<p>Neo4j，InfoGrid。</p>
+<h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><p>Remote Dictionary Server. C语言编写的。免费，开源，提供多种语言的api。</p>
+<ul>
+<li>内存存储、持久化，但是内存是断电即失，所以持久化很重要（rdb、aof）</li>
+<li>计时器、计数器（浏览量）</li>
+</ul>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>安装后自带的测试工具</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-benchmark -h localhost -p 6379 -100 -n 100000</span><br></pre></td></tr></table></figure>
+
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>默认16个数据库且使用的是第0个。 </p>
+<h3 id="GEOSPATIAL"><a href="#GEOSPATIAL" class="headerlink" title="GEOSPATIAL"></a>GEOSPATIAL</h3><p>地理位置，不仅仅是GET、SET！根据经纬度获取距离。</p>
+<h2 id="springboot集成"><a href="#springboot集成" class="headerlink" title="springboot集成"></a>springboot集成</h2><p>版本&lt;2.0 底层使用的jedis，BIO，直连数据库，多线程下不安全，优化方式是jedis pool连接池。</p>
+<p>版本&gt;2.0 底层使用的lettuce，NIO，采用netty，实例可以在多个线程中进行共享，不存在线程不安全的情况。</p>
+<h2 id="rdb"><a href="#rdb" class="headerlink" title="rdb"></a>rdb</h2><p>为什么会有这个rdb？</p>
+<p>redis的高速查询来源于它的内存存储，由于内存断电即失，可以把rdb作为备份来弥补这个不足。所以rdb即redis databse。但是也不是每次操作都保存，否则性能急速降低，这也带来另一个问题，即最后一个/批操作不会被保存。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">start=&gt;start: start</span><br><span class="line">end=&gt;end: end</span><br><span class="line">condition=&gt;condition: 触发rdb</span><br><span class="line">rdbfile=&gt;inputoutput: dump.rdb</span><br><span class="line">operation=&gt;operation: go on dealing with</span><br><span class="line"></span><br><span class="line">start-&gt;condition</span><br><span class="line">condition(yes)-&gt;rdbfile-&gt;end</span><br><span class="line">condition(no)-&gt;operation-&gt;end</span><br></pre></td></tr></table></figure>
+
+<h4 id="触发机制"><a href="#触发机制" class="headerlink" title="触发机制"></a>触发机制</h4><ol>
+<li>save的规则</li>
+<li>执行flushall</li>
+<li>退出redis</li>
+</ol>
+<p>产生备份，会自动生成一个dump.rdb</p>
+<h4 id="用rdb恢复"><a href="#用rdb恢复" class="headerlink" title="用rdb恢复"></a>用rdb恢复</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">config get dir</span><br></pre></td></tr></table></figure>
+
+<h4 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h4><ol>
+<li>适合大数据</li>
+<li>对数据完整性要求不高（比如90srdb一次，60s的时候宕机，就会造成数据丢失）</li>
+</ol>
+<h4 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h4><ol>
+<li>需要一定的时间间隔进程操作</li>
+<li>fork进程的时候会占用一定的内容空间</li>
+</ol>
+<h2 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h2><p>Append Only File， 将我们的所有命令都记录下来，相当于history，恢复的时候再追加。这是另一种恢复的方法。</p>
+<ul>
+<li>大数据的情况下效率会比较低。</li>
+<li>默认是不开启的。</li>
+</ul>
+<p>开启后会记录操作记录，关闭redis的时候会产生aof文件，如果恶意篡改，redis无法正常启动。</p>
+<p>修复aof文件 <code>redis-check-aof --fix</code></p>
+<h3 id="优点：-1"><a href="#优点：-1" class="headerlink" title="优点："></a>优点：</h3><ol>
+<li>每次修改都同步，文件的完整性更好，默认每秒同步一次，可能会丢失一秒的数据</li>
+<li>从不同步效率最高</li>
+</ol>
+<h3 id="缺点：-1"><a href="#缺点：-1" class="headerlink" title="缺点："></a>缺点：</h3><ol>
+<li>相对于数据文件，aof远大于rdb，修复的速度比rdb慢</li>
+<li>默认是rdb，效率自然高于aof。</li>
+</ol>
+<p><strong>与rdb混合使用</strong></p>
+<h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><p>将一台redis服务器的数据复制到其他的redis服务器，前者称为主节点，后者称为从结点。</p>
+<p>作用：数据冗余、故障恢复、负载均衡（读写分离）、高可用（集群）基石</p>
+<p>reids的容量有限，机器的内存不可能全部用来给redis做存储内存，最大不应该超过20G。</p>
+<p>默认情况下每台redis都是主节点；一个主节点可以有多个从结点，但是一个从结点只能有一个主节点。</p>
+<h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">info replication # 查看当前库的信息</span><br></pre></td></tr></table></figure>
+
+<p>一般情况下只用配置从机即可。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SLAVEOF ip:port # ip:port为主机</span><br></pre></td></tr></table></figure>
+
+<p>上面的是命令配置，只是暂时的。<strong>实际生产应该修改配置文件</strong>，在文件中写主机的地址和密码，主机负责写，从机负责读，主机的所有数据会自动被从机保存。</p>
+<h4 id="如果主机宕机了呢？"><a href="#如果主机宕机了呢？" class="headerlink" title="如果主机宕机了呢？"></a>如果主机宕机了呢？</h4><p>默认情况下，主机挂了以后，用<code>info replication</code>查看剩余机器，从机运行正常，但是没有写操作了。主机恢复后，仍旧正常主从复制。考虑到主机要人工手动恢复、排查故障，仍旧会影响业务。</p>
+<p>更好的情况是，默认从剩余的从机中选择一个作为主机，继续完成写操作。</p>
+<ul>
+<li>全量复制 master将整个数据传送到slaver</li>
+<li>增量复制</li>
+</ul>
+<p>只要重新链接master，一次全量复制将被自动执行</p>
+<h3 id="哨兵模式"><a href="#哨兵模式" class="headerlink" title="哨兵模式"></a>哨兵模式</h3><p>Sentinel（Redis2.8起）后台监控主机是否故障，如果故障了根据投票数自动将从库转为主库。</p>
+<p>哨兵是一个独立的进程。通过发送命令，等待Redis服务器响应，从而监控运行的多个redis实例。为了防止哨兵挂了，还要配置哨兵集群。（如果一主二从，正常应该启动六个进程，加上哨兵的话）</p>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ol>
+<li>集群</li>
+<li>主从切换</li>
+</ol>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><ol>
+<li>不方便在线扩容，一旦到达上线。</li>
+<li>配置麻烦（配置文件的内容很多）。简单的话可以只启动一个哨兵监控主机，会自动检测到从机。</li>
+</ol>
+<h2 id="redis异常处理"><a href="#redis异常处理" class="headerlink" title="redis异常处理"></a>redis异常处理</h2><h3 id="缓存穿透（一直查询不到）"><a href="#缓存穿透（一直查询不到）" class="headerlink" title="缓存穿透（一直查询不到）"></a>缓存穿透（一直查询不到）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">start=&gt;start: request</span><br><span class="line">end=&gt;end: response</span><br><span class="line">condition=&gt;condition: redis缓存中是否存在</span><br><span class="line">op1=&gt;operation: select in mysql</span><br><span class="line">start-&gt;condition</span><br><span class="line">condition(yes)-&gt;end</span><br><span class="line">condition(no)-&gt;op1-&gt;end</span><br></pre></td></tr></table></figure>
+
+<p>如果请求量非常大，redis相当于空白，都去请求到dao层，redis的作用就没了。</p>
+<h4 id="布隆过滤器"><a href="#布隆过滤器" class="headerlink" title="布隆过滤器"></a>布隆过滤器</h4><p>它是一种数据结构，对所有可能查询的参数以hash形式存储，在控制层先进行校验，不符合则丢弃，避免了对底层存储系统的查询压力</p>
+<h4 id="缓存空对象"><a href="#缓存空对象" class="headerlink" title="缓存空对象"></a>缓存空对象</h4><h3 id="缓存击穿（量太大，缓存过期）"><a href="#缓存击穿（量太大，缓存过期）" class="headerlink" title="缓存击穿（量太大，缓存过期）"></a>缓存击穿（量太大，缓存过期）</h3><p>活力集中在一个点（一个热评的点，如微博）。</p>
+<h4 id="加互斥锁"><a href="#加互斥锁" class="headerlink" title="加互斥锁"></a>加互斥锁</h4><h4 id="设置热点数据永不过期"><a href="#设置热点数据永不过期" class="headerlink" title="设置热点数据永不过期"></a>设置热点数据永不过期</h4><h3 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h3><p>在某一个时间段，缓存集中过期失效，可能瞬间把数据库压跨。</p>
+<h4 id="redis高可用"><a href="#redis高可用" class="headerlink" title="redis高可用"></a>redis高可用</h4><h4 id="限流降级"><a href="#限流降级" class="headerlink" title="限流降级"></a>限流降级</h4><h4 id="数据预热"><a href="#数据预热" class="headerlink" title="数据预热"></a>数据预热</h4><p>正式部署前先把可能的数据访问一遍（加入缓存），设置不同的过期时间，让缓存失效的时间尽可能平均。</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2020/06/12/observer/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">observer</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/06/06/heap/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">heap</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

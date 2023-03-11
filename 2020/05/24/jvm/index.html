@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            jvm |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">jvm</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2020-05-24 17:39:25
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/jvm/">jvm</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/summary/">summary</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>associate with juc</p>
+<span id="more"></span>
+
+<!--toc-->
+
+<h1 id="系统图"><a href="#系统图" class="headerlink" title="系统图"></a>系统图</h1><p><img src="https://i.loli.net/2020/06/04/UQfq2lrGu9mLc4C.png" alt="Screenshot from 2020-06-04 20-11-48.png"></p>
+<ul>
+<li>灰色代表线程私有，占用的内存非常少，几乎不存在垃圾回收</li>
+<li>亮色代表存在垃圾回收</li>
+</ul>
+<h1 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h1><p>经过javac编译后，形成的xxx.class文件存在电脑硬盘上，通过类加载器装进JVM并初始化为xxx.Class文件（装载进虚拟机）。只负责加载class文件，将之装载后成为Class文件，放进方法区。</p>
+<blockquote>
+<p>Car.class -&gt; Class Loader -&gt; Car Class -&gt; car1/car2/car3</p>
+</blockquote>
+<p>Car Class是后面car1、car2、car3的模板，后面的三个car也是实例化的产物。</p>
+<p><img src="https://i.loli.net/2020/06/04/EYRbMN1fgIOuHBk.png" alt="Screenshot from 2020-06-04 20-33-54.png"></p>
+<h2 id="种类"><a href="#种类" class="headerlink" title="种类"></a>种类</h2><h3 id="启动类加载器（Bootstrap）"><a href="#启动类加载器（Bootstrap）" class="headerlink" title="启动类加载器（Bootstrap）"></a>启动类加载器（Bootstrap）</h3><p>由C++编写，默认加载一些编写程序比用的东西，比如Object, ArrayList, String等。</p>
+<h3 id="扩展类加载器（Extension）"><a href="#扩展类加载器（Extension）" class="headerlink" title="扩展类加载器（Extension）"></a>扩展类加载器（Extension）</h3><p>Java编写，除了启动类加载器加载核心的东西外，还需要Extension加载入javax等java扩展类。</p>
+<h3 id="应用程序类加载器（AppClassLoader）"><a href="#应用程序类加载器（AppClassLoader）" class="headerlink" title="应用程序类加载器（AppClassLoader）"></a>应用程序类加载器（AppClassLoader）</h3><p>我们编写程序时定义的类所用的加载器</p>
+<h3 id="用户自定义加载器"><a href="#用户自定义加载器" class="headerlink" title="用户自定义加载器"></a>用户自定义加载器</h3><p>定制化开发，不走默认的类加载顺序时，可以继承ClassLoader（抽象）。</p>
+<h2 id="双亲委派"><a href="#双亲委派" class="headerlink" title="双亲委派"></a>双亲委派</h2><p>比如如果需要使用A.java类，需要先去顶部Bootstrap寻找，找不到的话去Extension找，还没有的话去Application中找，还没有的话抛异常。</p>
+<p><strong>Bootstrap</strong> –&gt; <strong>Extension</strong> –&gt; <strong>Application</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">String</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;hello world!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在类java.lang.String中找不到main方法。因为先从Bootstrap中寻找。</p>
+</blockquote>
+<h2 id="沙箱安全机制"><a href="#沙箱安全机制" class="headerlink" title="沙箱安全机制"></a>沙箱安全机制</h2><p><strong>note</strong>: 保证个人编写的代码不污染出厂的jdk代码，并且不同类中使用的Object都是相同的。</p>
+<h2 id="本地方法接口（Native-Interface）"><a href="#本地方法接口（Native-Interface）" class="headerlink" title="本地方法接口（Native Interface）"></a>本地方法接口（Native Interface）</h2><p>融合不同的编程语言为Java所用（即C/C++），在内存中专门开辟了一块区域处理标记为native的代码。目前该方法使用的越来越少了，除非是与硬件相关的应用，如通过java驱动打印机，企业级应用少见。</p>
+<p>异构领域间通信发达，Socket通信或webService。</p>
+<h3 id="Native"><a href="#Native" class="headerlink" title="Native"></a>Native</h3><p>只是一个关键字。只有声明，没有实现，标记需要调用底层C语言函数库或系统。</p>
+<h3 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h3><p>装native方法的栈。在内存中专门开辟了一块区域处理标记为native的代码，登记native方法，在Execution Engine执行时加载本地方法库。</p>
+<h1 id="PC寄存器"><a href="#PC寄存器" class="headerlink" title="PC寄存器"></a>PC寄存器</h1><p>实际是一个指针，线程私有，记录了方法之间的调用和执行情况，类似排班值日表。用来存储指向下一条指令的地址，即将要执行的指令代码。</p>
+<p>是当前线程所执行的字节码的行号指示器。</p>
+<h1 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h1><ul>
+<li>不存在垃圾回收问题</li>
+<li>==线程私有==（想想加锁，不就在方法上/中加的么）</li>
+</ul>
+<p>也叫栈内存，<strong>主管Java程序的运行</strong>，在线程创建时创建，线程结束时结束（释放栈内存）。基本类型的变量、对象的引用变量、实例方法都在栈空间中。</p>
+<h2 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h2><p>在java中的方法装载在虚拟机的栈中叫栈帧。</p>
+<ul>
+<li><p>Local Variables: 输入参数、输出参数以及方法内的变量</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 入参为 x, y， 输出为result，方法内变量为result，均在栈中。</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">    result = x + y;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Operand Stack: 记录出栈、入栈的操作</p>
+</li>
+<li><p>Frame Data: 包括类文件、方法等等</p>
+</li>
+</ul>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>栈中的数据都是以栈帧（Stack Frame）的格式存在，栈帧是一个内存区块，是一个数据集，一个有关方法（Method）和运行期数据的数据集，当一个方法A被调用时就产生了一个栈帧，并被压入到栈中，执行完毕后弹出。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 方法深度调用，把栈撑爆了。 Exception: StackOverflowError 属于错误</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">m1</span><span class="params">()</span></span>&#123;</span><br><span class="line">    m1();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每个方法执行的同时都会创建一个栈帧，用于存储局部变量表、操作数栈、动态链接、方法出口等信息，每一个方法从调度直至执行完毕的过程，就对应着一个栈帧在虚拟机入栈到出栈的过程。栈的大小和具体JVM的实现有关，通常在256K～756K之间。</p>
+<p>栈管运行，堆管存储。</p>
+<h1 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h1><p>class文件被ClassLoader装载进JVM称为Class文件，其实是装进了方法区。方法区是规范，在不同的虚拟机里的实现不一样，最典型的是<code>永久代(PermGen space)</code>和<code>元空间(Metaspace)</code>。</p>
+<ul>
+<li>所有==线程共享==</li>
+<li>存在垃圾回收</li>
+</ul>
+<p>存储每个类的<strong>结构信息</strong>（模板）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> price = <span class="number">1233435</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">park</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;stop ...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例如运行时常量池、字段和方法数据、构造函数和普通方法的字节码内容。</p>
+<p>元空间与永久代最大的区别在于：永久代使用的是jvm的堆内存，但是java8以后的元空间并不在虚拟机中而是<strong>本机物理内存</strong>。因此，元空间的大小仅受本地内存限制，类的元数据放入native memory，字符串池和类的静态变量放入java堆中，这样可以加载多少类的元数据就不再由MaxPermSize控制，而由系统的实际可用空间来控制。</p>
+<p>实例变量存在堆内存中，与方法区无关。i.e.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        Demo demo = <span class="keyword">new</span> Demo();</span><br><span class="line">        demo.hello();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每次new之后都会产生一个hello方法以及变量demo，此时这个实例变量就存在堆（当然）。</p>
+<h1 id="方法区、栈、堆"><a href="#方法区、栈、堆" class="headerlink" title="方法区、栈、堆"></a>方法区、栈、堆</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Person person1 = <span class="keyword">new</span> Person();</span><br><span class="line">Person person2 = <span class="keyword">new</span> Person();</span><br></pre></td></tr></table></figure>
+
+<p>左边的引用变量放在栈中，右边new出来的实例存放在堆中。堆中的实例指向方法区（保证两个不同的实例对象有同样的行为）。</p>
+<p>要保证person1与person2来自同一个类实例化且保持各自的行为，依靠方法区的“模板”。</p>
+<p>hotsopt是使用指针的方式访问对象：java堆中会存放类元数据的地址，类元数据即Class（类的结构信息）。栈中存放的则是对象的地址。即 栈–&gt;堆–&gt;方法区</p>
+<h1 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h1><p>（Java7之前）    一个Jvm实例只存在一个堆内存，堆内存的大小可以调节。类加载器读取了类文件后需要把类、方法、常变量放到堆内存中，保存所有引用类型的真实信息，以便执行器执行。</p>
+<p>(Java8)    永久区换成了元空间。</p>
+<p>物理上为新生区+养老区。</p>
+<h2 id="堆内存"><a href="#堆内存" class="headerlink" title="堆内存"></a>堆内存</h2><p>逻辑上分为三部分：新生+养老+永久</p>
+<p>新生区： Youg Generation Space (Eden Sapce + Survivor 0 space + Survivor 1 space)</p>
+<p>养老区：Tenure Generation Space</p>
+<p>永久存储区：Permanent Space</p>
+<ul>
+<li>Eden: 0space: 1space  = 8 : 1 : 1</li>
+<li>Young : Old = 1 : 2</li>
+</ul>
+<h2 id="静态"><a href="#静态" class="headerlink" title="静态"></a>静态</h2><p>实例化对象的整个生命周期都在新生区进行，最开始是在Eden Sapce,当满了之后会进行GC（垃圾回收），这时会清除大部分的垃圾，剩余的对象放入Survivior 0 space，当Eden Space和Survivor 0 space也满时，进行GC，幸存者放入Survivor 1 space，重复上一步，幸存者存入Tenure Genreration Space，重复上一步，也满时进行Full GC，重复上一步，再次满时，无处存储实例对象，会产生OutOfMemoryError(OOM)。</p>
+<h2 id="动态"><a href="#动态" class="headerlink" title="动态"></a>动态</h2><p>Survivor 0 space: from区</p>
+<p>Surrivor 1 space: to区</p>
+<p>他们的位置不固定，每次GC之后位置会交换，空的为to区。</p>
+<ol>
+<li>Eden, SurvivorFrom copy to SurviviorTo</li>
+<li>clean up Eden, SurvivorFrom</li>
+<li>Swap SurvivorTo and SurvivorFrom</li>
+</ol>
+<h2 id="永久代"><a href="#永久代" class="headerlink" title="永久代"></a>永久代</h2><p>是一个常驻内存区域，用于存放jdk自身所携带的Class、Interface的元数据，也就是说他存储的是运行环境必须的类信息，被装载进此区域的数据是不会被垃圾回收器回收的，关闭JVM才会释放此区域所占的内存。</p>
+<h2 id="调优"><a href="#调优" class="headerlink" title="调优"></a>调优</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    <span class="comment">// Returns the maximum amount of memory that the Java virtual machine will attempt to use.</span></span><br><span class="line">    <span class="keyword">long</span> l = Runtime.getRuntime().maxMemory();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Returns the total amount of memory in the Java virtual machine.</span></span><br><span class="line">    <span class="keyword">long</span> l1 = Runtime.getRuntime().totalMemory();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1/4</span></span><br><span class="line">    System.out.println(<span class="string">&quot;(-xmx) MAX_MEMORY: &quot;</span> + l + <span class="string">&quot;bytes, &quot;</span> + (l / (<span class="keyword">double</span>) <span class="number">1024</span> / <span class="number">1024</span> + <span class="string">&quot;MB&quot;</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1/64</span></span><br><span class="line">    System.out.println(<span class="string">&quot;(-xms) TOTAL_MEMORY: &quot;</span> + l1 + <span class="string">&quot;bytes, &quot;</span> + (l1 / (<span class="keyword">double</span>) <span class="number">1024</span> / <span class="number">1024</span> + <span class="string">&quot;MB&quot;</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>note:</strong> 生产中会将最高值与最低值设置的一样大，避免应用程序争抢内存，产生峰谷。</p>
+<blockquote>
+<p>-XX:MaxTenuringThreshold 设置对象在新生代中存活的次数（java8默认且最高15）</p>
+</blockquote>
+<h1 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h1><ul>
+<li>minor GC</li>
+<li>major/full GC</li>
+</ul>
+<p>major GC的速度比minor GC慢得多（考虑下young区和old区的大小比）。</p>
+<h2 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h2><p>分代收集，根据各个代来使用</p>
+<h3 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h3><p>每次引用对象时会维护计数器，每次引用的时候会加1,如果是0的话会被回收，但是大量的计数器也会有消耗。最大的弊端还是循环引用。JVM一般不会用这种。</p>
+<h3 id="复制算法（Copying）"><a href="#复制算法（Copying）" class="headerlink" title="复制算法（Copying）"></a>复制算法（Copying）</h3><p>Minor GC使用的就是Copying。不会产生内存碎片，但是会耗费空间。</p>
+<p>因为存活率都很低，复制也没啥。</p>
+<h3 id="标记清除法（Mark-Sweep）"><a href="#标记清除法（Mark-Sweep）" class="headerlink" title="标记清除法（Mark-Sweep）"></a>标记清除法（Mark-Sweep）</h3><p>Major GC使用的是Mark-Sweep，或者与下面的Mark-Compact混合实现。分为标记和清除两个阶段，先标记要回收的，然或再统一回收这些对象。对比上面的，没有复制-粘贴-清除，而是标记后清除，但是造成了内存碎片话（内存不连续），也没有Copying速度快（找出标记的需要进行扫描）。JVM为了空闲的内存还需要维持一个内存的空闲列表，又是一种开销。</p>
+<h3 id="标记压缩（Mark-Compact）"><a href="#标记压缩（Mark-Compact）" class="headerlink" title="标记压缩（Mark-Compact）"></a>标记压缩（Mark-Compact）</h3><p>Mark-Sweep-Compact，标记清除压缩算法，比上面的多了一步整理的过程（不会产生内存碎片），显然时间上消耗更多了（慢工出细活），多了移动对象的时间。</p>
+<p>也可以派生出另一种：多次GC后才进行压缩，减少移动对象的时间。</p>
+<h1 id="JMM"><a href="#JMM" class="headerlink" title="JMM"></a>JMM</h1><p>Java的内存模型（Java Memory  Model)，本身是一种抽象的概念，并不真实存在，他描述的是一组规范，通过这组规范定义了程序中各个变量（<strong>包括实例字段、静态字段以及构成数组对象的元素</strong>）的访问方式。</p>
+<p>在操作系统中我们有学习过，线程是资源调度的最小单位，进程是资源最小的分配单位，但是线程还是拥有部分必要的资源，其中，<code>工作内存</code>是每个线程的私有数据区域。java内存模型中规定所有变量都存储在主内存，它是共享的内存区域，所有线程都可以访问，但是线程对变量的操作（如读、取、赋值等）必须在工作内存中进行，首先要将变量从主内存拷贝到线程自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，换句话说，不能直接操作主内存中的变量，各个线程中的工作</p>
+<p>内存存储着主内存中的变量副本拷贝。因此，不同的线程间无法访问对方的工作内存，线程间的通信（传值）必须通过主内存来完成。</p>
+<h2 id="violatile"><a href="#violatile" class="headerlink" title="violatile"></a>violatile</h2><p>java虚拟机提供的轻量级的同步机制，乞丐版syncronized。</p>
+<ul>
+<li>保证可见性</li>
+<li>不保证原子性</li>
+<li>禁止指令重排</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这一篇是对整个jvm的概览，接触java有一年多了，想深入了解java，在代码层面会止步于<em>native</em>以及便以后的<em>class</em>，所以，jvm是一个突破后，只有深入理解了jvm才能理解java的运行机制。当然我的初衷并不是无缘无故地想去了解它，而是源于多线程编程，所以我是从jmm入坑的，了解完jmm又迫不及待地从头阅读，有种豁然开朗的感觉。不出意外jvm会出一个系列。</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2020/06/01/bitwise/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">bitwise</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/03/14/https/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">https</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

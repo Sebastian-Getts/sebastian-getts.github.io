@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            jvm-GC |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">jvm-GC</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2022-11-24 14:11:47
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/jvm/">jvm</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/GC/">GC</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>这一篇聊聊java虚拟机中的垃圾回收，梳理目前我所掌握的有关内容，当谈到此话题时应该从哪几个方面去深入交流，体现专业性，供查漏补缺，必要时再更新。</p>
+<h2 id="JVM的运行时数据区"><a href="#JVM的运行时数据区" class="headerlink" title="JVM的运行时数据区"></a>JVM的运行时数据区</h2><blockquote>
+<p>从这个角度去理解GC的必要性以及发生的区域、重点关注区域</p>
+</blockquote>
+<p>JVM中的运行时数据区主要有堆、栈、方法区、虚拟机栈以及程序计数器。其中会发生GC的区域为堆、栈和方法区。</p>
+<p>堆：存放Java对象的地方，是GC的主要场所，当没有区域来存放对象时会抛出<strong>OutOfMemoryError</strong>。</p>
+<p>方法区：各个线程共享，用于存储被虚拟机加载的类型信息、常量、静态变量等信息。回收时主要针对常量池的回收和类型的卸载，对类型的卸载有严格的条件限制，一般不会发生。如果方法区没有足够的空间去存储新的内容，会抛出<strong>OutOfMemoryError</strong>。</p>
+<h2 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h2><blockquote>
+<p>虽然叫算法，也可以理解为垃圾回收方式，不同的算法都围绕的可用性来做，也以不影响用户程序为目标来改进，减少<em>stop the world</em>的影响。</p>
+</blockquote>
+<p>标记清除</p>
+<p>标记复制</p>
+<p>标记整理</p>
+<p>以上三种算法的原理都在字面意义上了，之所以会有这些不同的算法，主要是考虑到分代的思想以及内存的利用率，减少内存碎片。</p>
+<h2 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h2><blockquote>
+<p>GC时的主要参与者之一，有哪些回收器是可供选择的，各自的区别及特点是什么？</p>
+</blockquote>
+<p>现代垃圾回收器都是基于分代收集理论设计的。对于新生代，对象存活时间短，对于老年代，存放大的且长时间存货的对象，各自的收集风格不同。</p>
+<ul>
+<li><p>Serial</p>
+</li>
+<li><p>ParNew</p>
+</li>
+<li><p>Parallel Scavenge</p>
+</li>
+<li><p>Serial Old</p>
+</li>
+<li><p>Parallel Old</p>
+</li>
+<li><p>CMS</p>
+</li>
+<li><p>Garbage First</p>
+</li>
+<li><p>Shenandoah</p>
+</li>
+<li><p>ZGC</p>
+</li>
+<li><p>Epsilon</p>
+</li>
+</ul>
+<h2 id="GC-Root"><a href="#GC-Root" class="headerlink" title="GC Root"></a>GC Root</h2><p>GC时的另一个主要参与者，哪些对象是要回收的，如何判断</p>
+<p>从GC Root开始去查相关引用，任何直接或非直接引用到的对象都不在GC的目标内。</p>
+<p>系统类加载器加载的类，也包含其静态变量</p>
+<p>存储在栈中的本地变量和方法参数</p>
+<p>活跃的线程</p>
+<p>native栈中的对象、参数</p>
+<p>用于同步的对象</p>
+<h2 id="OOM"><a href="#OOM" class="headerlink" title="OOM"></a>OOM</h2><p>垃圾回收也无法保证JVM的正常使用，集体罢工了，这种情况怎么办<del>（很无奈，至今没遇到过）</del></p>
+<ol>
+<li><p>通过分析工具（目前为止我都是在客户端看的，运维同事提供dump日志，我用jdk自带的工具jvisualvm）对dump出来的快照进行分析，明确内存中导致OOM的对象是否是必要的， 以此区分是<em>Memory Leak</em>还是<em>Memory Overflow</em>。</p>
+<ul>
+<li>如果是内存泄漏，可以进一步通过工具找到GC Root引用链，可以看到如何引用到，然后一步步定位到代码的具体位置。</li>
+</ul>
+</li>
+<li><p>检查JVM的参数设置”-Xmx, -Xms”，与机器内存做对比，看看是否还有向上调整的空间</p>
+</li>
+<li><p>从代码上检查是否某些对象的生存周期过长、持有状态时间过长、数据结构不合理等情况，减少程序运行周期的内存消耗。</p>
+</li>
+</ol>
+<h3 id="Memory-Leak"><a href="#Memory-Leak" class="headerlink" title="Memory Leak"></a>Memory Leak</h3><p>对象在业务中理应不再使用了，但无法通过GC回收。如果不加处理，堆中资源会被消耗殆尽，进造成OOM。</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2022/11/25/gateway/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">gateway</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2022/09/30/ArrangementAndCombination/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">ArrangementAndCombination</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

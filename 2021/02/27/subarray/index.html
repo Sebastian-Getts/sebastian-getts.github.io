@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            subarray |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">subarray</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2021-02-27 13:45:38
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/leetcode/">leetcode</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/double-pointers/">double pointers</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/preSum/">preSum</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>这篇聊聊双指针以及他的替代方法。title是subarray，这是因为相关的题使用双指针解起来是十分方便的，但是也有不适用的情况，所以更建议使用一步到位的<code>map</code> + <code>preSum</code>，双指针的思路是很容易理解的，后者需要绕个弯。</p>
+<span id="more"></span>
+
+<!--toc-->
+
+<h1 id="Subarray-Sum-Equals-K"><a href="#Subarray-Sum-Equals-K" class="headerlink" title="Subarray Sum Equals K"></a><a class="link"   target="_blank" rel="noopener" href="https://leetcode.com/problems/subarray-sum-equals-k/" >Subarray Sum Equals K<i class="fas fa-external-link-alt"></i></a></h1><p>Given an array of integers <code>nums</code> and an integer <code>k</code>, return <em>the total number of continuous subarrays whose sum equals to <code>k</code></em>.</p>
+<p>以上是题干，我们从这道题来入手这篇的主题。由于是求连续的子数组，所以我们首先想到的应该是双指针：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">subarraySum</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> lo = <span class="number">0</span>, hi = <span class="number">0</span>, sum = <span class="number">0</span>; hi &lt; nums.length; hi++)&#123;</span><br><span class="line">        sum += nums[i];</span><br><span class="line">        whlie(lo &lt; nums.length &amp;&amp; sum &gt; k)&#123;</span><br><span class="line">            sum -= nums[lo++];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(sum == k) res++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果提交以上代码，肯定不会AC，为什么呢，我们再来看题目的<strong>Constraints</strong>：</p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 2 * 104</code></li>
+<li><code>-1000 &lt;= nums[i] &lt;= 1000</code></li>
+<li><code>-107 &lt;= k &lt;= 107</code></li>
+</ul>
+<p>注意到了么，给的入参中数字是可以为负数的，在代码中<code>sum-= nums[lo++]</code>是无效的，如果入参都是正数，双指针就是OK的。</p>
+<h2 id="map-preSum"><a href="#map-preSum" class="headerlink" title="map + preSum"></a>map + preSum</h2><p>​        与双指针不同的是，这种解法用到了额外的数据结构<code>map</code>，在这里关于映射表的用法也有多种。另外一个<code>preSum</code>很好理解，就是前缀和。用这两个能做什么呢？我们从前缀和来试着理解下：</p>
+<p>有一串数字：1,2,3,4,5,6，6个数字，前5个的和记为P5，是15；前2个的和记为P2，是3，那么<code>P5 - P2</code>是12，正是子串[2, 3]。就是利用这个方式来找子串。那么子串找到了如何利用map呢？别忘了，入参不仅仅只有数组，在这道题中我们还要找到和为target的子串的数量，换句话说，要找到符合条件的子串。如果符合条件，那么应该满足：<code>Px - Py = target (x &gt; y)</code>，但是这样做我们岂不是要找出所有子串然后相减？显然违背了初衷（简单），我们换个思路，长的前缀和是已知的，目标值也是已知的，所以可以这样写：<code>Px - target = Py</code>，然后统计有多少个符合的子数组即可，这样我们的map可以定义为<em>Map&lt;Integer, Integer&gt;<em>，用来保存</em>当前的数组和</em>和<em>数组和的个数</em>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">subarraySum</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(nums.length == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    Map&lt;Integer, Integer&gt; map <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>, result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> cur : nums)&#123;</span><br><span class="line">        sum += cur; <span class="comment">// preSum</span></span><br><span class="line">        <span class="keyword">if</span>(sum == k) result++; <span class="comment">//也可以提前在map中放入 map.put(0, 1)</span></span><br><span class="line">        result += map.getOrDefault(sum - k, <span class="number">0</span>);</span><br><span class="line">        map.put(sum, map.getOrDefault(sum, <span class="number">0</span>) + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过这道题可以衍生出很多种题目，尤其是这种解法，非常巧妙。特别是，改下题目，如果不是返回符合条件的个数，而是返回子数组呢？那么我们map记录的就不是子数组和的个数了，而应该是下标：<code>sum(i, j) = sum(0, j) - sum(0, i)</code>。</p>
+<h1 id="Minimum-Operations-to-Reduce-X-to-Zero"><a href="#Minimum-Operations-to-Reduce-X-to-Zero" class="headerlink" title="Minimum Operations to Reduce X to Zero"></a><a class="link"   target="_blank" rel="noopener" href="https://leetcode.com/problems/minimum-operations-to-reduce-x-to-zero" >Minimum Operations to Reduce X to Zero<i class="fas fa-external-link-alt"></i></a></h1><p>You are given an integer array <code>nums</code> and an integer <code>x</code>. In one operation, you can either remove the leftmost or the rightmost element from the array <code>nums</code> and subtract its value from <code>x</code>. Note that this <strong>modifies</strong> the array for future operations.</p>
+<p>Return <em>the <strong>minimum number</strong> of operations to reduce</em> <code>x</code> <em>to <strong>exactly</strong></em> <code>0</code> <em>if it’s possible**, otherwise, return</em> <code>-1</code>.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 105</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 104</code></li>
+<li><code>1 &lt;= x &lt;= 109</code></li>
+</ul>
+<p>​        以上是题干，题目规定了取数的方式：只能从最左或最右侧取数。之所以把这道题放在这里，是因为换个角度看，其实也是求子数组！最小操作数意味着取最少的数字，那么子数组要在满足给定值的情况下保证最多。例如，有数组：1,2,3,4,5，目标值是6，我们需要从数组中找出满足（数组和为15，15-6=9）和为9的情况下个数最多的情况，这样一来，其余的值和为6且个数最少。</p>
+<p>由于题目给了限制条件：数组成员均大于或等于1，不存在负数，可以使用双指针遍历：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minOperations</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> target = Arrays.stream(nums).sum() - x;</span><br><span class="line">    <span class="keyword">int</span> size = -<span class="number">1</span>, n = nums.length;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> lo = <span class="number">0</span>, hi = <span class="number">0</span>, sum = <span class="number">0</span>; hi &lt; n; hi++)&#123;</span><br><span class="line">        sum += nums[hi];</span><br><span class="line">        <span class="keyword">while</span>(lo &lt; n &amp;&amp; sum &gt; target)&#123;</span><br><span class="line">            sum -= nums[lo++];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(sum == target) size = Math.max(size, hi - lo + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> size &lt; <span class="number">0</span> ? -<span class="number">1</span> : n - size;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也能使用前缀和：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minOperations</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> target = Arrays.stream(nums).sum() - x;</span><br><span class="line">    <span class="keyword">if</span>(target == <span class="number">0</span>) <span class="keyword">return</span> nums.length;</span><br><span class="line">    Map&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    map.put(<span class="number">0</span>, -<span class="number">1</span>);<span class="comment">// 长度，下面是 i - map.value</span></span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>, res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;nums.length; i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> num = nums[i];</span><br><span class="line">        sum += num;</span><br><span class="line">        <span class="keyword">if</span>(map.containsKey(sum - target))&#123;</span><br><span class="line">            res = Math.max(res, i - map.get(sum - target));</span><br><span class="line">        &#125;</span><br><span class="line">        map.put(sum, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> res == <span class="number">0</span> ? -<span class="number">1</span> : nums.length - res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2021/02/27/bst/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">bst</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2021/02/15/SpringBoot-refresh/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">SpringBoot refresh</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

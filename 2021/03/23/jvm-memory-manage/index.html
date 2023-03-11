@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            jvm memory-manage |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">jvm memory-manage</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2021-03-23 23:38:15
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/jvm/">jvm</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/memory/">memory</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>温故知新。jvm的自动内存管理在代码层面为我们省去了很多麻烦，在机器与代码之间有虚拟机执行编译后的字节码，虽然已经不太可能出现oom，但对于以后java的发展以及目前java运行机制的来说，熟悉jvm的内存管理是很有必要的。学过C++，语法中专门有开辟内存的语句……，虽然不用我们写这些，但起码说明了一些涉及内存的东西：开辟与回收。</p>
+<span id="more"></span>
+
+<!-- toc -->
+
+<h1 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h1><p>在了解jvm如何帮我们处理内存之前，我们先回顾jvm对于内存管理的布局，或者说是<strong>运行时数据区</strong>。这里图就不贴了，想看的可以参考之前的一篇jvm概览，运行时数据区的各模块同理，这里主要回顾对象与数据区之间的联系，也就是对象的产生以及在内存中的布局。</p>
+<p>​        普通的对象如何产生？在java代码层面我们通过关键字<strong>new</strong>来创建对象，他会调用构造方法来构造，这样一个对象被创建出来了，又叫实例化（Initialize）。还有一个概念叫初始化，这两点在Spring源码中区分的特别清晰，对于一个解放<strong>new</strong>的框架来说这么做是没毛病的，面向对象中，对象是有属性的，简单来说初始化是创建对象，实例化是对象的属性赋值。我们代码写完是交由虚拟机处理，虚拟机处理的又是编译过后的class文件，所以对象如何创建以及创建后如何布局都是jvm要做的事了。创建后对象会有个生存周期吧，一直存在虚拟机装不下的……等等诸多围绕着对象的问题。</p>
+<p>​        jvm在读到new相关的指令后（我们知道new之后是类啊）会从方法区找类关的信息，看是否被加载，被加载后就开始为内存分配地方，换句话说，给一个对象分配多大的地方是确定的，而且是在类加载后就能确定。在哪里看类的相关信息呢，方法区，这是类加载的入口，通常要经过加载、解析、初始化等过程。创建后的对象如何存在于虚拟机中的呢？分为三部分：<strong>对象头，实例数据，对齐填充</strong>。其实对于后两个是容易理解的，首先来说对齐填充，在计算机世界中，充斥各种二进制的特征，尤其是2的整数倍，一来是方便运算，二来是节省空间；其次是实例数据，这个当然，我们创建了对象，对象得有属性，即实例变量。最后是这个对象头，是蛮抽象的，有什么用呢？从这个角度想：我可以new很多个对象，每个对象独一无二如何体现（每个属性都相同）？每个属性不同的对象我们好区分，虚拟机知道么，是不是得有标记？对象该被回收了虚拟机如何知道谁该被回收，考实力数据和对齐填充吗？显然不可能。所以，可以理解为对象头是辅助用的（地位绝对可以做star），拿来记录各种标记。</p>
+<h2 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h2><p>拿对象头来做各种标记是没错的，标记这么多，还是可以再分分类的：记录的归做一类，引用（查找）的做另一类。</p>
+<p>”打标记“这词儿我取的口语化，官方叫做<em>Mark Word</em>，用来存储自身的<em>运行时数据</em>，有那些呢？哈希码、GC分代年龄、锁状态标志、线程持有的锁、偏向时间戳等。</p>
+<p>另一类，引用，为什么这么叫呢，这是上面提到过的“创建那么多对象如何确定哪个是哪个”的查找问题，也就是<strong>指针</strong>。他的作用是确定这个实例对象是由哪个类创建出来的，例如，我们可以通过这个来找出对象的模板信息（即类的结构信息），但并不是所有虚拟机都是这样设计的，除了指针也可以用<strong>句柄</strong>。对象存在于方法中，通过各种逻辑实现对象之间的交互，在java中，除了基本数据类型就是对象的引用类型了，指针还好理解，句柄又是什么呢？可以理解为指针的中转站：</p>
+<blockquote>
+<p>reference -&gt; 句柄 -&gt;实例数据、类型数据</p>
+</blockquote>
+<p>其中实例数据与句柄均在堆中，类型数据位于方法区，reference位于java栈。这样做的坏处是每次访问对象不像指针那样简单地之间访问（对象头有指针，对象实例数据与对象头平级），而是会多一次开销。好处也不是没有，他与指针的方式的最大区别是将reference与实力数据、类型数据解耦了，即无论句柄到实例数据的关系如何修改，reference到句柄是稳定不变的。句柄到实例数据的引用为什么会变，频繁么？我觉得如果足够频繁才能凸显出句柄的优势。什么时候变？垃圾回收导致的对象移动。</p>
+<h1 id="开辟"><a href="#开辟" class="headerlink" title="开辟"></a>开辟</h1><p>上面说到对象的大小是在类加载后就能确定的，毕竟类结构信息就是一个模板，照着模板造出来的对象一定是整齐化一的，如何开辟空间、在哪里开辟？这是这部分要讨论的问题。我们知道垃圾回收的地点是堆，对象也是创建在堆中的，所以，每次创建对象，虚拟机都会在堆中给这个新生对象开辟一块区域。</p>
+<p>重点来了，虚拟机，开辟区域。</p>
+<p>真实的计算机中也会涉及到内存的问题，经典的数据结构有线性表和链表，我们都知道线性表随机访问与他连续存储的特点分不开，链表不同，因为内存是分散的，要链在一起一定要有个指针来标记下一个在哪。虚拟机不也得仿照真实的计算机不是么，不然为什么叫虚拟机。于是也有两种分配内存的方式，一种是连续的，一种是链式的。这里虚拟与真实的区别也是有的，虚拟的要考虑开辟后如何回收，如何回收取决与启动时如何配置垃圾回收策略，而垃圾回收的策略决定着内存是否完整，内存的完整与否决定对象分配是整块划分还是散着链式链接。专业的术语叫做<strong>指针碰撞（Bump the Pointer）</strong>与<strong>空闲链表（Free List）</strong>。如何分配内存确定了，还剩下一个问题是冲突，频繁移动指针引起的线程安全问题。关于锁，在操作系统中我们知道有轻锁与重锁，这里同样适用，但是这里更聪明一些，一个方法是使用了轻度锁<strong>CAS+失败重试</strong>，另一个是单独给线程分配一块内存，需要分配时让线程在自己的地方玩，玩完了重新分内存时再上锁处理并发。后一个方法中给线程分配出来的内存更专业的术语是<strong>本地线程分配缓冲区（Thread Local Allocation Buffer, TLAB）</strong>。</p>
+<h1 id="回收"><a href="#回收" class="headerlink" title="回收"></a>回收</h1><p>​        关于对象回收，之前一直在说垃圾回收，没错，没用的对象就成了垃圾。这里明显的问题就是如何知道对象该不该被回收，以及确定了回收对象后，回收的策略是什么。现在我们是站在巨人的肩膀上，以上帝视角看待这个问题，目前java的版本迭代更像是打了鸡血……，博主虽然从事java开发工作，但截至前接触java的时间不到两年，更是鲜有遇见过jvm崩溃的问题，所以以前的jvm垃圾回收器在步入历史长河的情况下，只作为了解，这部分更多是对现用和具有发展潜力的回收器如G1展开分析。</p>
+<p>如何确定对象该不该被回收，</p>
+<p>历史垃圾回收器，</p>
+<p>G1，新的分区方式，打破传统</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2021/04/06/springmvc-dispatcherservlet/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">springmvc-dispatcherservlet</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2021/03/23/jvm-classloader/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">jvm classloader</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

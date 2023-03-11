@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            heap |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">heap</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2020-06-06 22:54:27
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/datastructure/">datastructure</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/heap/">heap</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>这里的堆是数据结构中的堆，不是JVM中的堆。</p>
+<p>关键词：堆，二叉树，优先级队列，排序，topN</p>
+<span id="more"></span>
+
+<!-- toc -->
+
+<h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1><p>堆的结构是完全二叉树，而且是有序的，分大顶堆和小顶堆。    </p>
+<h2 id="完全二叉树"><a href="#完全二叉树" class="headerlink" title="完全二叉树"></a>完全二叉树</h2><ul>
+<li>路径长度是指路径上的边数</li>
+<li>结点深度是指从根结点到该结点的路径的长度</li>
+<li>每一层都是满的或者最后一层不满但最后一层的叶子都是靠左放置</li>
+</ul>
+<h2 id="二叉堆"><a href="#二叉堆" class="headerlink" title="二叉堆"></a>二叉堆</h2><ul>
+<li>完全二叉树</li>
+<li>每个结点大于或等于它的任意一个孩子</li>
+</ul>
+<p>这里有个地方要跟BST做区别，BST的左右孩子是有大小区分的，而二叉堆中没有区分，主只要父节点比孩子结点大（大顶堆）就可以。</p>
+<h1 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h1><p>可以将二叉堆用数组来存储。</p>
+<p>例如如下一个二叉堆：</p>
+<p><img src="https://i.loli.net/2020/06/06/JbDlczXVh35sEF1.png" alt="Screenshot from 2020-06-06 15-24-34.png"></p>
+<p>在数组中保存：{62,42,59,32,39,44,13,22,29,14,33,30,17,9}</p>
+<p>可以看到相当是以广度优先遍历了这个二叉树，并将遍历的结点按顺序存入数组。可以从中发现一些存储的规律，对于任意一个位置_i_，他的左子结点在_2i+1_处，右子结点在_2i+2_处，父结点在_(i-1)/2_处。例如：39在数组中的下标是4，那么他的左子结点就在（2×4+1）=9处。</p>
+<h2 id="过程分析"><a href="#过程分析" class="headerlink" title="过程分析"></a>过程分析</h2><p>我们详细看看他的 插入和删除的过程，（假设是大顶堆）</p>
+<p>插入：元素首先放在末尾，然后与父节点比较，如果比父节点大，与父节点换位子，如此往复，直到父节点比自己大为止。</p>
+<p>删除：移除根节点，将末尾元素拿来顶替，然后与孩子结点中最大的比较，如果比最大的孩子结点小，跟孩子结点换位子，如此往复，直到比最大的孩子结点大为止。</p>
+<h2 id="时间复杂度分析"><a href="#时间复杂度分析" class="headerlink" title="时间复杂度分析"></a>时间复杂度分析</h2><p>O(nlogn)。</p>
+<p>首先分析logn，同快排、归并一样，logn可以是树高、递归的栈深。</p>
+<p><strong>这里的n指的是用来构建堆的时间</strong>，有n个元素，那么就会有n个logn（最差情况下，每个新添的元素都会一路置换到顶部）。</p>
+<h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1><h2 id="优先级队列"><a href="#优先级队列" class="headerlink" title="优先级队列"></a>优先级队列</h2><p>优先级队列的底层就是用堆来实现的。同时一道比较经典的算法题用优先级队列可以轻松实现：top n 问题</p>
+<h2 id="TOP-N"><a href="#TOP-N" class="headerlink" title="TOP N"></a>TOP N</h2><p>给一组数据，求其中最大/小的几个数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 求最小的n个数</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[] topN(<span class="keyword">int</span>[] array, <span class="keyword">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// default big heap, lambda make it small heap</span></span><br><span class="line">    Queue&lt;Integer&gt; heap = <span class="keyword">new</span> PriorityQueue&lt;&gt;(n, ((o1, o2) -&gt; Integer.compare(o2, o1)));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> e : array) &#123;</span><br><span class="line">        <span class="comment">// put the integer in when it smaller than the top of integer</span></span><br><span class="line">        <span class="keyword">if</span> (heap.isEmpty() || heap.size() &lt; n || e &lt; heap.peek()) &#123;</span><br><span class="line">            heap.offer(e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (heap.size() &gt; n) &#123;</span><br><span class="line">            <span class="comment">// delete the top of heap integer</span></span><br><span class="line">            heap.poll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[heap.size()];</span><br><span class="line">    <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> e : heap) &#123;</span><br><span class="line">        res[j++] = e;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面用到了小顶堆，for循环中的两个判断，符合条件的放进堆中，第二个判断中，当堆中的元素个数大于要求的个数时，删除堆中的顶部元素（优先级队列的本质还是队列，进出满读FIFO）。</p>
+<p>稍作修改，可以让上面的代码输出最大的n个数，显而易见的是，我们只需修改入队列的条件以及优先级队列的堆排序方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 默认大顶堆</span></span><br><span class="line">Queue&lt;Integer&gt; heap = <span class="keyword">new</span> PriorityQueue&lt;&gt;(n);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> e: array)&#123;</span><br><span class="line">    <span class="comment">// 大于堆顶的放入优先级队列</span></span><br><span class="line">    <span class="keyword">if</span>(heap.isEmpty() || heap.size() &lt; n || e &gt; heap.peak())&#123;</span><br><span class="line">        heap.offer(e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 超过要求的个数，清除堆顶元素</span></span><br><span class="line">    <span class="keyword">if</span>(heap.size() &gt; n)&#123;</span><br><span class="line">        heap.pool();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="大数据"><a href="#大数据" class="headerlink" title="大数据"></a>大数据</h3><p>当有千万级别的数据时，从中找出前若干个大（或小）的数据，虽然也是使用堆，但是多了一点选用的技巧：</p>
+<ul>
+<li>选前K个最小的数据，使用大顶堆</li>
+<li>选前K个最大的数据，使用小顶堆</li>
+</ul>
+<p>两个的原理是一样的，这里我用大顶堆举例。例如，在一千万的数据中找出前100个最小的数据，遍历的同时使用大顶堆来装数据，在遍历到第101个数据的时候，与堆顶做对比，此时会有两种情况：</p>
+<ul>
+<li>比堆顶的数字大：略过。我们要找的是前100个最小的元素</li>
+<li>比堆顶的数字小：移除堆顶元素，放入第101号元素</li>
+</ul>
+<p>这样一来，我们避免了对所有元素排序，核心原理就是<strong>拿栈顶元素来做临界值</strong>，时间复杂度也可以控制在<em>O(k\</em>n)*，其中k是前K个元素的数量，n是全部的数据量。</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2020/06/09/redis/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">redis</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/06/01/bitwise/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">bitwise</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

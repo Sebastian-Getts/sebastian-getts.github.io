@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            junit5 |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">junit5</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2022-12-20 16:33:48
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/unit-test/">unit_test</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/junit5/">junit5</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>这篇总结梳理基于Junit5的单元测试，方便日后查阅，当然最全的文档还是来自<a class="link"   target="_blank" rel="noopener" href="https://junit.org/junit5/docs/current/user-guide/" >官方<i class="fas fa-external-link-alt"></i></a>的。笔者曾负责部门内单元测试的推广与培训，了解这个东西在使用起来会遇到哪些问题，使用体验如何等。</p>
+<span id="more"></span>
+
+<h2 id="什么是单元测试"><a href="#什么是单元测试" class="headerlink" title="什么是单元测试"></a>什么是单元测试</h2><p>单元测试是开发人员将功能移交测试前的一项工作，用来自我测试，后期维护等。这里区分一下单元测试和集成测试：</p>
+<ul>
+<li>单元测试：无需启动或依赖额外资源就能运行的测试用例</li>
+<li>集成测试：与单元测试相对，需要依赖额外资源的（如Spring容器、DB等）测试用例<br>除了我们熟悉的后端之外，前端也是有单元测的，框架不同。同样是后端，都有不同的单元测试框架，笔者接触较多的有JUnit5和Spock。配合单元测试框架，在后端服务中涉及到其他不在此次核心代码编写内到资源，如外部接口、数据库等，我们可以结合Mock框架去模拟数据。最后，单元测试的覆盖率也是考察质量的标准之一，常用的有Jacoco等。</li>
+</ul>
+<h2 id="是否都有必要"><a href="#是否都有必要" class="headerlink" title="是否都有必要"></a>是否都有必要</h2><p>单元测试不是景上添花，需要根据具体的业务来区分合适的场景，跟系统架构有很深的关系。如果前期架构工作不到位，单元测试实施起来会有点棘手，例如，功能拆分合理，分成了多个方法去完成一个功能，这种可以使用单元测试针对不同情况去做测试，否则单元测试写起来会繁琐不直观。</p>
+<h2 id="难以解决的痛点"><a href="#难以解决的痛点" class="headerlink" title="难以解决的痛点"></a>难以解决的痛点</h2><p>目前看来不方便的地方还有不少，因工作的原因暂时无法有更深入的跟踪，这里暂列一些：</p>
+<ul>
+<li>前端的单元测试</li>
+<li>与数据库交互时的数据处理</li>
+<li>TDD实践</li>
+<li>……<br>可以肯定的是单元测试比较适合新的业务发生时去完成，而不是后期再去补，如果那一块的代码经常改动或很核心，实施单元测试的意义还是很大的。而对于报表生成等固式代码较多且长的地方，写起来反而没有很大的参考性。<br>有人可能会提到静态类的mock，还没这个需求，但是Mockito官方有提供API去mock<h2 id="JUnit5"><a href="#JUnit5" class="headerlink" title="JUnit5"></a>JUnit5</h2>在使用JUnit5时还是比较顺利的，通俗易懂，简单上手，这里举几个笔者认为很好用的例子：</li>
+</ul>
+<h3 id="DisplayName"><a href="#DisplayName" class="headerlink" title="@DisplayName"></a>@DisplayName</h3><p>用于标注在测试方法上，这样在启动时下方会显示标注的名字。如果不写的话会选择显示方法名，开发人员，尤其是非英语国家的，使用这个会让使用者明白这个方法的用途。英语国家的开发可以忽略，可以直接修改方法名为易懂的就好了，比如：<em>at_5_floor_to_up_and_down_3_floor</em></p>
+<h3 id="ParameterizedTest"><a href="#ParameterizedTest" class="headerlink" title="@ParameterizedTest"></a>@ParameterizedTest</h3><p>这个注解完美解决了多个入参校验一个方法时的问题，他需要搭配其他注解去传递参数，比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ParameterizedTest</span></span><br><span class="line"><span class="meta">@ValueSource(ints = &#123;1, 3, 10, 23&#125;)</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;生成的数据量与输入是否一致&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">invoke</span><span class="params">(<span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// given</span></span><br><span class="line">    PickOneService pickOneService = <span class="keyword">new</span> PickOneService();</span><br><span class="line">    <span class="comment">// when</span></span><br><span class="line">    CommonResult&lt;List&lt;WordDetail&gt;&gt; invoke = pickOneService.invoke(count);</span><br><span class="line">    <span class="comment">// then</span></span><br><span class="line">    List&lt;WordDetail&gt; data = invoke.getData();</span><br><span class="line">    assertEquals(count, data.size());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上所示，通过与<code>@ValueSource</code>注解的搭配使用，我们可以方便的测试多个入参，这里要注意的是，我们需要使用一个变量来做传递（如上面的<code>count</code>）。如果是其他类型的入参就搭配<code>@MethodSource</code>，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ParameterizedTest</span></span><br><span class="line"><span class="meta">@MethodSource(&quot;stringProvider&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">testWithExplicitLocalMethodSource</span><span class="params">(String argument)</span> </span>&#123;</span><br><span class="line">    assertNotNull(argument);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> Stream&lt;String&gt; <span class="title">stringProvider</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.of(<span class="string">&quot;apple&quot;</span>, <span class="string">&quot;banana&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="技术实现方式"><a href="#技术实现方式" class="headerlink" title="技术实现方式"></a>技术实现方式</h2><p>目前浅显地认为是修改了底层的字节码。</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2022/12/31/2022-end/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">2022-end</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2022/12/18/primeNumber/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">primeNumber</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            volatile |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">volatile</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2020-07-20 21:23:51
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/jvm/">jvm</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/volatile/">volatile</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>这个关键字用于将Java变量标记为<code>being stored in main memory</code>，意味着每次对volatile变量的读取都将从计算机内存中读取，而不是从CPU缓存中读取，并且对volatile变量的写入都将被写入主存而不是CPU缓存。</p>
+<span id="more"></span>
+
+<h1 id="Visibility-problems"><a href="#Visibility-problems" class="headerlink" title="Visibility problems"></a>Visibility problems</h1><p>主要是多线程中的问题。线程在操作<code>非volatile</code>的变量时，出于性能原因，都会将变量从主存复制到CPU缓存中，如果计算机上有多个CPU，那么每个线程可能在不同的CPU上运行，每个线程可以将变量复制到不同的CPU缓存中。</p>
+<p>那么问题来了，对于<code>非volatile</code>的变量，无法保证Java虚拟机何时将数据从主存储器读取到CPU缓存中，或者何时将数据从CPU缓存写入到主存储器中，设想一种情况：多个线程访问一个共享对象，该对象包含一个计数器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShareObject</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> counter = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设只有线程1会将计数器递增，同时线程1和线程2都会不时地访问它。</p>
+<p>如果counter不声明为<code>volatile</code>，就无法保证计数器的值从CPU缓存重写回主存，这就意味着主存的counter与CPU缓存的值可能不同！（JVM内存模型有没有）。这种因为没有被另一个线程回写到主存导致无法同步值的问题就叫做“Visibility problem”，<strong>一个线程的更新对其他线程是不可见的</strong>。</p>
+<h1 id="Visibility-Guarantee"><a href="#Visibility-Guarantee" class="headerlink" title="Visibility Guarantee"></a>Visibility Guarantee</h1><p>关键字<code>volatile</code>的设定就是解决上面提到的可见性问题。通过声明counter变量为<code>volatile</code>的，所有对该变量更改都将立即回写到主存，同时所有对该变量的读操作也都会从主存中读取。下面是加了关键字<code>volatile</code>的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShareObject</span></span>&#123;</span><br><span class="line">    <span class="comment">// 由于声明为volatile，因此更改变量对于其他线程的是可见的</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">volatile</span> <span class="keyword">int</span> counter = <span class="number">0</span> ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是，目前仅是线程1更改，对线程2可见，要想线程1、2都更改，那么仅仅声明为<code>volatile</code>是不够的。</p>
+<h2 id="Full-Visibility-Guarantee"><a href="#Full-Visibility-Guarantee" class="headerlink" title="Full Visibility Guarantee"></a>Full Visibility Guarantee</h2><p>实际上，关键字<code>volatile</code>的可见保证性超越了<code>volatile</code>变量本身。有点绕吧，可见保证性如下：</p>
+<ul>
+<li><p>如果线程A更改了<code>volatile</code>变量，并且线程B随后读取了它，则在写入<code>volatile</code>变量之前线程A可见的所有变量在线程B读取<code>volatile</code>变量后也将可见。</p>
+</li>
+<li><p>如果线程A读取了一个<code>volatile</code>变量，则在读取那个变量时线程A可见的所有变量也将从主存中重新读取。</p>
+</li>
+</ul>
+<p>看个代码例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> years;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> months;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> days;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 更改了三个变量，只有days是volatile的</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> years, <span class="keyword">int</span> months, <span class="keyword">int</span> days)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.years = year;</span><br><span class="line">        <span class="keyword">this</span>.months = months;</span><br><span class="line">        <span class="keyword">this</span>.days = days;    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>”Full Visibility Guarantee“意味着，当一个值被写入days，那么线程所有的可见的变量都会被写入主存，对于上面的例子来说，months和years也会被写入主存。读取他们的值时，可以这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> years;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> months;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> days;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">totalDays</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> total = <span class="keyword">this</span>.days;</span><br><span class="line">        total += months * <span class="number">30</span>;</span><br><span class="line">        total += years * <span class="number">365</span>;</span><br><span class="line">        <span class="keyword">return</span> total;   </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> years, <span class="keyword">int</span> months, <span class="keyword">int</span> days)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.years = years;</span><br><span class="line">        <span class="keyword">this</span>.months = months;</span><br><span class="line">        <span class="keyword">this</span>.days = days;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>着重观察<em>totalDays()<em>，他一开始会将<code>days</code>的值赋给变量<code>total</code> ,由于<code>days</code>的类型是<code>volatile</code>，所以，读取<code>days</code>的同时，其他变量（months、years）也都会从主存中读取，因此，这就是为什么可见保证性超过了<code>volatile</code>他本身，所以，对于本例甚至其他用到这个关键字的，都可以按照上面的顺序来保证读取到最新值（只给一个变量声明为<code>volatile</code>，读取时必须</em></em>最后**读取带有<code>volatile</code>属性的值）。</p>
+<h1 id="Instruction-Reordering"><a href="#Instruction-Reordering" class="headerlink" title="Instruction Reordering"></a>Instruction Reordering</h1><p>指令重排！！！出于性能原因，JVM和CPU是允许对程序中的指令进行重新排序，只要指令的语义含义保持不变即可。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">a++;</span><br><span class="line">b++;</span><br></pre></td></tr></table></figure>
+
+<p>这些指令可以重新排序为下列的顺序，且不会丢失原有程序的语义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a  = <span class="number">1</span>;</span><br><span class="line">a++;</span><br><span class="line"><span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">b++</span><br></pre></td></tr></table></figure>
+
+<p>然而，当变量属于<code>volatile</code>时，指令排序就需要小心了，看看下面的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClass</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> years;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> months;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">int</span> days;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> years, <span class="keyword">int</span> months, <span class="keyword">int</span> days)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.years = years;</span><br><span class="line">        <span class="keyword">this</span>.months = months;</span><br><span class="line">        <span class="keyword">this</span>.days = days;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果JVM重排指令，像下面这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> years, <span class="keyword">int</span> months, <span class="keyword">int</span> days)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 这里将days赋值动作放到了第一位</span></span><br><span class="line">    <span class="keyword">this</span>.days = days;</span><br><span class="line">    <span class="keyword">this</span>.years = years;</span><br><span class="line">    <span class="keyword">this</span>.months = months;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当days的顺序变了，months和years的值就无法正确地展现给其他线程。接下来是如何解决这个问题。</p>
+<h2 id="Volatile-Happens-Before-Guarantee"><a href="#Volatile-Happens-Before-Guarantee" class="headerlink" title="Volatile Happens-Before Guarantee"></a>Volatile Happens-Before Guarantee</h2><p><code>volatile</code>关键字提供了一些“保证”，即不会去做的一些操作，以免出现意外。</p>
+<ul>
+<li>如果读/写其他变量出现在写<code>volatile变量</code>之前，那么就不能重排为出现在它之后。当然返回过是允许的。</li>
+<li>如果读/写其他变量出现在读<code>volatile变量</code>之后，那么就不能重排为出现在它之前。</li>
+</ul>
+<h1 id="Volatile-is-Not-Always-Enough"><a href="#Volatile-is-Not-Always-Enough" class="headerlink" title="Volatile is Not Always Enough"></a>Volatile is Not Always Enough</h1><p>很明显，在一开始counter的例子中存在这种情况，读取counter并赋值期间，存在多个线程的竞争状态，都赋值的话会覆盖彼此（往主存中），这时就得采用能保证<code>原子性</code>的操作了，如<strong>syncronized</strong>或者比并发包下的<code>lock</code>了。</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2020/07/20/lock/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">lock</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2020/07/20/mq/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">mq</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>

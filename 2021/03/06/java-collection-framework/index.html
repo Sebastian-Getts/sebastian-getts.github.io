@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="Sebastian">
+    
+    <title>
+        
+            java collection framework |
+        
+        Sebastian&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.svg">
+    
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"github.com","root":"/","language":"en"};
+    KEEP.theme_config = {"toc":{"enable":false,"number":false,"expand_all":false,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"/images/avatar.svg","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/bg.svg","description":"I write code to enrich and ease lift of others."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":false,"preload":false},"code_copy":{"enable":false,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.3"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/avatar.png">
+                </a>
+            
+            <a class="logo-title" href="/">
+                Sebastian&#39;s blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                HOME
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                ARCHIVES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                CATEGORIES
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                TAGS
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                ABOUT
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">HOME</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">ARCHIVES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">CATEGORIES</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">TAGS</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">ABOUT</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">java collection framework</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/avatar.svg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">Sebastian</span>
+                        
+                            <span class="author-label">Lv4</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;2021-03-06 12:03:11
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/java/">java</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/framework/">framework</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <p>之前有过一篇集合框架的小结，随着时间的推移和使用体验，越发觉得那篇过于浅显，今天换个视角来看：<strong>如果是你，你会怎么设计？</strong></p>
+<span id="more"></span>
+
+<!-- toc -->
+
+<h1 id="换身份了"><a href="#换身份了" class="headerlink" title="换身份了"></a>换身份了</h1><p>​        作为jdk的设计者，我希望推广我的作品–JDK，方便用户使用，得有一些拿来即用的产品，日常的操作离不开数据处理，数据需要有地方存，就叫容器吧。我的jdk有基础数据类型，这些不方便操作，不符合面向对象，于是有了他们的包装类，但是不管什么是什么对象，都是继承于Object的，我可以用语法糖来做编译检查，这也是提高用户体验的一种方式，所以我的容器得用范型。emmm，我的idea就这么产生了！下面得考虑容器的内部设计了！</p>
+<h1 id="容器的种类"><a href="#容器的种类" class="headerlink" title="容器的种类"></a>容器的种类</h1><p>​        装数据？拿什么装？我有数组，只能拿这个装，底层实现都是它，我把它封装起来好了。那用户可能有什么操作呢，增删改查，就这四个，但仔细想，还可以扩充出许多，例如，增，我可以在已有的后面追加，也可以第一个或中间任意一个地方加，其他的三个操作同理，这怎么搞？（好麻烦，不当设计者了吧？）现在就有了问题，细节怎么处理，是不是一开始考虑的太细节了？我把它作为一个作品、一个艺术品，艺术来源于生活，我都叫他容器了，想想生活中有什么器皿。</p>
+<p>​        银行柜员会挨个办理业务，这是一种读取数据的方式，往罐子里装食物，装完我先吃的都是后进去的，这也是一种……根据这个来做那成品岂不是容易理解，使用起来就不会陌生。我也是站在巨人的肩膀上，除了普通的类，还有接口和抽象类来使用，另外，参照生活中的“容器”，可以更好的使用面向对象。首先，无论是哪种容器，都得装东西吧，有装就有一些基本操作，先不考虑各种容器的差异，都会有大小、查找、是否包含、清空、返回数组（毕竟只有数组可以装东西了）等操作，那我就叫他<code>Collection</code>吧，规划蓝图，collection以后定会有不同的容器，难不成以后各个容器遍历的时候都要写一遍？我这个总接口都写好了，能否提供一个操作，不论里面装的啥、不论是哪种容器，使用这个方法都能把里面的东西挨个读出来，也就是说在某个地方写一个for循环就好了，于是我做了一个<code>iterator</code>接口出来，让<code>collection</code>继承了<code>iterator</code>。接口算是好了，我们需要让他逐渐具体。现在只有未实现的接口，想想有点像设计院的图纸，要出成品得交给工厂去做，而这个图纸目前来说就寥寥几笔，是一个蓝图的开始，需要再完善些。如何完善细节呢，要做哪些容器呢，还不知道，因为太多了，那我们就只具体一点点吧，不是还有抽象类么，没必要一步到位，所以找出通用的能实现的部分。因为有了iterator，所以可以做些事情了，例如，清空操作、定义实例变量等：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Iterator&lt;E&gt; it = iterator();</span><br><span class="line">    <span class="keyword">while</span> (it.hasNext()) &#123;</span><br><span class="line">        it.next();</span><br><span class="line">        it.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Object[] toArray() &#123;</span><br><span class="line">    <span class="comment">// Estimate size of array; be prepared to see more or fewer elements</span></span><br><span class="line">    Object[] r = <span class="keyword">new</span> Object[size()];</span><br><span class="line">    Iterator&lt;E&gt; it = iterator();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; r.length; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (! it.hasNext()) <span class="comment">// fewer elements than expected</span></span><br><span class="line">            <span class="keyword">return</span> Arrays.copyOf(r, i);</span><br><span class="line">        r[i] = it.next();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> it.hasNext() ? finishToArray(r, it) : r;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我已经实现了不少操作，是时候可以进一步了，根据元素的进出方式我觉得可以分为顺序进出、先进后出，又可以进一步以能否重复做划分。那么就有个问题，我设计<code>collection</code>接口的时候有些点没有想到，比如有序的容器我如果直接找出第几个元素怎么办？当时没做这个接口，没提供这个操作诶？是不是设计的有问题？其实不是，接口不也可以继承，本来就不是面面具到，就得一步步地完成抽象、进而具体的，我们可以继承collection接口去完善他，做出我们想要的容器的接口，因为继承，所以之前的操作都还在，他们是通用的。按照这个想法，可以有<code>List</code>、<code>Set</code>、<code>Queue</code>接口。有了接口，又回到刚才考虑<code>Collection</code>接口的点了，先用抽象类尽可能地实现接口，但同时要注意，我们已经实现过了<code>Collection</code>，所以要避免重复实现，我们的接口也是集成了<code>Collection</code>，这个时候我们具体容器的抽象类得集成<code>Collection</code>的抽象类。除了装成一堆的容器，也得有一对一的吧？比如商店售货员，给他一种商品价格，他得知道价格是多少，这就是一对一的关系，鉴于次，不同与collection的容器又被抽象出来了：Map（于是又要考虑一大堆并且设计接口、完成抽象类……）。</p>
+<p>jdk就是这样，一步一步地从功能、特性考虑对现实世界的物品建模，封装成我们能用的数据结构。</p>
+<h1 id="设计规律"><a href="#设计规律" class="headerlink" title="设计规律"></a>设计规律</h1><p>（好了 身份换回来了）集合框架给了我们典型的、优秀的设计案例：如何抽象、如何一步步地封装、如何变得具体。要学的不仅仅是如何使用，更重要的是思想。</p>
+
+        </div>
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                           rel="prev"
+                           href="/2021/03/07/mybatis-sql-resolution/"
+                        >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">mybatis sql resolution</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2021/02/28/springboot-servlet/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">Springboot-servlet</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2020</span>
+              -
+            
+            2023&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">Sebastian</a>
+        </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.3</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="fas fa-arrow-up"></i>
+            </li>
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+
+
+
+<div class="post-scripts">
+    
+</div>
+
+
+
+</body>
+</html>
